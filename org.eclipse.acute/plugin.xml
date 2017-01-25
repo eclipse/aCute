@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="cs"
+            id="org.eclipse.acute.csharp"
+            name="C# file"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.lsp4e.languageServer">
+      <server
+            class="org.eclipse.acute.OmnisharpStreamConnectionProvider"
+            id="org.eclipse.acute.omnisharp"
+            label="org.eclipse.acute.OmniSharp">
+      </server>
+      <contentTypeMapping
+            contentType="org.eclipse.acute.csharp"
+            id="org.eclipse.acute.omnisharp">
+      </contentTypeMapping>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editorContentTypeBinding
+            contentTypeId="org.eclipse.acute.csharp"
+            editorId="org.eclipse.ui.genericeditor.GenericEditor">
+      </editorContentTypeBinding>
+   </extension>
+   <extension
+         point="org.eclipse.tm4e.core.grammars">
+      <grammar
+            path="grammar/csharp.json"
+            scopeName="source.cs">
+      </grammar>
+      <scopeNameContentTypeBinding
+            contentTypeId="org.eclipse.acute.csharp"
+            scopeName="source.cs">
+      </scopeNameContentTypeBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.genericeditor.presentationReconcilers">
+      <presentationReconciler
+            class="org.eclipse.tm4e.ui.text.TMPresentationReconciler"
+            contentType="org.eclipse.acute.csharp">
+      </presentationReconciler>
+   </extension>
+
+</plugin>
