@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <bundle id="org.eclipse.acute" version="0.1.0.qualifier">
+   <feature id="org.eclipse.acute.feature" version="0.1.0.qualifier">
       <category name="aCute"/>
-   </bundle>
+   </feature>
    <category-def name="aCute" label="aCute - C# in Eclipse IDE"/>
    <repository-reference location="http://download.eclipse.org/lsp4e/snapshots" enabled="true" />
    <repository-reference location="http://oss.opensagres.fr/textmate/1.0.0-SNAPSHOT/" enabled="true" />

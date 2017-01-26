@@ -15,8 +15,9 @@ You also need [OmniSharp Language Server](https://github.com/OmniSharp/omnisharp
 
 ## Installation in Eclipse IDE
 
-Using Eclipse Marketplace: 
-Using p2 repository: 
+Using Eclipse Marketplace: https://marketplace.eclipse.org/content/acute-c-edition-eclipse-ide-experimental
+
+Using p2 repository: use `http://repository.jboss.org/nexus/content/unzip/unzip/org/eclipse/acute/repository/0.1.0-SNAPSHOT/repository-0.1.0-SNAPSHOT.zip-unzip/` in the [Install New Software wizard](http://help.eclipse.org/topic/org.eclipse.platform.doc.user/tasks/tasks-127.htm)
 
 ## Concept
 
