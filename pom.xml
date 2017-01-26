@@ -11,6 +11,7 @@
 	<properties>
 		<tycho-version>0.26.0</tycho-version>
 		<tycho-extras-version>${tycho-version}</tycho-extras-version>
+		<tycho.scmUrl>scm:git:https://github.com/mickaelistria/aCute.git</tycho.scmUrl>
 	</properties>
 
 	<modules>
@@ -83,6 +84,7 @@
 							<goal>compare-version-with-baselines</goal>
 						</goals>
 						<configuration>
+							<skip>true</skip>
 							<baselines>
 								<url>http://download.eclipse.org/acute/releases/latest</url>
 							</baselines>

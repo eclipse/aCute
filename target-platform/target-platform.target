@@ -2,15 +2,15 @@
 <?pde version="3.8"?><target name="aCute" sequenceNumber="3">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.lsp4e" version="0.1.0.201701241810"/>
+<unit id="org.eclipse.lsp4e" version="0.0.0"/>
 <repository location="http://download.eclipse.org/lsp4e/snapshots/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="tm-feature.feature.group" version="1.0.0.201701232314"/>
+<unit id="tm-feature.feature.group" version="0.0.0"/>
 <repository location="http://oss.opensagres.fr/textmate/1.0.0-SNAPSHOT/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.ide" version="4.7.0.I20161208-0830"/>
+<unit id="org.eclipse.platform.ide" version="0.0.0"/>
 <unit id="org.eclipse.jdt.annotation" version="0.0.0"/>
 <repository location="http://download.eclipse.org/eclipse/updates/4.7milestones/S-4.7M4-201612080830/"/>
 </location>
