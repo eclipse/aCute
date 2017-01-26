@@ -84,9 +84,10 @@
 							<goal>compare-version-with-baselines</goal>
 						</goals>
 						<configuration>
+							<!-- disable until a first release took place -->
 							<skip>true</skip>
 							<baselines>
-								<url>http://download.eclipse.org/acute/releases/latest</url>
+								<url>http://repository.jboss.org/nexus/content/unzip/unzip/org/eclipse/acute/repository/0.1.0/repository-0.1.0.zip-unzip/t</url>
 							</baselines>
 						</configuration>
 					</execution>
@@ -135,7 +136,7 @@
 					<configuration>
 						<baselineRepositories>
 							<repository>
-								<url>http://download.eclipse.org/acute/snapshots</url>
+								<url>http://repository.jboss.org/nexus/content/unzip/unzip/org/eclipse/acute/repository/0.1.0-SNAPSHOT/repository-0.1.0-SNAPSHOT.zip-unzip/</url>
 							</repository>
 						</baselineRepositories>
 					</configuration>
