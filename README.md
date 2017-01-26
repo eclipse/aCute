@@ -2,6 +2,9 @@
 
 Support for C# edition in Eclipse IDE. Relies on OmniSharp and Language Server Protocol.
 
+(![screenshot](aCute.png "Logo Title Text 1")
+
+
 ## Prerequisites
 
 You need `dotnet` working on CLI.
