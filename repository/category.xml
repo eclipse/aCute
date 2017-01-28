@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
+   <category-def name="aCute" label="aCute - C# in Eclipse IDE"/>
    <feature id="org.eclipse.acute.feature" version="0.1.0.qualifier">
       <category name="aCute"/>
    </feature>
-   <category-def name="aCute" label="aCute - C# in Eclipse IDE"/>
+   
+   <category-def name="Dependencies" label="Dependencies"/>
+   <bundle id="org.eclipse.ui.genericeditor" version="0.0.0">
+      <category name="Dependencies"/>
+   </bundle>
+   
    <repository-reference location="http://download.eclipse.org/lsp4e/snapshots" enabled="true" />
    <repository-reference location="http://oss.opensagres.fr/textmate/1.0.0-SNAPSHOT/" enabled="true" />
 </site>
