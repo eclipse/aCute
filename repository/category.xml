@@ -9,7 +9,8 @@
    <bundle id="org.eclipse.ui.genericeditor" version="0.0.0">
       <category name="Dependencies"/>
    </bundle>
-   
+
+   <!-- This is currently ignored by Tycho, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
    <repository-reference location="http://download.eclipse.org/lsp4e/snapshots" enabled="true" />
    <repository-reference location="http://oss.opensagres.fr/textmate/1.0.0-SNAPSHOT/" enabled="true" />
 </site>
