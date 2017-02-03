@@ -12,8 +12,11 @@
    <bundle id="org.apache.commons.io" version="0.0.0">
       <category name="Dependencies"/>
    </bundle>
+   <feature id="tm-feature" version="0.0.0">
+      <category name="Dependencies"/>
+   </feature>
 
    <!-- This is currently ignored by Tycho, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
    <repository-reference location="http://download.eclipse.org/lsp4e/snapshots" enabled="true" />
-   <repository-reference location="http://oss.opensagres.fr/textmate/1.0.0-SNAPSHOT/" enabled="true" />
+   <repository-reference location="http://oss.opensagres.fr/textmate/0.1.0-SNAPSHOT/" enabled="true" />
 </site>
