@@ -234,6 +234,11 @@
 			<url>https://repo.eclipse.org/content/groups/cbi</url>
 			<snapshots><enabled>true</enabled></snapshots>
 		</pluginRepository>
+		<pluginRepository>
+			<id>jboss</id>
+			<url>https://repository.jboss.org/</url>
+			<snapshots><enabled>true</enabled></snapshots>
+		</pluginRepository>
 	</pluginRepositories>
 
 	<distributionManagement>

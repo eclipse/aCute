@@ -41,11 +41,4 @@
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
-	<repositories>
-		<repository>
-			<id>jboss</id>
-			<url>https://repository.jboss.org/</url>
-			<layout>m2</layout>
-		</repository>
-	</repositories>
 </project>
