@@ -13,10 +13,14 @@
 <unit id="org.eclipse.platform.ide" version="0.0.0"/>
 <unit id="org.eclipse.ui.genericeditor" version="0.0.0"/>
 <unit id="org.eclipse.jdt.annotation" version="0.0.0"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.7milestones/S-4.7M4-201612080830/"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.7milestones/S-4.7M5-201701261030/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <repository location="http://download.eclipse.org/releases/oxygen/"/>
+</location>
+<location includeAllPlatforms="false" includeMode="planner" type="InstallableUnit">
+<unit id="org.eclipse.license.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/cbi/updates/license/"/>
 </location>
 </locations>
 </target>

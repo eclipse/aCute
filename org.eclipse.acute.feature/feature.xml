@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.acute.feature"
-      label="ACute - C# edition in Eclipse IDE (Experimental)"
+      label="%name"
       version="0.1.0.qualifier"
-      provider-name="Red Hat Inc.">
-      <!--license-feature="org.eclipse.license"
-      license-feature-version="0.0.0"-->
+      provider-name="Red Hat Inc."
+      license-feature="org.eclipse.license"
+      license-feature-version="0.0.0">
 
    <description>
-      Basic C# editor in Eclipse IDE. Relies on OmniSharp and TextMate grammars.
+      %description
    </description>
 
    <copyright>
-Copyright (c) 2017 Red Hat Inc. and others.
-All rights reserved. This program and the accompanying materials
-are made available under the terms of the Eclipse Public License v1.0
-which accompanies this distribution, and is available at
-http://www.eclipse.org/legal/epl-v10.html
+	  %copyright
    </copyright>
 
    <license url="%licenseURL">
