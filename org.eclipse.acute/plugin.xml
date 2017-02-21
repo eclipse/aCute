@@ -33,7 +33,7 @@
    <extension
          point="org.eclipse.tm4e.core.grammars">
       <grammar
-            path="grammar/csharp.json"
+            path="grammar/csharp.tmLanguage"
             scopeName="source.cs">
       </grammar>
       <scopeNameContentTypeBinding
