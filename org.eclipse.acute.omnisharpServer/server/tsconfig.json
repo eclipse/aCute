@@ -1,0 +1,50 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [
+            "es5",
+            "dom",
+            "es2015.core",
+            "es2015.collection",
+            "es2015.generator",
+            "es2015.iterable",
+            "es2015.promise",
+            "es2015.reflect",
+            "es2015.symbol",
+            "es2015.symbol.wellknown"
+        ],
+        "baseUrl": "",
+        "paths": {
+            "rxjs": [
+                "node_modules/rxjs"
+            ]
+        },
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "diagnostics": true,
+        "noEmitOnError": false,
+        "preserveConstEnums": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "skipLibCheck": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "mapRoot": "./",
+        "sourceRoot": "./",
+        "strictNullChecks": true,
+        "noUnusedLocals": false,
+        "noFallthroughCasesInSwitch": true,
+        "declaration": true,
+        "declarationDir": "types"
+    },
+    "compileOnSave": true,
+    "include": [
+        "languageserver",
+        "lib",
+        "test",
+        "typings"
+    ]
+}

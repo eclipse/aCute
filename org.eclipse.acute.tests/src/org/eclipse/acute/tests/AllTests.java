@@ -17,7 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	TestIDEIntegration.class,
-	TestSyntaxHighlighting.class
+	TestSyntaxHighlighting.class,
+	TestLSPIntegration.class
 })
 public class AllTests {
 

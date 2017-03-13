@@ -1,0 +1,66 @@
+sudo: required
+dist: trusty
+addons:
+  apt:
+    packages:
+      - gettext
+      - libcurl4-openssl-dev
+      - libicu-dev
+      - libssl-dev
+      - libunwind8
+      - zlib1g
+      - curl
+      - tree
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+matrix:
+  include:
+    - language: csharp
+      env:
+        - TRAVIS_MONO=true
+        - LEADER=true
+      mono: 4.6.0
+      os: linux
+    - language: csharp
+      env: TRAVIS_MONO=true
+      mono: 4.6.0
+      os: osx
+    #- env: TRAVIS_CORECLR=true
+    #  os: linux
+    #- env: TRAVIS_CORECLR=true
+    #  os: osx
+    - env:
+        - TRAVIS_MONO=true
+        - BREW_MONO=true
+      os: osx
+env:
+  global:
+    - secure: JG+808gsJ65N/BE7yzCbVVtQYkZd2KmI5ErsS6qWF3vMzk8fewQbS0BdPl/D1dWW7Ty1cd6RTC0nTYaUovKERj7LEURjVubR97rDPR8TjukmmQthI6X/K7MkOFO9xh90q/rqDhtXbYBZQzk3fGDjTszENOJruSitAbFI6QMzcX4=
+    - secure: AbpDujLZ+ER07GllQ/cWHNYv8x1NzmsgFfUbSYIgp6OJBpLhUfgB1/ZGVtXSVByybGRnr8NBW+DZ09yA+TIDdCTp4mQBPlOCmTpEDTGmu6wSSz2zpTVwbOcgddU9pmZw4d01tGa4fG78zlpi79lo/v+vJaebZNUKkeoyurwOqkw=
+install:
+  - rm -rf ~/.nvm
+  - git clone https://github.com/creationix/nvm.git ~/.nvm
+  - source ~/.nvm/nvm.sh
+  - nvm install 6.9.4
+  - node --version
+  - chmod +x publish.sh
+  - if [ "$BREW_MONO" = "true" ]; then brew update; brew install mono; fi
+  - travis_retry npm install
+script:
+  - travis_retry npm test
+after_success:
+  - echo TRAVIS_SECURE_ENV_VARS = $TRAVIS_SECURE_ENV_VARS
+  - echo TRAVIS_BRANCH = $TRAVIS_BRANCH
+  - echo TAG_COMMIT = $TAG_COMMIT
+  - if [ "$LEADER" = "true" ]; then
+  -   . ./publish.sh
+  - fi
+before_install:
+  - openssl enc -aes-256-cbc -a -salt -in travis_rsa.enc -out ~/.ssh/id_rsa -pass pass:$OPENSSL_PASSKEY -d
+  - chmod 600 ~/.ssh/id_rsa
+  - eval `ssh-agent -s`
+  - ssh-add ~/.ssh/id_rsa
+notifications:
+  slack: omnisharp:UN1OlhsHD8hUXy8SEr1L6Zar

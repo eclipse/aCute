@@ -28,17 +28,17 @@ public class AbstractAcuteTest {
 	protected IFile csharpSourceFile;
 
 	@Before
-	public void setUp() throws CoreException {
+	public void setUp() throws Exception {
 		this.project = ResourcesPlugin.getWorkspace().getRoot().getProject(getClass().getName() + System.currentTimeMillis());
 		this.project.create(new NullProgressMonitor());
 		this.project.open(new NullProgressMonitor());
 		csharpSourceFile = this.project.getFile("test.cs");
-		csharpSourceFile.create(getClass().getResourceAsStream("test.cs"), true, new NullProgressMonitor());
+		csharpSourceFile.create(getClass().getResourceAsStream(csharpSourceFile.getName()), true, new NullProgressMonitor());
 	}
-	
+
 	@After
 	public void tearDown() throws CoreException {
 		this.project.delete(true, new NullProgressMonitor());
 	}
-	
+
 }

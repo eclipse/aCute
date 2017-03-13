@@ -29,12 +29,12 @@ public class TestSyntaxHighlighting extends AbstractAcuteTest {
 
 	@Before
 	@Override
-	public void setUp() throws CoreException {
+	public void setUp() throws Exception {
 		super.setUp();
 		editor = (TextEditor) IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), csharpSourceFile, "org.eclipse.ui.genericeditor.GenericEditor");
 		editorTextWidget = (StyledText)editor.getAdapter(Control.class);
 	}
-	
+
 	@After
 	@Override
 	public void tearDown() throws CoreException {
@@ -44,7 +44,7 @@ public class TestSyntaxHighlighting extends AbstractAcuteTest {
 		}
 		super.tearDown();
 	}
-	
+
 	@Test
 	public void testSyntaxHighlighting() throws CoreException {
 		new DisplayHelper() {

@@ -1,0 +1,5 @@
+{
+  "plugins": [
+    { "name": "OmniSharp.Dnx", "version": "1.0.0-*" }, { "name": "OmniSharp.MSBuild", "version": "1.0.0-*" }
+  ]
+}

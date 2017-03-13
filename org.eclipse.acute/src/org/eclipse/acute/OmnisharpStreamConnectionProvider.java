@@ -11,14 +11,17 @@
 package org.eclipse.acute;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.lsp4e.server.StreamConnectionProvider;
 
@@ -44,15 +47,21 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 				getNodeJsLocation(),
 				omnisharpLocation);
 			process = builder.start();
-		} else { // my defaults
-			ProcessBuilder builder = new ProcessBuilder(
-				getNodeJsLocation(),
-				"/home/mistria/git/omnisharp-node-client/languageserver/server.js");
-			builder.environment().put("LD_LIBRARY_PATH", "/home/mistria/apps/OmniSharp.NET/icu54:" + System.getenv("LD_LIBRARY_PATH"));
-			process = builder.start();
+		} else {
+			URL serverFileUrl = getClass().getResource("/server/languageserver/server.js");
+			if (serverFileUrl != null) {
+				File serverFile = new File(FileLocator.toFileURL(serverFileUrl).getPath());
+				if (serverFile.exists()) {
+					ProcessBuilder builder = new ProcessBuilder(
+							getNodeJsLocation(),
+							serverFile.getAbsolutePath());
+					process = builder.start();
+					return;
+				}
+			}
 		}
 	}
-	
+
 	public static String getNodeJsLocation() {
 		String res = "/path/to/node";
 		String[] command = new String[] {"/bin/bash", "-c", "which node"};
