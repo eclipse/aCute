@@ -7,7 +7,11 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="tm-feature.feature.group" version="0.0.0"/>
-<repository location="http://oss.opensagres.fr/textmate/0.1.0-SNAPSHOT/"/>
+<repository location="http://download.eclipse.org/tm4e/snapshots/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<!-- Include for joni and jcodings -->
+<repository location="http://download.eclipse.org/tools/orbit/S-builds/S20170306214312/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.ide" version="0.0.0"/>
