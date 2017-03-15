@@ -46,7 +46,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 			this.process = Runtime.getRuntime().exec(command);
 		} else if (omnisharpLocation != null) {
 			ProcessBuilder builder = new ProcessBuilder(
-				getNodeJsLocation(),
+				getNodeJsLocation().getAbsolutePath(),
 				omnisharpLocation);
 			process = builder.start();
 		} else {
@@ -54,8 +54,13 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 			if (serverFileUrl != null) {
 				File serverFile = new File(FileLocator.toFileURL(serverFileUrl).getPath());
 				if (serverFile.exists()) {
+					File nodeJsLocation = getNodeJsLocation();
+					if (nodeJsLocation == null || !nodeJsLocation.isFile()) {
+						Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.getDefault().getBundle().getSymbolicName(), "Couldn't find nodejs in your machine. Please make sure it's part of your PATH."));
+						return;
+					}
 					ProcessBuilder builder = new ProcessBuilder(
-							getNodeJsLocation(),
+							nodeJsLocation.getAbsolutePath(),
 							serverFile.getAbsolutePath());
 					Activator.getDefault().getLog().log(new Status(IStatus.INFO, Activator.getDefault().getBundle().getSymbolicName(), "Omnisharp command-line: " + builder.command().toArray()));
 					process = builder.start();
@@ -71,8 +76,8 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 		}
 	}
 
-	public static String getNodeJsLocation() {
-		String res = "/path/to/node";
+	private static File getNodeJsLocation() {
+		String location = null;
 		String[] command = new String[] {"/bin/bash", "-c", "which node"};
 		if (Platform.getOS().equals(Platform.OS_WIN32)) {
 			command = new String[] {"cmd", "/c", "where node"};
@@ -81,7 +86,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 		try {
 			Process p = Runtime.getRuntime().exec(command);
 			reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			res = reader.readLine();
+			location = reader.readLine();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -89,14 +94,14 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 		}
 
 		// Try default install path as last resort
-		if (res == null && Platform.getOS().equals(Platform.OS_MACOSX)) {
-			String defaultInstallPath = "/usr/local/bin/node";
-			if (Files.exists(Paths.get(defaultInstallPath))) {
-				return defaultInstallPath;
-			}
+		if (location == null && Platform.getOS().equals(Platform.OS_MACOSX)) {
+			location = "/usr/local/bin/node";
 		}
 
-		return res;
+		if (Files.exists(Paths.get(location))) {
+			return new File(location);
+		}
+		return null;
 	}
 
 
