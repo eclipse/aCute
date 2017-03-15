@@ -22,7 +22,9 @@ import java.nio.file.Paths;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.lsp4e.server.StreamConnectionProvider;
 
 public class OmnisharpStreamConnectionProvider implements StreamConnectionProvider {
@@ -55,9 +57,16 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 					ProcessBuilder builder = new ProcessBuilder(
 							getNodeJsLocation(),
 							serverFile.getAbsolutePath());
+					Activator.getDefault().getLog().log(new Status(IStatus.INFO, Activator.getDefault().getBundle().getSymbolicName(), "Omnisharp command-line: " + builder.command().toArray()));
 					process = builder.start();
 					return;
 				}
+			} else {
+				Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.getDefault().getBundle().getSymbolicName(), "Omnisharp not found!\n" +
+						"Main issue and remediation: The `org.eclipse.acute.omnisharpServer` fragment is missing. Please add it.\n" +
+						"Possible alternative settings:\n" +
+						"* set `OMNISHARP_LANGUAGE_SERVER_COMMAND` to the command that should be used to start the server (with full path).\n" +
+						"* set `OMNISHARP_LANGUAGE_SERVER_LOCATION` to the full path of thel language server file."));
 			}
 		}
 	}
