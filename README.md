@@ -8,8 +8,9 @@ Support for C# edition in Eclipse IDE. Relies on OmniSharp and Language Server P
 ## Prerequisites
 
 * On **any OS**, `node` needs to be available in your PATH.
-* On **Linux and Mac**, `mono` needs to be installed. ([dotnet-core not supported by OmniSharp Language Server yet](https://github.com/OmniSharp/omnisharp-node-client/issues/398)).
-* On **Windows**, `dotnet` needs to be installed.
+* On **Linux**, `mono-devel` needs to be installed. ([dotnet-core not supported by OmniSharp Language Server yet](https://github.com/OmniSharp/omnisharp-node-client/issues/398)).
+* On **Windows**, .NET SDK needs to be installed.
+* On **Mac**: ?
 
 Or see [Alternative server setup](#Alternative-server-setup)
 
