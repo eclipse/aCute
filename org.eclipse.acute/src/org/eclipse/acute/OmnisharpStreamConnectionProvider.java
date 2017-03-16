@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.FileLocator;
@@ -62,7 +63,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 					ProcessBuilder builder = new ProcessBuilder(
 							nodeJsLocation.getAbsolutePath(),
 							serverFile.getAbsolutePath());
-					Activator.getDefault().getLog().log(new Status(IStatus.INFO, Activator.getDefault().getBundle().getSymbolicName(), "Omnisharp command-line: " + builder.command().toArray()));
+					Activator.getDefault().getLog().log(new Status(IStatus.INFO, Activator.getDefault().getBundle().getSymbolicName(), "Omnisharp command-line: " + builder.command().stream().collect(Collectors.joining(" "))));
 					process = builder.start();
 					return;
 				}
