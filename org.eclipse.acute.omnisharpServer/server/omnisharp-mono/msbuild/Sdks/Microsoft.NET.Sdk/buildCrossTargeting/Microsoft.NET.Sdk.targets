@@ -1,0 +1,34 @@
+<!--
+***********************************************************************************************
+Microsoft.NET.Sdk.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <Import Project="..\build\Microsoft.NET.Sdk.Common.targets"/>
+
+  <!--
+  ============================================================
+                              Publish
+
+   This is the Publish target for cross-targeting.
+   Currently it is unsupported to publish for multiple target frameworks
+   because users can specify the $(PublishDir), and publish would put
+   multiple published applications in a single directory.
+  ============================================================
+   -->
+  <Target Name="Publish">
+    <Error Text="The 'Publish' target is not supported without specifying a target framework. The current project targets multiple frameworks, please specify the framework for the published application." />
+  </Target>
+  
+</Project>
