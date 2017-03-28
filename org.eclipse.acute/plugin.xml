@@ -31,7 +31,7 @@
       </editorContentTypeBinding>
    </extension>
    <extension
-         point="org.eclipse.tm4e.core.grammars">
+         point="org.eclipse.tm4e.registry.grammars">
       <grammar
             path="grammar/csharp.tmLanguage"
             scopeName="source.cs">
