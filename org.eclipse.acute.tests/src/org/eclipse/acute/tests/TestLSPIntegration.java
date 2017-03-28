@@ -12,6 +12,7 @@ package org.eclipse.acute.tests;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.lsp4e.LanguageServiceAccessor;
 import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.TextDocumentIdentifier;
@@ -36,7 +37,11 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 	}
 
 	private void dotnetRestore() throws Exception {
-		ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", "dotnet restore");
+		String[] command = new String[] {"/bin/bash", "-c", "dotnet restore"};
+		if (Platform.getOS().equals(Platform.OS_WIN32)) {
+			command = new String[] {"cmd", "/c", "dotnet restore"};
+		}
+		ProcessBuilder builder = new ProcessBuilder(command);
 		builder.directory(this.project.getLocation().toFile());
 		builder.start().waitFor();
 	}
