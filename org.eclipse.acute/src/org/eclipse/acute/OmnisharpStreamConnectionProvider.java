@@ -23,10 +23,14 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.lsp4e.server.StreamConnectionProvider;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.UIJob;
 
 public class OmnisharpStreamConnectionProvider implements StreamConnectionProvider {
 
@@ -102,6 +106,15 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 		if (Files.exists(Paths.get(location))) {
 			return new File(location);
 		}
+		new UIJob(PlatformUI.getWorkbench().getDisplay(), "Missing `node` in PATH") {
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				MessageDialog.openError(getDisplay().getActiveShell(), "Missing Node.js",
+						"`node` is missing in your PATH, C# editor won't work fully.\n" +
+						"Please install `node` and make it available in your PATH");
+				return Status.OK_STATUS;
+			}
+		}.schedule();
 		return null;
 	}
 
