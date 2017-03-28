@@ -1,0 +1,46 @@
+import { IDriver, IDriverOptions, IOmnisharpPlugin, Runtime } from '../enums';
+import { DriverState } from '../enums';
+export declare class StdioDriver implements IDriver {
+    id: string;
+    currentState: DriverState;
+    private _seq;
+    private _process;
+    private _outstandingRequests;
+    private _projectPath;
+    private _additionalArguments;
+    private _disposable;
+    private _plugins;
+    private _serverPath;
+    private _findProject;
+    private _logger;
+    private _timeout;
+    private _runtime;
+    private _version;
+    private _PATH;
+    private _runtimeContext;
+    private _onEvent;
+    private _onCommand;
+    private _onState;
+    constructor({projectPath, serverPath, findProject, logger, timeout, additionalArguments, runtime, plugins, version, onEvent, onState, onCommand}: Partial<IDriverOptions> & {
+        projectPath: string;
+    });
+    dispose(): void;
+    readonly serverPath: string;
+    readonly projectPath: string;
+    readonly runtime: Runtime;
+    readonly outstandingRequests: number;
+    connect(): void;
+    disconnect(): void;
+    request<TRequest, TResponse>(command: string, request?: TRequest): PromiseLike<TResponse>;
+    updatePlugins(plugins: IOmnisharpPlugin[]): void;
+    private _getRuntimeContext();
+    private _connect();
+    private _ensureRuntimeExists();
+    private _serverErr(data);
+    private _parseError(data);
+    private _handleData(data);
+    private _handlePacket(packet);
+    private _handlePacketResponse(response);
+    private _handlePacketEvent(event);
+    private _handleNonPacket(data);
+}

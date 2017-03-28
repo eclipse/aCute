@@ -1,0 +1,9 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/david-driscoll/lodash-ts/ts21/typings.json",
+    "raw": "github:david-driscoll/lodash-ts#ts21",
+    "main": "out/lodash.d.ts",
+    "name": "lodash"
+  }
+}

@@ -1,0 +1,52 @@
+import { IDisposable } from 'ts-disposables';
+import { RequestContext } from '../contexts/RequestContext';
+import { ResponseContext } from '../contexts/ResponseContext';
+import { IAsyncClientOptions, IAsyncDriver, IOmnisharpClientStatus } from '../enums';
+import { DriverState, Runtime } from '../enums';
+import * as OmniSharp from '../omnisharp-server';
+export declare class AsyncClient implements IAsyncDriver, IDisposable {
+    private _lowestIndexValue;
+    private _emitter;
+    private _queue;
+    private _driver;
+    private _uniqueId;
+    private _disposable;
+    private _currentRequests;
+    private _currentState;
+    private _options;
+    private _fixups;
+    constructor(_options: Partial<IAsyncClientOptions> & {
+        projectPath: string;
+    });
+    log(message: string, logLevel?: string): void;
+    connect(): void;
+    disconnect(): void;
+    request<TRequest, TResponse>(action: string, request: TRequest, options?: OmniSharp.RequestOptions): Promise<TResponse>;
+    registerFixup(func: (action: string, request: any, options?: OmniSharp.RequestOptions) => void): void;
+    readonly uniqueId: string;
+    readonly id: string;
+    readonly serverPath: string;
+    readonly projectPath: string;
+    readonly runtime: Runtime;
+    readonly outstandingRequests: number;
+    readonly currentState: DriverState;
+    getCurrentRequests(): {
+        command: string;
+        sequence: string;
+        silent: boolean;
+        request: any;
+        duration: number;
+    }[];
+    onEvent(callback: (event: OmniSharp.Stdio.Protocol.EventPacket) => void): IDisposable;
+    onState(callback: (state: DriverState) => void): IDisposable;
+    onStatus(callback: (status: IOmnisharpClientStatus) => void): IDisposable;
+    onRequest(callback: (request: RequestContext<any>) => void): IDisposable;
+    onResponse(callback: (response: ResponseContext<any, any>) => void): IDisposable;
+    onError(callback: (event: OmniSharp.Stdio.Protocol.EventPacket) => void): IDisposable;
+    dispose(): void;
+    private _listen(event, callback);
+    private _handleResult(context, complete?);
+    private _resetDriver();
+    private _respondToRequest(key, response);
+    private _fixup<TRequest>(action, request, options?);
+}
