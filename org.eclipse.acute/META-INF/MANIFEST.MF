@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: C# edition in Eclipse IDE
 Bundle-SymbolicName: org.eclipse.acute;singleton:=true
 Bundle-Version: 0.1.0.qualifier
-Bundle-Activator: org.eclipse.acute.Activator
+Bundle-Activator: org.eclipse.acute.AcutePlugin
 Bundle-Vendor: Red Hat Inc.
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.apache.commons.io;bundle-version="2.2.0",
  org.eclipse.tm4e.core,
  org.eclipse.ui.genericeditor;bundle-version="1.0.0",
- org.eclipse.tm4e.ui
+ org.eclipse.tm4e.ui,
+ org.eclipse.core.resources;bundle-version="3.12.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
