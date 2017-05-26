@@ -24,6 +24,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
@@ -78,12 +79,18 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		setControl(container);
 		container.setLayout(new GridLayout(4, false));
 
-		Label locationnLabel = new Label(container, SWT.NONE);
-		locationnLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		locationnLabel.setText("Location");
+		Label locationLabel = new Label(container, SWT.NONE);
+		locationLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		locationLabel.setText("Location");
+
+		Image errorImage = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR)
+				.getImage();
 
 		locationText = new Text(container, SWT.BORDER);
 		locationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		locationControlDecoration = new ControlDecoration(locationText, SWT.TOP | SWT.LEFT);
+		locationControlDecoration.setImage(errorImage);
+		locationControlDecoration.setShowOnlyOnFocus(true);
 		locationText.addModifyListener(e -> {
 			updateDirectory(locationText.getText());
 			setPageComplete(isPageComplete());
@@ -142,6 +149,9 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		projectNameText = new Text(container, SWT.BORDER);
 		projectNameText.setEnabled(false);
 		projectNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		projectNameControlDecoration = new ControlDecoration(projectNameText, SWT.TOP | SWT.LEFT);
+		projectNameControlDecoration.setImage(errorImage);
+		projectNameControlDecoration.setShowOnlyOnFocus(true);
 		projectNameText.addModifyListener(e -> {
 			updateProjectName();
 			setPageComplete(isPageComplete());
@@ -250,10 +260,25 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 				}
 			}
 		}
-		// TODO set locationInfo and place ControlDecorator if needed
-		// TODO set projectNameInfo and place ControlDecorator if needed
-		String error = locationError + '\n' + projectNameError;
-		setErrorMessage(error);
+
+		String error = locationError + projectNameError;
+
+		if (error.isEmpty()) {
+			setErrorMessage(null);
+			projectNameControlDecoration.hide();
+			locationControlDecoration.hide();
+		} else {
+			if (!locationError.isEmpty()) {
+				locationControlDecoration.showHoverText(locationError);
+				locationControlDecoration.show();
+				projectNameControlDecoration.hide();
+			} else {
+				projectNameControlDecoration.showHoverText(projectNameError);
+				projectNameControlDecoration.show();
+				locationControlDecoration.hide();
+			}
+			setErrorMessage(error);
+		}
 		return error.isEmpty();
 	}
 
