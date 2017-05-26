@@ -73,6 +73,30 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		setDescription("Create a new Dotnet project, using the `dotnet new` command");
 	}
 
+	public File getLocation() {
+		if (isDirectoryAndProjectLinked) {
+			return directory;
+		} else {
+			return new File(directory.toString() + "/" + projectName);
+		}
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public String getTemplate() {
+		IStructuredSelection selection = (IStructuredSelection) templateViewer.getSelection();
+		if (selection.isEmpty()) {
+			return "";
+		}
+		return templatesMap.get(selection.getFirstElement());
+	}
+
+	public IWorkingSet[] getWorkingSets() {
+		return workingSetsGroup.getSelectedWorkingSets();
+	}
+
 	@Override
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
