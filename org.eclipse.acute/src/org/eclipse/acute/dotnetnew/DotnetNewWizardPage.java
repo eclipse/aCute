@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.acute.AcutePlugin;
@@ -51,6 +52,7 @@ import org.eclipse.ui.internal.registry.WorkingSetRegistry;
 public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 
 	private Set<IWorkingSet> workingSets;
+	private Map<String, String> templatesMap;
 	private File directory;
 	private String projectName;
 
@@ -155,11 +157,16 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		Label projectTemplateLabel = new Label(container, SWT.NONE);
 		projectTemplateLabel.setText("Project Template");
 
+		templatesMap = DotnetNewAccessor.getTemplates();
+
 		List list = new List(container, SWT.BORDER);
 		list.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		ListViewer templateViewer = new ListViewer(list);
+		templateViewer = new ListViewer(list);
 		templateViewer.setContentProvider(new ArrayContentProvider());
-		templateViewer.setInput(DotnetNewAccessor.getTemplates());
+		for (String temp : templatesMap.keySet()) {
+			templateViewer.add(temp);
+		}
+
 		new Label(container, SWT.NONE);
 
 		Composite workingSetComposite = new Composite(container, SWT.NONE);
