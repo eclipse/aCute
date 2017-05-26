@@ -55,15 +55,15 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 	private Map<String, String> templatesMap;
 	private File directory;
 	private String projectName;
+	private Boolean isDirectoryAndProjectLinked = true;
 
 	private Text locationText;
 	private Text projectNameText;
+	private ListViewer templateViewer;
 	private WorkingSetGroup workingSetsGroup;
 	private Image linkImage;
 	private Button linkButton;
-	private Label locationInfo;
 	private ControlDecoration locationControlDecoration;
-	private Label projectNameInfo;
 	private ControlDecoration projectNameControlDecoration;
 
 	protected DotnetNewWizardPage() {
@@ -85,7 +85,7 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		locationText = new Text(container, SWT.BORDER);
 		locationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		locationText.addModifyListener(e -> {
-			updateDirectory(new File(locationText.getText()));
+			updateDirectory(locationText.getText());
 			setPageComplete(isPageComplete());
 		});
 
@@ -98,7 +98,7 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 				DirectoryDialog dialog = new DirectoryDialog(browseButton.getShell());
 				String path = dialog.open();
 				if (path != null) {
-					updateDirectory(new File(path));
+					updateDirectory(path);
 				}
 				setPageComplete(isPageComplete());
 			}
@@ -114,18 +114,26 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		});
 
 		new Label(container, SWT.NONE);
-		locationInfo = new Label(container, SWT.NONE);
-		locationInfo.setText("locatioInfo");
+		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
 		linkButton = new Button(container, SWT.TOGGLE);
 		linkButton.setToolTipText("Link project name and folder name");
+		linkButton.setSelection(true);
 		try (InputStream iconStream = getClass().getResourceAsStream("/icons/link_obj.png")) {
 			linkImage = new Image(linkButton.getDisplay(), iconStream);
 			linkButton.setImage(linkImage);
 		} catch (IOException e1) {
 			AcutePlugin.logError(e1);
 		}
+		linkButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent s) {
+				isDirectoryAndProjectLinked = linkButton.getSelection();
+				projectNameText.setEnabled(!linkButton.getSelection());
+				updateProjectName();
+			}
+		});
 
 		Label projectNameLabel = new Label(container, SWT.NONE);
 		projectNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -149,8 +157,7 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		});
 		new Label(container, SWT.NONE);
 
-		projectNameInfo = new Label(container, SWT.NONE);
-		projectNameInfo.setText("projectNameInfo");
+		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
@@ -185,11 +192,21 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 	}
 
 	private void updateProjectName() {
-		// TODO update fields (including location if linked)
+		if (!isDirectoryAndProjectLinked) {
+			projectName = projectNameText.getText();
+		} else if (projectName == null || !projectName.equals(directory.getName())) {
+			projectName = directory.getName();
+			projectNameText.setText(projectName);
+		}
 	}
 
-	private void updateDirectory(File file) {
-		// TODO update fields (including projectName if linked)
+	private void updateDirectory(String directoryPath) {
+		directory = new File(directoryPath);
+		if (!locationText.getText().equals(directoryPath)) {
+			locationText.setText(directoryPath);
+		} else if (isDirectoryAndProjectLinked) {
+			updateProjectName();
+		}
 	}
 
 	@Override
@@ -202,7 +219,8 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 			projectNameError = "Please specify project name";
 		} else if (directory.isFile()) {
 			locationError = "Invalid location: it is an existing file.";
-		} else if (!directory.exists() && !directory.getParentFile().canWrite()) {
+		} else if (directory.getParentFile() == null
+				|| (!directory.exists() && !directory.getParentFile().canWrite())) {
 			locationError = "Unable to create such directory";
 		} else if (directory.exists() && !directory.canWrite()) {
 			locationError = "Cannot write in this directory";
