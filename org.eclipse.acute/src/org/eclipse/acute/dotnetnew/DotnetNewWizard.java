@@ -13,10 +13,6 @@ package org.eclipse.acute.dotnetnew;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -50,44 +46,36 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		String template = wizardPage.getTemplate();
 		File location = wizardPage.getLocation();
+		String projectName = wizardPage.getProjectName();
 
 		if (!location.exists()) {
 			location.mkdir();
 		}
 
-		File dotProjectFile = new File(location.getAbsolutePath() + "/.project");
-		if (!(dotProjectFile).exists()) {
-			try {
-				dotProjectFile.createNewFile();
-				List<String> lines = Arrays.asList("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "<projectDescription>",
-						"<name>" + wizardPage.getProjectName() + "</name>", "</projectDescription>");
-				Files.write(dotProjectFile.toPath(), lines, Charset.forName("UTF-8"));
-			} catch (IOException e) {
-				wizardPage.setErrorMessage("Unable to create .project file");
-				return false;
-			}
-		}
-
 		if (!template.isEmpty()) {
-			String listCommand = "dotnet new " + template + " -o " + location.toString();
+			String createCommand = "dotnet new " + template + " -o " + location.toString();
 
 			Runtime runtime = Runtime.getRuntime();
 			try {
-				runtime.exec(listCommand);
+				runtime.exec(createCommand);
 			} catch (IOException e) {
 				wizardPage.setErrorMessage("Cannot create dotnet template");
 				return false;
 			}
 		}
 
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-
 		try {
-			IPath projectDotProjectFile = new Path(location.getAbsolutePath() + "/.project");
-			IProjectDescription projectDescription = workspace.loadProjectDescription(projectDotProjectFile);
-			IProject project = workspace.getRoot().getProject(projectDescription.getName());
+			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+			IProject project = root.getProject(projectName);
+			final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+
+			IProjectDescription projectDescription = workspace.newProjectDescription(project.getName());
+			String projectLocation = location.getAbsolutePath();
+			IPath projectPath = new Path(projectLocation);
+			projectDescription.setLocation(projectPath);
+
 			project.create(projectDescription, null);
+			project.open(null);
 
 			IWorkingSetManager wsm = WorkbenchPlugin.getDefault().getWorkingSetManager();
 			wsm.addToWorkingSets(project, wizardPage.getWorkingSets());
@@ -95,7 +83,6 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 			wizardPage.setErrorMessage("Unable to load project description");
 			return false;
 		}
-
 		return true;
 	}
 
