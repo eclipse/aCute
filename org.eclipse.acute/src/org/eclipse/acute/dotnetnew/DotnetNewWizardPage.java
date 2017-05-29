@@ -200,19 +200,26 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 
 		templatesMap = DotnetNewAccessor.getTemplates();
 
-		List list = new List(container, SWT.BORDER);
-		list.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		List list = new List(container, SWT.V_SCROLL);
+		GridData listBoxData = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+		list.setLayoutData(listBoxData);
+
 		templateViewer = new ListViewer(list);
 		templateViewer.setContentProvider(new ArrayContentProvider());
-		for (String temp : templatesMap.keySet()) {
-			templateViewer.add(temp);
+		if (!templatesMap.isEmpty()) {
+			listBoxData.heightHint = 100;
+			for (String temp : templatesMap.keySet()) {
+				templateViewer.add(temp);
+			}
+		} else {
+			templateViewer.add("No available templates");
+			list.setEnabled(false);
 		}
 
 		new Label(container, SWT.NONE);
 
 		Composite workingSetComposite = new Composite(container, SWT.NONE);
 		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1);
-		layoutData.verticalIndent = 20;
 		workingSetComposite.setLayoutData(layoutData);
 		workingSetComposite.setLayout(new GridLayout(1, false));
 		WorkingSetRegistry registry = WorkbenchPlugin.getDefault().getWorkingSetRegistry();
