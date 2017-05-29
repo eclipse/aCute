@@ -61,7 +61,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 				dotProjectFile.createNewFile();
 				List<String> lines = Arrays.asList("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "<projectDescription>",
 						"<name>" + wizardPage.getProjectName() + "</name>", "</projectDescription>");
-				Files.write(dotProjectFile.toPath(), lines, Charset.forName("UT-8"));
+				Files.write(dotProjectFile.toPath(), lines, Charset.forName("UTF-8"));
 			} catch (IOException e) {
 				wizardPage.setErrorMessage("Unable to create .project file");
 				return false;
