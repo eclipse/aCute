@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.acute.AcutePlugin;
@@ -23,6 +24,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
@@ -51,17 +53,18 @@ import org.eclipse.ui.internal.registry.WorkingSetRegistry;
 public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 
 	private Set<IWorkingSet> workingSets;
+	private Map<String, String> templatesMap;
 	private File directory;
 	private String projectName;
+	private Boolean isDirectoryAndProjectLinked = true;
 
 	private Text locationText;
 	private Text projectNameText;
+	private ListViewer templateViewer;
 	private WorkingSetGroup workingSetsGroup;
 	private Image linkImage;
 	private Button linkButton;
-	private Label locationInfo;
 	private ControlDecoration locationControlDecoration;
-	private Label projectNameInfo;
 	private ControlDecoration projectNameControlDecoration;
 
 	protected DotnetNewWizardPage() {
@@ -70,20 +73,50 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		setDescription("Create a new Dotnet project, using the `dotnet new` command");
 	}
 
+	public File getLocation() {
+		if (isDirectoryAndProjectLinked) {
+			return directory;
+		} else {
+			return new File(directory.toString() + "/" + projectName);
+		}
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public String getTemplate() {
+		IStructuredSelection selection = (IStructuredSelection) templateViewer.getSelection();
+		if (selection.isEmpty()) {
+			return "";
+		}
+		return templatesMap.get(selection.getFirstElement());
+	}
+
+	public IWorkingSet[] getWorkingSets() {
+		return workingSetsGroup.getSelectedWorkingSets();
+	}
+
 	@Override
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
 		setControl(container);
 		container.setLayout(new GridLayout(4, false));
 
-		Label locationnLabel = new Label(container, SWT.NONE);
-		locationnLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		locationnLabel.setText("Location");
+		Label locationLabel = new Label(container, SWT.NONE);
+		locationLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		locationLabel.setText("Location");
+
+		Image errorImage = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR)
+				.getImage();
 
 		locationText = new Text(container, SWT.BORDER);
 		locationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		locationControlDecoration = new ControlDecoration(locationText, SWT.TOP | SWT.LEFT);
+		locationControlDecoration.setImage(errorImage);
+		locationControlDecoration.setShowOnlyOnFocus(true);
 		locationText.addModifyListener(e -> {
-			updateDirectory(new File(locationText.getText()));
+			updateDirectory(locationText.getText());
 			setPageComplete(isPageComplete());
 		});
 
@@ -96,7 +129,7 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 				DirectoryDialog dialog = new DirectoryDialog(browseButton.getShell());
 				String path = dialog.open();
 				if (path != null) {
-					updateDirectory(new File(path));
+					updateDirectory(path);
 				}
 				setPageComplete(isPageComplete());
 			}
@@ -112,18 +145,26 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		});
 
 		new Label(container, SWT.NONE);
-		locationInfo = new Label(container, SWT.NONE);
-		locationInfo.setText("locatioInfo");
+		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
 		linkButton = new Button(container, SWT.TOGGLE);
 		linkButton.setToolTipText("Link project name and folder name");
+		linkButton.setSelection(true);
 		try (InputStream iconStream = getClass().getResourceAsStream("/icons/link_obj.png")) {
 			linkImage = new Image(linkButton.getDisplay(), iconStream);
 			linkButton.setImage(linkImage);
 		} catch (IOException e1) {
 			AcutePlugin.logError(e1);
 		}
+		linkButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent s) {
+				isDirectoryAndProjectLinked = linkButton.getSelection();
+				projectNameText.setEnabled(!linkButton.getSelection());
+				updateProjectName();
+			}
+		});
 
 		Label projectNameLabel = new Label(container, SWT.NONE);
 		projectNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -132,6 +173,9 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		projectNameText = new Text(container, SWT.BORDER);
 		projectNameText.setEnabled(false);
 		projectNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		projectNameControlDecoration = new ControlDecoration(projectNameText, SWT.TOP | SWT.LEFT);
+		projectNameControlDecoration.setImage(errorImage);
+		projectNameControlDecoration.setShowOnlyOnFocus(true);
 		projectNameText.addModifyListener(e -> {
 			updateProjectName();
 			setPageComplete(isPageComplete());
@@ -147,24 +191,35 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		});
 		new Label(container, SWT.NONE);
 
-		projectNameInfo = new Label(container, SWT.NONE);
-		projectNameInfo.setText("projectNameInfo");
+		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
 		Label projectTemplateLabel = new Label(container, SWT.NONE);
 		projectTemplateLabel.setText("Project Template");
 
-		List list = new List(container, SWT.BORDER);
-		list.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		ListViewer templateViewer = new ListViewer(list);
+		templatesMap = DotnetNewAccessor.getTemplates();
+
+		List list = new List(container, SWT.V_SCROLL);
+		GridData listBoxData = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+		list.setLayoutData(listBoxData);
+
+		templateViewer = new ListViewer(list);
 		templateViewer.setContentProvider(new ArrayContentProvider());
-		templateViewer.setInput(DotnetNewAccessor.getTemplates());
+		if (!templatesMap.isEmpty()) {
+			listBoxData.heightHint = 100;
+			for (String temp : templatesMap.keySet()) {
+				templateViewer.add(temp);
+			}
+		} else {
+			templateViewer.add("No available templates");
+			list.setEnabled(false);
+		}
+
 		new Label(container, SWT.NONE);
 
 		Composite workingSetComposite = new Composite(container, SWT.NONE);
 		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1);
-		layoutData.verticalIndent = 20;
 		workingSetComposite.setLayoutData(layoutData);
 		workingSetComposite.setLayout(new GridLayout(1, false));
 		WorkingSetRegistry registry = WorkbenchPlugin.getDefault().getWorkingSetRegistry();
@@ -178,11 +233,21 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 	}
 
 	private void updateProjectName() {
-		// TODO update fields (including location if linked)
+		if (!isDirectoryAndProjectLinked) {
+			projectName = projectNameText.getText();
+		} else if (projectName == null || !projectName.equals(directory.getName())) {
+			projectName = directory.getName();
+			projectNameText.setText(projectName);
+		}
 	}
 
-	private void updateDirectory(File file) {
-		// TODO update fields (including projectName if linked)
+	private void updateDirectory(String directoryPath) {
+		directory = new File(directoryPath);
+		if (!locationText.getText().equals(directoryPath)) {
+			locationText.setText(directoryPath);
+		} else if (isDirectoryAndProjectLinked) {
+			updateProjectName();
+		}
 	}
 
 	@Override
@@ -195,7 +260,8 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 			projectNameError = "Please specify project name";
 		} else if (directory.isFile()) {
 			locationError = "Invalid location: it is an existing file.";
-		} else if (!directory.exists() && !directory.getParentFile().canWrite()) {
+		} else if (directory.getParentFile() == null
+				|| (!directory.exists() && !directory.getParentFile().canWrite())) {
 			locationError = "Unable to create such directory";
 		} else if (directory.exists() && !directory.canWrite()) {
 			locationError = "Cannot write in this directory";
@@ -225,10 +291,25 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 				}
 			}
 		}
-		// TODO set locationInfo and place ControlDecorator if needed
-		// TODO set projectNameInfo and place ControlDecorator if needed
-		String error = locationError + '\n' + projectNameError;
-		setErrorMessage(error);
+
+		String error = locationError + projectNameError;
+
+		if (error.isEmpty()) {
+			setErrorMessage(null);
+			projectNameControlDecoration.hide();
+			locationControlDecoration.hide();
+		} else {
+			if (!locationError.isEmpty()) {
+				locationControlDecoration.showHoverText(locationError);
+				locationControlDecoration.show();
+				projectNameControlDecoration.hide();
+			} else {
+				projectNameControlDecoration.showHoverText(projectNameError);
+				projectNameControlDecoration.show();
+				locationControlDecoration.hide();
+			}
+			setErrorMessage(error);
+		}
 		return error.isEmpty();
 	}
 
