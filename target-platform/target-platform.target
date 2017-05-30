@@ -11,7 +11,8 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <!-- Include for joni and jcodings -->
-<repository location="http://download.eclipse.org/tools/orbit/S-builds/S20170306214312/repository"/>
+<unit id="org.apache.commons.io" version="0.0.0"/>
+<repository location="http://download.eclipse.org/tools/orbit/R-builds/R20170516192513/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.ide" version="0.0.0"/>
@@ -19,7 +20,7 @@
 <unit id="org.eclipse.jdt.annotation" version="0.0.0"/>
 <unit id="org.junit" version="0.0.0"/>
 <unit id="org.eclipse.ui.tests.harness" version="0.0.0"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.7milestones/S-4.7M6-201703082000/"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.7milestones/S-4.7RC2-201705242000/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <repository location="http://download.eclipse.org/releases/oxygen/"/>
