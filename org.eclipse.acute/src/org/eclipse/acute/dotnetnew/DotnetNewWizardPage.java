@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.eclipse.acute.AcutePlugin;
 import org.eclipse.core.resources.IProject;
@@ -208,7 +210,11 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		templateViewer.setContentProvider(new ArrayContentProvider());
 		if (!templatesMap.isEmpty()) {
 			listBoxData.heightHint = 100;
+			SortedSet<String> templatesSortedSet = new TreeSet<String>();
 			for (String temp : templatesMap.keySet()) {
+				templatesSortedSet.add(temp);
+			}
+			for (String temp : templatesSortedSet) {
 				templateViewer.add(temp);
 			}
 		} else {

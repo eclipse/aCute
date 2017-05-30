@@ -18,30 +18,55 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DotnetNewAccessor {
+	
+	/**
+	 * Retrieves and returns the list of available dotnet templates
+	 *
+	 * @return Map<String, String>: Contains the short name, used to refer to the
+	 *         template in bash commands, as the key and the template's full name as
+	 *         the value.
+	 */
 	public static Map<String, String> getTemplates() {
-		Map<String, String> templatesMap = new HashMap<String, String>();
+		Map<String, String> templateCommandToNameMap = new HashMap<String, String>();
 		try {
 			String listCommand = "dotnet new -- list";
-			int linesTillTemplateList = 18;
 
 			Runtime runtime = Runtime.getRuntime();
 			Process process = runtime.exec(listCommand);
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			String inputLine;
+			Boolean templateListExists = false;
+
 			while ((inputLine = in.readLine()) != null) {
-				if (linesTillTemplateList > 0) {
-					linesTillTemplateList--;
-				} else if (!inputLine.isEmpty()) {
-					String[] template = inputLine.split("[\\s]{2,}", 3);
-					templatesMap.put(template[0], template[1]);
-				} else {
+				if (inputLine.matches("^-{30,}$")) {
+					templateListExists = true;
 					break;
 				}
 			}
-			in.close();
-			return templatesMap;
 
+			if (templateListExists) {
+				while ((inputLine = in.readLine()) != null) {
+					String[] template = inputLine.split("[\\s]{2,}");
+
+					if (template.length == 3) { // No language column
+						templateCommandToNameMap.put(template[0], template[1]);
+					} else if (template.length > 3) { // Language column present
+						String[] languages = template[2].split(",");
+
+						for (String languageStringDirty : languages) {
+							String languageString = languageStringDirty.replaceAll("[\\s\\[\\]]", "");
+							templateCommandToNameMap.put(template[0] + " [" + languageString + "]",
+									template[1] + " -lang " + languageString);
+						}
+					} else {
+						break;
+					}
+				}
+			}
+
+			in.close();
+			return templateCommandToNameMap;
 		} catch (IOException e) {
 			return Collections.<String, String>emptyMap();
 		}
