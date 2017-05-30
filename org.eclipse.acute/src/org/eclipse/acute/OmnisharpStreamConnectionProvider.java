@@ -51,8 +51,8 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 			this.process = Runtime.getRuntime().exec(command);
 		} else if (omnisharpLocation != null) {
 			ProcessBuilder builder = new ProcessBuilder(
-				getNodeJsLocation().getAbsolutePath(),
-				omnisharpLocation);
+					getNodeJsLocation().getAbsolutePath(),
+					omnisharpLocation);
 			process = builder.start();
 		} else {
 			URL serverFileUrl = getClass().getResource("/server/languageserver/server.js");
@@ -61,21 +61,28 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 				if (serverFile.exists()) {
 					File nodeJsLocation = getNodeJsLocation();
 					if (nodeJsLocation == null || !nodeJsLocation.isFile()) {
-						Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.getDefault().getBundle().getSymbolicName(), "Couldn't find nodejs in your machine. Please make sure it's part of your PATH."));
+						AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
+								AcutePlugin.getDefault().getBundle().getSymbolicName(),
+								"Couldn't find nodejs in your machine. Please make sure it's part of your PATH."));
 						return;
 					}
 					ProcessBuilder builder = new ProcessBuilder(
 							nodeJsLocation.getAbsolutePath(),
 							serverFile.getAbsolutePath());
-					Activator.getDefault().getLog().log(new Status(IStatus.INFO, Activator.getDefault().getBundle().getSymbolicName(), "Omnisharp command-line: " + builder.command().stream().collect(Collectors.joining(" "))));
+					AcutePlugin.getDefault().getLog().log(new Status(IStatus.INFO,
+							AcutePlugin.getDefault().getBundle().getSymbolicName(),
+							"Omnisharp command-line: " + builder.command().stream().collect(Collectors.joining(" "))));
 					process = builder.start();
 					return;
 				}
 			} else {
-				Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.getDefault().getBundle().getSymbolicName(), "Omnisharp not found!\n" +
-						"Main issue and remediation: The `org.eclipse.acute.omnisharpServer` fragment is missing. Please add it.\n" +
-						"Possible alternative settings:\n" +
-						"* set `OMNISHARP_LANGUAGE_SERVER_COMMAND` to the command that should be used to start the server (with full path).\n" +
+				AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
+						AcutePlugin.getDefault().getBundle().getSymbolicName(),
+						"Omnisharp not found!\n"
+								+
+								"Main issue and remediation: The `org.eclipse.acute.omnisharpServer` fragment is missing. Please add it.\n" +
+								"Possible alternative settings:\n" +
+								"* set `OMNISHARP_LANGUAGE_SERVER_COMMAND` to the command that should be used to start the server (with full path).\n" +
 						"* set `OMNISHARP_LANGUAGE_SERVER_LOCATION` to the full path of thel language server file."));
 			}
 		}
