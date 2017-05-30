@@ -22,6 +22,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -57,9 +58,15 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 
 			Runtime runtime = Runtime.getRuntime();
 			try {
-				runtime.exec(createCommand);
-			} catch (IOException e) {
-				wizardPage.setErrorMessage("Cannot create dotnet template");
+				Process process = runtime.exec(createCommand);
+				if (process.waitFor() != 0) {
+					MessageDialog.openError(getShell(), "Cannot create dotnet template",
+							"The 'dotent new' command failed.");
+					return false;
+				}
+			} catch (IOException | InterruptedException e) {
+				MessageDialog.openError(getShell(), "Cannot create dotnet template",
+						"The 'dotent new' command failed.");
 				return false;
 			}
 		}
@@ -75,12 +82,11 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 			projectDescription.setLocation(projectPath);
 
 			project.create(projectDescription, null);
-			project.open(null);
 
 			IWorkingSetManager wsm = WorkbenchPlugin.getDefault().getWorkingSetManager();
 			wsm.addToWorkingSets(project, wizardPage.getWorkingSets());
 		} catch (CoreException e) {
-			wizardPage.setErrorMessage("Unable to load project description");
+			MessageDialog.openError(getShell(), "Unable to load project description", "");
 			return false;
 		}
 		return true;
