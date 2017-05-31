@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DotnetNewAccessor {
-	
+
 	/**
 	 * Retrieves and returns the list of available dotnet templates
 	 *
@@ -27,46 +27,45 @@ public class DotnetNewAccessor {
 	 *         the value.
 	 */
 	public static Map<String, String> getTemplates() {
-		Map<String, String> templateCommandToNameMap = new HashMap<String, String>();
+		Map<String, String> templateCommandToNameMap = new HashMap<>();
 		try {
 			String listCommand = "dotnet new -- list";
 
 			Runtime runtime = Runtime.getRuntime();
 			Process process = runtime.exec(listCommand);
 
-			BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String inputLine;
-			Boolean templateListExists = false;
+			try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+				String inputLine;
+				Boolean templateListExists = false;
 
-			while ((inputLine = in.readLine()) != null) {
-				if (inputLine.matches("^-{30,}$")) {
-					templateListExists = true;
-					break;
-				}
-			}
-
-			if (templateListExists) {
 				while ((inputLine = in.readLine()) != null) {
-					String[] template = inputLine.split("[\\s]{2,}");
-
-					if (template.length == 3) { // No language column
-						templateCommandToNameMap.put(template[0], template[1]);
-					} else if (template.length > 3) { // Language column present
-						String[] languages = template[2].split(",");
-
-						for (String languageStringDirty : languages) {
-							String languageString = languageStringDirty.replaceAll("[\\s\\[\\]]", "");
-							templateCommandToNameMap.put(template[0] + " [" + languageString + "]",
-									template[1] + " -lang " + languageString);
-						}
-					} else {
+					if (inputLine.matches("^-{30,}$")) {
+						templateListExists = true;
 						break;
 					}
 				}
-			}
 
-			in.close();
-			return templateCommandToNameMap;
+				if (templateListExists) {
+					while ((inputLine = in.readLine()) != null) {
+						String[] template = inputLine.split("[\\s]{2,}");
+
+						if (template.length == 3) { // No language column
+							templateCommandToNameMap.put(template[0], template[1]);
+						} else if (template.length > 3) { // Language column present
+							String[] languages = template[2].split(",");
+
+							for (String languageStringDirty : languages) {
+								String languageString = languageStringDirty.replaceAll("[\\s\\[\\]]", "");
+								templateCommandToNameMap.put(template[0] + " [" + languageString + "]",
+										template[1] + " -lang " + languageString);
+							}
+						} else {
+							break;
+						}
+					}
+				}
+				return templateCommandToNameMap;
+			}
 		} catch (IOException e) {
 			return Collections.<String, String>emptyMap();
 		}

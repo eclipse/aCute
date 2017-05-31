@@ -205,7 +205,7 @@ public class DotnetNewWizardPage extends WizardPage {
 		templateViewer.setContentProvider(new ArrayContentProvider());
 		if (!templatesMap.isEmpty()) {
 			listBoxData.heightHint = 100;
-			SortedSet<String> templatesSortedSet = new TreeSet<String>();
+			SortedSet<String> templatesSortedSet = new TreeSet<>();
 			for (String temp : templatesMap.keySet()) {
 				templatesSortedSet.add(temp);
 			}
