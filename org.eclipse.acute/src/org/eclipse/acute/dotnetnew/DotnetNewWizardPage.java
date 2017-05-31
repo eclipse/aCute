@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.acute.dotnetnew;
 
+import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,8 +34,6 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -120,17 +120,14 @@ public class DotnetNewWizardPage extends WizardPage {
 		Button browseButton = new Button(container, SWT.NONE);
 		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		browseButton.setText("Browse...");
-		browseButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				DirectoryDialog dialog = new DirectoryDialog(browseButton.getShell());
-				String path = dialog.open();
-				if (path != null) {
-					updateDirectory(path);
-				}
-				setPageComplete(isPageComplete());
+		browseButton.addSelectionListener(widgetSelectedAdapter(e -> {
+			DirectoryDialog dialog = new DirectoryDialog(browseButton.getShell());
+			String path = dialog.open();
+			if (path != null) {
+				updateDirectory(path);
 			}
-		});
+			setPageComplete(isPageComplete());
+		}));
 		Composite linesAboveLink = new Composite(container, SWT.NONE);
 		GridData linesAboveLinkLayoutData = new GridData(SWT.FILL, SWT.FILL);
 		linesAboveLinkLayoutData.heightHint = linesAboveLinkLayoutData.widthHint = 30;
@@ -154,14 +151,11 @@ public class DotnetNewWizardPage extends WizardPage {
 		} catch (IOException e1) {
 			AcutePlugin.logError(e1);
 		}
-		linkButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent s) {
-				isDirectoryAndProjectLinked = linkButton.getSelection();
-				projectNameText.setEnabled(!linkButton.getSelection());
-				updateProjectName();
-			}
-		});
+		linkButton.addSelectionListener(widgetSelectedAdapter(s -> {
+			isDirectoryAndProjectLinked = linkButton.getSelection();
+			projectNameText.setEnabled(!linkButton.getSelection());
+			updateProjectName();
+		}));
 
 		Label projectNameLabel = new Label(container, SWT.NONE);
 		projectNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
