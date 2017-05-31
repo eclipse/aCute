@@ -14,6 +14,7 @@ package org.eclipse.acute.dotnetnew;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspace;
@@ -27,8 +28,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 
 public class DotnetNewWizard extends Wizard implements INewWizard {
 	private DotnetNewWizardPage wizardPage;
@@ -84,6 +87,19 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 
 			IWorkingSetManager wsm = PlatformUI.getWorkbench().getWorkingSetManager();
 			wsm.addToWorkingSets(project, wizardPage.getWorkingSets());
+
+			project.open(null);
+			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			if (page != null) {
+
+				IFile csPrgramFile = project.getFile("Program.cs");
+				IFile fsPrgramFile = project.getFile("Program.fs");
+				if (csPrgramFile.exists()) {
+					IDE.openEditor(page, csPrgramFile);
+				} else if (fsPrgramFile.exists()) {
+					IDE.openEditor(page, fsPrgramFile);
+				}
+			}
 		} catch (CoreException e) {
 			MessageDialog.openError(getShell(), "Unable to load project description", "");
 			return false;
