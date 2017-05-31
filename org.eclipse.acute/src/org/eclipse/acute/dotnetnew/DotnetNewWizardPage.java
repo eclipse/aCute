@@ -25,7 +25,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -41,8 +43,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.dialogs.WorkingSetGroup;
@@ -63,6 +67,7 @@ public class DotnetNewWizardPage extends WizardPage {
 	private Button linkButton;
 	private ControlDecoration locationControlDecoration;
 	private ControlDecoration projectNameControlDecoration;
+	private ControlDecoration templateControlDecoration;
 
 	protected DotnetNewWizardPage() {
 		super(DotnetNewWizardPage.class.getName());
@@ -189,27 +194,43 @@ public class DotnetNewWizardPage extends WizardPage {
 		Label projectTemplateLabel = new Label(container, SWT.NONE);
 		projectTemplateLabel.setText("Project Template");
 
-		templatesMap = DotnetNewAccessor.getTemplates();
-
 		List list = new List(container, SWT.V_SCROLL);
-		GridData listBoxData = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+		GridData listBoxData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		list.setLayoutData(listBoxData);
-
 		templateViewer = new ListViewer(list);
 		templateViewer.setContentProvider(new ArrayContentProvider());
-		if (!templatesMap.isEmpty()) {
-			listBoxData.heightHint = 100;
-			SortedSet<String> templatesSortedSet = new TreeSet<>();
-			for (String temp : templatesMap.keySet()) {
-				templatesSortedSet.add(temp);
-			}
-			for (String temp : templatesSortedSet) {
-				templateViewer.add(temp);
-			}
-		} else {
-			templateViewer.add("No available templates");
-			list.setEnabled(false);
-		}
+		templateViewer.add("Loading templates");
+		templateViewer.getList().setEnabled(false);
+		templateViewer.addSelectionChangedListener(e -> {
+			setPageComplete(isPageComplete());
+		});
+		templateControlDecoration = new ControlDecoration(templateViewer.getControl(), SWT.TOP | SWT.LEFT);
+		templateControlDecoration.setImage(errorImage);
+
+		Job.create("Retrieve Templates", (ICoreRunnable) monitor -> {
+			templatesMap = DotnetNewAccessor.getTemplates();
+			Display.getDefault().asyncExec(() -> {
+				templateViewer.getList().removeAll();
+				if (!templatesMap.isEmpty()) {
+					((GridData) templateViewer.getList().getLayoutData()).heightHint = 100;
+					Shell shell = templateViewer.getControl().getShell();
+					shell.setSize(shell.getSize().x, shell.getSize().y + 100);
+
+					SortedSet<String> templatesSortedSet = new TreeSet<>();
+					for (String temp : templatesMap.keySet()) {
+						templatesSortedSet.add(temp);
+					}
+					for (String temp : templatesSortedSet) {
+						templateViewer.add(temp);
+					}
+
+					templateViewer.getList().setEnabled(true);
+				} else {
+					templateViewer.add("No available templates");
+				}
+				templateViewer.getControl().getParent().layout();
+			});
+		}).schedule();
 
 		new Label(container, SWT.NONE);
 
@@ -247,6 +268,7 @@ public class DotnetNewWizardPage extends WizardPage {
 	public boolean isPageComplete() {
 		String locationError = "";
 		String projectNameError = "";
+		String templateError = "";
 		if (directory == null || directory.getPath().isEmpty()) {
 			locationError = "Please specify a directory";
 		} else if (projectName == null || projectName.isEmpty()) {
@@ -258,6 +280,8 @@ public class DotnetNewWizardPage extends WizardPage {
 			locationError = "Unable to create such directory";
 		} else if (directory.exists() && !directory.canWrite()) {
 			locationError = "Cannot write in this directory";
+		} else if (!templatesMap.isEmpty() && getTemplate().isEmpty()) {
+			templateError = "No template selected";
 		} else {
 			File dotProject = new File(directory, IProjectDescription.DESCRIPTION_FILE_NAME);
 			if (dotProject.exists()) {
@@ -285,21 +309,29 @@ public class DotnetNewWizardPage extends WizardPage {
 			}
 		}
 
-		String error = locationError + projectNameError;
+		String error = locationError + projectNameError + templateError;
 
 		if (error.isEmpty()) {
 			setErrorMessage(null);
 			projectNameControlDecoration.hide();
 			locationControlDecoration.hide();
+			templateControlDecoration.hide();
 		} else {
 			if (!locationError.isEmpty()) {
 				locationControlDecoration.showHoverText(locationError);
 				locationControlDecoration.show();
 				projectNameControlDecoration.hide();
-			} else {
+				templateControlDecoration.hide();
+			} else if(!projectNameError.isEmpty()) {
 				projectNameControlDecoration.showHoverText(projectNameError);
 				projectNameControlDecoration.show();
 				locationControlDecoration.hide();
+				templateControlDecoration.hide();
+			} else {
+				templateControlDecoration.showHoverText(projectNameError);
+				templateControlDecoration.show();
+				locationControlDecoration.hide();
+				projectNameControlDecoration.hide();
 			}
 			setErrorMessage(error);
 		}
