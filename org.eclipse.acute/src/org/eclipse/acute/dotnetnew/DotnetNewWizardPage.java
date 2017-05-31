@@ -13,7 +13,6 @@ package org.eclipse.acute.dotnetnew;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -31,7 +30,6 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -48,11 +46,8 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.dialogs.WorkingSetGroup;
-import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.registry.WorkingSetDescriptor;
-import org.eclipse.ui.internal.registry.WorkingSetRegistry;
 
-public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
+public class DotnetNewWizardPage extends WizardPage {
 
 	private Set<IWorkingSet> workingSets;
 	private Map<String, String> templatesMap;
@@ -228,9 +223,7 @@ public class DotnetNewWizardPage extends WizardPage implements IWizardPage {
 		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1);
 		workingSetComposite.setLayoutData(layoutData);
 		workingSetComposite.setLayout(new GridLayout(1, false));
-		WorkingSetRegistry registry = WorkbenchPlugin.getDefault().getWorkingSetRegistry();
-		String[] workingSetIds = Arrays.stream(registry.getNewPageWorkingSetDescriptors())
-				.map(WorkingSetDescriptor::getId).toArray(String[]::new);
+		String[] workingSetIds = new String[] { "org.eclipse.ui.resourceWorkingSetPage" };
 		IStructuredSelection wsSel = null;
 		if (this.workingSets != null) {
 			wsSel = new StructuredSelection(this.workingSets.toArray());

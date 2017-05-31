@@ -28,13 +28,12 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkingSetManager;
-import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.PlatformUI;
 
 public class DotnetNewWizard extends Wizard implements INewWizard {
 	private DotnetNewWizardPage wizardPage;
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		// TODO
 		wizardPage = new DotnetNewWizardPage();
 	}
 
@@ -83,7 +82,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 
 			project.create(projectDescription, null);
 
-			IWorkingSetManager wsm = WorkbenchPlugin.getDefault().getWorkingSetManager();
+			IWorkingSetManager wsm = PlatformUI.getWorkbench().getWorkingSetManager();
 			wsm.addToWorkingSets(project, wizardPage.getWorkingSets());
 		} catch (CoreException e) {
 			MessageDialog.openError(getShell(), "Unable to load project description", "");
