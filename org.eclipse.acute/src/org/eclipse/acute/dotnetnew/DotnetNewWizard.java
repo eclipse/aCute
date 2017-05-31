@@ -60,12 +60,12 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 				Process process = runtime.exec(createCommand);
 				if (process.waitFor() != 0) {
 					MessageDialog.openError(getShell(), "Cannot create dotnet template",
-							"The 'dotent new' command failed.");
+							"The 'dotnet new' command failed.");
 					return false;
 				}
 			} catch (IOException | InterruptedException e) {
 				MessageDialog.openError(getShell(), "Cannot create dotnet template",
-						"The 'dotent new' command failed.");
+						"The 'dotnet new' command failed.");
 				return false;
 			}
 		}
