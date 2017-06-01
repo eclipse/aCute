@@ -19,6 +19,7 @@
 		<module>org.eclipse.acute</module>
 		<module>org.eclipse.acute.omnisharpServer</module>
 		<module>org.eclipse.acute.tests</module>
+		<module>org.eclipse.acute.SWTBotTests</module>
 		<module>org.eclipse.acute.feature</module>
 		<module>repository</module>
 	</modules>

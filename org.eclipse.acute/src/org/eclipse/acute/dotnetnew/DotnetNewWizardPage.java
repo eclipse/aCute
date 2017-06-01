@@ -274,7 +274,7 @@ public class DotnetNewWizardPage extends WizardPage {
 	private void updateProjectName() {
 		if (!isDirectoryAndProjectLinked) {
 			projectName = projectNameText.getText();
-		} else if (projectName == null || !projectName.equals(directory.getName())) {
+		} else if (projectName == null || (directory != null && !projectName.equals(directory.getName()))) {
 			projectName = directory.getName();
 			projectNameText.setText(projectName);
 		}

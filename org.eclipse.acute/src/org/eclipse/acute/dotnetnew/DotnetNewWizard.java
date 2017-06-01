@@ -56,6 +56,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		wizardPage = new DotnetNewWizardPage();
+		setWindowTitle("New .NET Project");
 
 		Iterator<Object> selectionIterator = selection.iterator();
 		Set<IWorkingSet> workingSets = new HashSet<>();
@@ -99,7 +100,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 		String projectName = wizardPage.getProjectName();
 
 		if (!location.exists()) {
-			location.mkdir();
+			location.mkdirs();
 		}
 
 		try {
