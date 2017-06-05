@@ -10,7 +10,7 @@
 
 	<properties>
 		<testSuite>${project.artifactId}</testSuite>
-		<testClass>org.eclipse.acute.SWTBotTests.dotnetnew.AllTests</testClass>
+		<testClass>org.eclipse.acute.SWTBotTests.AllTests</testClass>
 	</properties>
 
 	<build>

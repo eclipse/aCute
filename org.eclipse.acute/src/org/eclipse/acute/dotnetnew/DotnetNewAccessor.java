@@ -7,6 +7,7 @@
  *
  * Contributors:
  *  Mickael Istria (Red Hat Inc.) - Initial implementation
+ *  Lucas Bullen   (Red Hat Inc.) - Logic implementation
  *******************************************************************************/
 package org.eclipse.acute.dotnetnew;
 

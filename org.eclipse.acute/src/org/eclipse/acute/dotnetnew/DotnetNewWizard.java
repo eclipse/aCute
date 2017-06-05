@@ -7,7 +7,7 @@
  *
  * Contributors:
  *  Mickael Istria (Red Hat Inc.) - Initial implementation
- *  Lucas Bullen (Red Hat inc.)
+ *  Lucas Bullen   (Red Hat Inc.) - Logic implementation
  *******************************************************************************/
 package org.eclipse.acute.dotnetnew;
 
@@ -160,6 +160,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 			IPath projectPath = new Path(projectLocation);
 
 			projectDescription.setLocation(projectPath);
+
 			project.create(projectDescription, monitor);
 			project.open(monitor);
 
