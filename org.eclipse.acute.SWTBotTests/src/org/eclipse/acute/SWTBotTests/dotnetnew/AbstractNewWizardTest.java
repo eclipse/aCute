@@ -47,7 +47,7 @@ public class AbstractNewWizardTest extends AbstractDotnetTest {
 		 
 		SWTBotShell shell = bot.shell("New");
 		shell.activate();
-		bot.tree().expandNode(".NET").select(".NET project");
+		bot.tree().expandNode(".NET Core").select(".NET Core project");
 		bot.button("Next >").click();
 
 		while(!bot.list(0).itemAt(0).equals("No available templates") && !bot.list(0).isEnabled()) {

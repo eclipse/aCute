@@ -45,7 +45,7 @@ public class TestRun extends AbstractDotnetTest{
 
 	@Test
 	public void testDotnetRun() throws CoreException, InterruptedException {
-		bot.styledText(1).contextMenu("Run As").menu("1 .NET Project").click();		
+		bot.styledText(1).contextMenu("Run As").menu("1 .NET Core Project").click();
 		SWTBotView debugView = bot.viewByTitle("Debug");
 		List<Tree> controls = new ChildrenControlFinder(
 				debugView.getWidget()).findControls(WidgetOfType.widgetOfType(Tree.class));
@@ -56,7 +56,7 @@ public class TestRun extends AbstractDotnetTest{
 			public boolean test() throws Exception {
 				for(SWTBotTreeItem item : tree.getAllItems()) {
 					for (String node : item.expand().getNodes()) {
-						if(node.matches("<terminated, exit value: 0>.NET Project")) {
+						if(node.matches("<terminated, exit value: 0>.NET Core Project")) {
 							return true;
 						}
 					}

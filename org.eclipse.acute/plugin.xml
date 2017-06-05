@@ -52,21 +52,21 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="org.eclipse.acute.dotnet"
-            name=".NET">
+            name=".NET Core">
       </category>
       <wizard
             category="org.eclipse.acute.dotnet"
             class="org.eclipse.acute.dotnetnew.DotnetNewWizard"
             icon="icons/dotnet.png"
             id="org.eclipse.acute.newWizard"
-            name=".NET project"
+            name=".NET Core project"
             project="true">
       </wizard>
    </extension>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-           name=".NET Project"
+           name=".NET Core Project"
            delegate="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
            modes="run"
            id="org.eclipse.acute.dotnetrun.DotnetRunDelegate">
@@ -100,7 +100,7 @@
        <shortcut
            id="org.eclipse.acute.dotnetrun.Shortcut"
            class="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
-           label=".NET Project"
+           label=".NET Core Project"
            icon="icons/dotnet.png"
            modes="run">
          <contextualLaunch>
@@ -122,11 +122,11 @@
          point="org.eclipse.ui.exportWizards">
       <wizard
             id="org.eclipse.acute.ExportWizard"
-            name=".NET Project Exporter"
+            name=".NET Core Project Exporter"
             class="org.eclipse.acute.dotnetexport.DotnetExportWizard"
            icon="icons/dotnet.png">
                <description>
-                  A wizard to assist with exporting .NET projects
+                  A wizard to assist with exporting .NET Core projects
                </description>
                <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>

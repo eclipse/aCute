@@ -56,7 +56,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		wizardPage = new DotnetNewWizardPage();
-		setWindowTitle("New .NET Project");
+		setWindowTitle("New .NET Core Project");
 
 		Iterator<Object> selectionIterator = selection.iterator();
 		Set<IWorkingSet> workingSets = new HashSet<>();
@@ -105,7 +105,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 
 		try {
 			getContainer().run(true, true, monitor -> {
-				monitor.beginTask("Creating .NET project", 0);
+				monitor.beginTask("Creating .NET Core project", 0);
 				ProcessBuilder processBuilder;
 				if (template.isEmpty()) {
 					processBuilder = new ProcessBuilder("dotnet", "new");
@@ -128,7 +128,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 						createProject(projectName, location, monitor);
 					} else {
 						Display.getDefault().asyncExec(() -> {
-							MessageDialog.openError(getShell(), "Cannot create dotnet template",
+							MessageDialog.openError(getShell(), "Cannot create .NET Core template",
 									"The 'dotnet new' command exited with :" + process.exitValue());
 						});
 					}
@@ -136,13 +136,13 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 				} catch (IOException e) {
 					monitor.done();
 					Display.getDefault().asyncExec(() -> {
-						MessageDialog.openError(getShell(), "Cannot create dotnet template",
+						MessageDialog.openError(getShell(), "Cannot create .NET Core template",
 								"The 'dotnet new' command failed: " + e);
 					});
 				}
 			});
 		} catch (InvocationTargetException | InterruptedException e) {
-			MessageDialog.openError(getShell(), "Cannot create dotnet template",
+			MessageDialog.openError(getShell(), "Cannot create .NET Core template",
 					"The 'dotnet new' command failed: " + e);
 		}
 		return true;

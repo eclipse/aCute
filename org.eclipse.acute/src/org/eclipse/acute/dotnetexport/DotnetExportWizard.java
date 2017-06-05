@@ -45,7 +45,7 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		setWindowTitle("New .NET Project");
+		setWindowTitle("Export .NET Core Project");
 
 		Iterator<Object> selectionIterator = selection.iterator();
 		IFile projectFile = null;
@@ -103,7 +103,7 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 			exportCommandList.add(version);
 		}
 
-		Job.create(".NET Export", (ICoreRunnable) monitor -> {
+		Job.create(".NET Core Export", (ICoreRunnable) monitor -> {
 			try {
 				ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
 				ILaunch newLaunch = new Launch(null, ILaunchManager.RUN_MODE, null);
@@ -121,7 +121,7 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 				}
 
 				Process publishProcess = DebugPlugin.exec(exportCommandList.toArray(new String[0]), projectLocation);
-				DebugPlugin.newProcess(newLaunch, publishProcess, ".NET Export");
+				DebugPlugin.newProcess(newLaunch, publishProcess, ".NET Core Export");
 				launchManager.addLaunch(newLaunch);
 
 				try {
@@ -139,7 +139,7 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 
 			} catch (CoreException e) {
 				Display.getDefault().asyncExec(() -> {
-					MessageDialog.openError(getShell(), "Cannot export .NET project",
+					MessageDialog.openError(getShell(), "Cannot export .NET Core project",
 							"The 'dotnet publish' command failed: " + e);
 				});
 			}

@@ -103,8 +103,8 @@ public class DotnetExportWizardPage extends WizardPage {
 
 	protected DotnetExportWizardPage(IFile projectFile) {
 		super(DotnetExportWizardPage.class.getName());
-		setTitle("Export a .NET Project");
-		setDescription("Export a .NET project, using the `dotnet publish` command");
+		setTitle("Export a .NET Core Project");
+		setDescription("Export a .NET Core project, using the `dotnet publish` command");
 
 		Bundle bundle = FrameworkUtil.getBundle(this.getClass());
 		URL url = bundle.getEntry("images/dotnet.png");

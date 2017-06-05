@@ -93,7 +93,7 @@ public class TestProjectCreation extends AbstractNewWizardTest {
 			}
 		}
 		
-		bot.shell("New .NET Project").activate();
+		bot.shell("New .NET Core Project").activate();
 		newProject = checkProjectCreate(shell, testWorkingSets);
 		
 		IWorkingSetManager manager = PlatformUI.getWorkbench().getWorkingSetManager();

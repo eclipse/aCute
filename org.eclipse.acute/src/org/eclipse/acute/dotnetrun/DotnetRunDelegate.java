@@ -72,7 +72,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 		}
 		Display.getDefault().asyncExec(() -> {
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Unable to Launch",
-					"Unable to launch .NET Project from selection.");
+					"Unable to launch .NET Core Project from selection.");
 		});
 	}
 
@@ -131,7 +131,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 			ILaunch newLaunch = new Launch(null, ILaunchManager.RUN_MODE, null);
 
 			Process restoreProcess = DebugPlugin.exec(new String[] { "dotnet", "restore" }, new File(projectLocation));
-			DebugPlugin.newProcess(launch, restoreProcess, ".NET Restore");
+			DebugPlugin.newProcess(launch, restoreProcess, ".NET Core Restore");
 			launchManager.addLaunch(newLaunch);
 
 			try {
@@ -144,7 +144,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 		}
 
 		Process p = DebugPlugin.exec(commandList.toArray(new String[commandList.size()]), new File(projectLocation));
-		DebugPlugin.newProcess(launch, p, ".NET Project");
+		DebugPlugin.newProcess(launch, p, ".NET Core Project");
 	}
 
 	private ILaunchConfiguration getLaunchConfiguration(String mode, IResource resource) {

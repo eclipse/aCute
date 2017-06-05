@@ -77,8 +77,8 @@ public class DotnetNewWizardPage extends WizardPage {
 
 	protected DotnetNewWizardPage() {
 		super(DotnetNewWizardPage.class.getName());
-		setTitle("Create a .NET Project");
-		setDescription("Create a new .NET project, using the `dotnet new` command");
+		setTitle("Create a .NET Core Project");
+		setDescription("Create a new .NET Core project, using the `dotnet new` command");
 
 		Bundle bundle = FrameworkUtil.getBundle(this.getClass());
 		URL url = bundle.getEntry("images/dotnet.png");

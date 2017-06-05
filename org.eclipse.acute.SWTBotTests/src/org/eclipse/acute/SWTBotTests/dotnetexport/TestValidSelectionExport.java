@@ -37,7 +37,7 @@ public class TestValidSelectionExport extends AbstractExportWizardTest{
 		assertTrue("Should be able to Finish an export with a valid Project selected.", finishButton.isEnabled());
 		finishButton.click();
 		
-		bot.waitUntil(Conditions.waitForWidget(withText("<terminated> .NET Export")),30000);
+		bot.waitUntil(Conditions.waitForWidget(withText("<terminated> .NET Core Export")),30000);
 		
 		SWTBotView view = bot.viewByTitle("Project Explorer");
 		List<Tree> controls = new ChildrenControlFinder(

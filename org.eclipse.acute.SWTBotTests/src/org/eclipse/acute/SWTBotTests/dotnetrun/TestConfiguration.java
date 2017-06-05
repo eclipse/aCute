@@ -33,7 +33,7 @@ public class TestConfiguration extends AbstractDotnetTest {
 		bot.menu("Run").menu("Run Configurations...").click();
 		
 		bot.shell("Run Configurations").activate();
-		bot.tree().select(".NET Project");
+		bot.tree().select(".NET Core Project");
 		bot.toolbarButtonWithTooltip("New launch configuration").click();
 
 		bot.textWithLabel("Name:").setText(name);
@@ -66,7 +66,7 @@ public class TestConfiguration extends AbstractDotnetTest {
 		        }
 		        line = br.readLine();
 		    }
-		    assertTrue("Launch file does not include all .NET variables", isArgsPresent && isBuildBoolPresent && isLocPresent);
+		    assertTrue("Launch file does not include all .NET Core variables", isArgsPresent && isBuildBoolPresent && isLocPresent);
 		}
 		
 		bot.button("Close").click();
@@ -77,7 +77,7 @@ public class TestConfiguration extends AbstractDotnetTest {
 		bot.menu("Run").menu("Run Configurations...").click();
 		
 		bot.shell("Run Configurations").activate();
-		bot.tree().expandNode(".NET Project").select(name);
+		bot.tree().expandNode(".NET Core Project").select(name);
 		
 		bot.toolbarButtonWithTooltip("Delete selected launch configuration(s)").click();
 		bot.shell("Confirm Launch Configuration Deletion").activate();

@@ -33,7 +33,7 @@ public class AbstractExportWizardTest extends AbstractDotnetTest{
 		
 		SWTBotShell shell = bot.shell("Export");
 		shell.activate();
-		bot.tree().expandNode("Other").select(".NET Project Exporter");
+		bot.tree().expandNode("Other").select(".NET Core Project Exporter");
 		bot.button("Next >").click();
 
 		return;

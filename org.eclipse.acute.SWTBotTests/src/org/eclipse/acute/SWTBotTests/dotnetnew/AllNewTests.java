@@ -8,6 +8,7 @@
  * Contributors:
  *  Lucas Bullen (Red Hat Inc.) - Initial implementation
  *******************************************************************************/
+
 package org.eclipse.acute.SWTBotTests.dotnetnew;
 
 import org.junit.runner.RunWith;
