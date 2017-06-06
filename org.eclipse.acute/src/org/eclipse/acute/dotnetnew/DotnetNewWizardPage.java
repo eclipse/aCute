@@ -15,6 +15,7 @@ import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -214,6 +215,8 @@ public class DotnetNewWizardPage extends WizardPage {
 		});
 		templateControlDecoration = new ControlDecoration(templateViewer.getControl(), SWT.TOP | SWT.LEFT);
 		templateControlDecoration.setImage(errorImage);
+
+		templatesMap = Collections.emptyMap();
 
 		Job.create("Retrieve Templates", (ICoreRunnable) monitor -> {
 			templatesMap = DotnetNewAccessor.getTemplates();
