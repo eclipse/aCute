@@ -202,7 +202,7 @@ public class DotnetNewWizardPage extends WizardPage {
 		Label projectTemplateLabel = new Label(container, SWT.NONE);
 		projectTemplateLabel.setText("Project Template");
 
-		List list = new List(container, SWT.V_SCROLL);
+		List list = new List(container, SWT.V_SCROLL | SWT.BORDER);
 		GridData listBoxData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		list.setLayoutData(listBoxData);
 		templateViewer = new ListViewer(list);
