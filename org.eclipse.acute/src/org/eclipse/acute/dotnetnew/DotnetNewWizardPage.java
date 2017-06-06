@@ -70,7 +70,11 @@ public class DotnetNewWizardPage extends WizardPage {
 		setDescription("Create a new Dotnet project, using the `dotnet new` command");
 	}
 
-	public File getLocation() {
+	public void setDirectory(File directory) {
+		this.directory = directory;
+	}
+
+	public File getDirectory() {
 		if (isDirectoryAndProjectLinked) {
 			return directory;
 		} else {
@@ -92,6 +96,10 @@ public class DotnetNewWizardPage extends WizardPage {
 
 	public IWorkingSet[] getWorkingSets() {
 		return workingSetsGroup.getSelectedWorkingSets();
+	}
+
+	public void setWorkingSets(Set<IWorkingSet> workingSets) {
+		this.workingSets = workingSets;
 	}
 
 	@Override
@@ -223,6 +231,10 @@ public class DotnetNewWizardPage extends WizardPage {
 			wsSel = new StructuredSelection(this.workingSets.toArray());
 		}
 		this.workingSetsGroup = new WorkingSetGroup(workingSetComposite, wsSel, workingSetIds);
+
+		if (directory != null) {
+			updateDirectory(directory.getAbsolutePath());
+		}
 	}
 
 	private void updateProjectName() {
