@@ -82,6 +82,8 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 
 		if (selectedResource != null) {
 			wizardPage.setDirectory(toFile(selectedResource));
+		} else {
+			wizardPage.setDirectory(newFolderLocation());
 		}
 	}
 
@@ -185,6 +187,17 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 				}
 			}
 		});
+	}
+
+	private File newFolderLocation() {
+		IPath workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+		int appendedNumber = 0;
+		File newFile = workspacePath.append("NewDotnetProject").toFile();
+		while (newFile.isDirectory()) {
+			appendedNumber++;
+			newFile = workspacePath.append("NewDotnetProject" + appendedNumber).toFile();
+		}
+		return newFile;
 	}
 
 	private Set<IWorkingSet> getWorkingSets(IResource resource) {

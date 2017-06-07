@@ -231,8 +231,9 @@ public class DotnetNewWizardPage extends WizardPage {
 					for (String temp : templatesSortedSet) {
 						templateViewer.add(temp);
 					}
-
+					templateViewer.getList().setSelection(0);
 					templateViewer.getList().setEnabled(true);
+					setPageComplete(isPageComplete());
 				} else {
 					templateViewer.add("No available templates");
 				}
