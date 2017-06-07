@@ -15,6 +15,7 @@ import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -30,6 +31,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
@@ -50,6 +52,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.dialogs.WorkingSetGroup;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 public class DotnetNewWizardPage extends WizardPage {
 
@@ -71,8 +75,13 @@ public class DotnetNewWizardPage extends WizardPage {
 
 	protected DotnetNewWizardPage() {
 		super(DotnetNewWizardPage.class.getName());
-		setTitle("Create new Dotnet project");
-		setDescription("Create a new Dotnet project, using the `dotnet new` command");
+		setTitle("Create a .NET Project");
+		setDescription("Create a new .NET project, using the `dotnet new` command");
+
+		Bundle bundle = FrameworkUtil.getBundle(this.getClass());
+		URL url = bundle.getEntry("images/dotnet.png");
+		ImageDescriptor imageDescriptor = ImageDescriptor.createFromURL(url);
+		setImageDescriptor(imageDescriptor);
 	}
 
 	public void setDirectory(File directory) {

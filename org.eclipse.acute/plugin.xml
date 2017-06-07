@@ -57,7 +57,7 @@
       <wizard
             category="org.eclipse.acute.dotnet"
             class="org.eclipse.acute.dotnetnew.DotnetNewWizard"
-            icon="icons/prj_obj.png"
+            icon="icons/dotnet.png"
             id="org.eclipse.acute.newWizard"
             name=".NET project"
             project="true">
