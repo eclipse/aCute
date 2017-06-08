@@ -1,1 +1,0 @@
-@powershell -ExecutionPolicy unrestricted -File .\build-server.ps1

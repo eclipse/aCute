@@ -1,6 +1,0 @@
-{
-  "name": "omnisharp-client",
-  "dependencies": {
-    "lodash": "github:david-driscoll/lodash-ts#ts21"
-  }
-}

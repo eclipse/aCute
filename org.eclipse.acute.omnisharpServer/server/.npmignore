@@ -1,9 +1,0 @@
-.DS_Store
-npm-debug.log
-node_modules
-test
-NuGet.exe
-vendor
-roslyn
-*.ts
-!*.d.ts
