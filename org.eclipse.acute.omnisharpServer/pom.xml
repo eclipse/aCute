@@ -7,4 +7,68 @@
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 	<packaging>eclipse-plugin</packaging>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>server/</directory>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.googlecode.maven-download-plugin</groupId>
+				<artifactId>download-maven-plugin</artifactId>
+				<version>1.3.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<url>https://github.com/OmniSharp/omnisharp-node-client/archive/v7.0.7.zip</url>
+							<unpack>true</unpack>
+							<outputDirectory>server/</outputDirectory>
+							<skipCache>true</skipCache>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<id>npm-install</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<executable>npm</executable>
+							<arguments>
+								<arg>install</arg>
+							</arguments>
+							<workingDirectory>server/omnisharp-node-client-7.0.7</workingDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<configuration>
+					<jgit.ignore>pom.xml,server</jgit.ignore>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

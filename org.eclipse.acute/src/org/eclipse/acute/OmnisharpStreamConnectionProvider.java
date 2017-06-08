@@ -55,7 +55,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 					omnisharpLocation);
 			process = builder.start();
 		} else {
-			URL serverFileUrl = getClass().getResource("/server/languageserver/server.js");
+			URL serverFileUrl = getClass().getResource("/server/omnisharp-node-client-7.0.7/languageserver/server.js");
 			if (serverFileUrl != null) {
 				File serverFile = new File(FileLocator.toFileURL(serverFileUrl).getPath());
 				if (serverFile.exists()) {
@@ -133,6 +133,27 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 
 	@Override
 	public OutputStream getOutputStream() {
+		// return new FilterOutputStream(process.getOutputStream()) {
+		// @Override
+		// public void write(int b) throws IOException {
+		// System.err.print(b);
+		// super.write(b);
+		// }
+		//
+		// @Override
+		// public void write(byte[] b) throws IOException {
+		// System.err.print(new String(b));
+		// super.write(b);
+		// }
+		//
+		// @Override
+		// public void write(byte[] b, int off, int len) throws IOException {
+		// byte[] actual = new byte[len];
+		// System.arraycopy(b, off, actual, 0, len);
+		// System.err.print(new String(actual));
+		// super.write(b, off, len);
+		// }
+		// };
 		return process.getOutputStream();
 	}
 
