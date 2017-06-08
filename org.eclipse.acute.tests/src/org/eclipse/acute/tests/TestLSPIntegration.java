@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.acute.tests;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -55,7 +57,7 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 			Assert.assertTrue(editor instanceof ExtensionBasedTextEditor);
 			LanguageServer languageServer = LanguageServiceAccessor.getLanguageServer(this.csharpSourceFile, capabilities -> capabilities.getHoverProvider() != null);
 			String uri = this.csharpSourceFile.getLocationURI().toString();
-			Assert.assertNotNull(languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(uri), uri, new Position(4, 21))).get());
+			Assert.assertNotNull(languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(uri), uri, new Position(4, 21))).get(10, TimeUnit.SECONDS));
 		} finally {
 			if (editor != null) {
 				activePage.closeEditor(editor, false);
