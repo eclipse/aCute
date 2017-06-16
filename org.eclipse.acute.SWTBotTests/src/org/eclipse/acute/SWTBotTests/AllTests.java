@@ -15,11 +15,13 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.eclipse.acute.SWTBotTests.dotnetnew.AllNewTests;
 import org.eclipse.acute.SWTBotTests.dotnetrun.AllRunTests;
+import org.eclipse.acute.SWTBotTests.dotnetexport.AllExportTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 	AllNewTests.class,
-	AllRunTests.class
+	AllRunTests.class,
+	AllExportTests.class
 })
 public class AllTests {
 

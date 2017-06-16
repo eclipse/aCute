@@ -8,7 +8,7 @@
  * Contributors:
  *  Lucas Bullen (Red Hat Inc.) - Initial implementation
  *******************************************************************************/
-package org.eclipse.acute.SWTBotTests.dotnetnew;
+package org.eclipse.acute.SWTBotTests.dotnetexport;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -16,9 +16,12 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	TestProjectCreation.class,
-	TestWizardUI.class
+	TestChangingProjectFile.class,
+	TestInvalidSelection.class,
+	TestUpdatingDefault.class,
+	TestValidSelectionExport.class
 })
-public class AllNewTests {
+
+public class AllExportTests {
 
 }

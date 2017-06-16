@@ -118,4 +118,17 @@
          </contextualLaunch>
       </shortcut>
    </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            id="org.eclipse.acute.ExportWizard"
+            name=".NET Project Exporter"
+            class="org.eclipse.acute.dotnetexport.DotnetExportWizard"
+           icon="icons/dotnet.png">
+               <description>
+                  A wizard to assist with exporting .NET projects
+               </description>
+               <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
 </plugin>

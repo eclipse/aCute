@@ -14,59 +14,33 @@ package org.eclipse.acute.SWTBotTests.dotnetnew;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 
+import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.ui.IWorkingSet;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 
-public class AbstractNewWizardTest {
-	protected IProject project;
-	protected static SWTWorkbenchBot bot;
-	protected static String dotnetVersion;
+public class AbstractNewWizardTest extends AbstractDotnetTest {
 	
-	@Before
-	public void setUp() throws Exception {
-		this.project = ResourcesPlugin.getWorkspace().getRoot().getProject(getClass().getName() + System.currentTimeMillis());
-		this.project.create(new NullProgressMonitor());
-		this.project.open(new NullProgressMonitor());
-		bot = new SWTWorkbenchBot();
+	@Override
+	public void setup() throws CoreException {
+		buildEmptyProject();
 	}
 	
-	@BeforeClass
-	public static void beforeClass() {
-		bot = new SWTWorkbenchBot();
-		dotnetVersion = getDotNetVersion();
-		try {
-			bot.viewByTitle("Welcome").close();
-		} catch (WidgetNotFoundException e) {
-			//Welcome widget already closed
-		}
-	}
-
-	@After
+	@Override
 	public void tearDown() throws CoreException {
 		//ensure that the pre-set values will be used
 		bot.viewByTitle("Outline").setFocus();
-		if(this.project.exists()) {
-			this.project.delete(true, new NullProgressMonitor());
-		}
+		super.tearDown();
 	}
+
 
 	protected SWTBotShell openWizard() {
 		bot.menu("File").menu("New").menu("Other...").click();
@@ -129,25 +103,5 @@ public class AbstractNewWizardTest {
 		}
 		
 		return createdProject;
-	}
-	
-	private static String getDotNetVersion() {
-		String listCommand = "dotnet --version";
-
-		Runtime runtime = Runtime.getRuntime();
-		Process process;
-		try {
-			process = runtime.exec(listCommand);
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-				String version = in.readLine();
-				if (!version.isEmpty() && version.matches("^\\d\\.\\d\\.\\d.*")) {
-					return version;
-				} else {
-					return "";
-				}
-			}
-		} catch (IOException e1) {
-			return "";
-		}
 	}
 }

@@ -11,21 +11,14 @@
 
 package org.eclipse.acute.SWTBotTests.dotnetrun;
 
-import static org.junit.Assert.fail;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.finders.ChildrenControlFinder;
 import org.eclipse.swtbot.swt.finder.matchers.WidgetOfType;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
@@ -33,13 +26,11 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Test;
 
-public class TestRun extends AbstractRunTest{
-	protected IFile csharpSourceFile;
+public class TestRun extends AbstractDotnetTest{
 	
 	@Override
 	public void setup() throws CoreException {
 		super.setup();
-		buildDotnetProject();
 		
 		SWTBotView view = bot.viewByTitle("Project Explorer");
 		List<Tree> controls = new ChildrenControlFinder(
@@ -82,48 +73,5 @@ public class TestRun extends AbstractRunTest{
 			}
 		},30000);
 		
-	}
-	
-	public void buildDotnetProject() {
-		try {
-			csharpSourceFile = this.project.getFile("Project.cs");
-			csharpSourceFile.create(getClass().getResourceAsStream(csharpSourceFile.getName()), true, new NullProgressMonitor());
-			
-			String projectFileName;
-			
-			String version = getDotNetVersion();
-			if(version.matches("2\\.0.*")) {
-				projectFileName = "project2.0.csproj";
-			}else if(version.matches("1\\.0\\.1.*")){
-				projectFileName = "project1.0.csproj";
-			}else {
-				projectFileName = "project.json";
-			}
-			
-			IFile csproj = this.project.getFile(projectFileName);
-			csproj.create(getClass().getResourceAsStream(csproj.getName()), true, new NullProgressMonitor());
-		}catch (CoreException e) {
-			fail("Unable to build dotnet project file: " + e);
-		}
-	}
-	
-	private static String getDotNetVersion() {
-		String listCommand = "dotnet --version";
-
-		Runtime runtime = Runtime.getRuntime();
-		Process process;
-		try {
-			process = runtime.exec(listCommand);
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-				String version = in.readLine();
-				if (!version.isEmpty() && version.matches("^\\d\\.\\d\\.\\d.*")) {
-					return version;
-				} else {
-					return "";
-				}
-			}
-		} catch (IOException e1) {
-			return "";
-		}
 	}
 }

@@ -17,10 +17,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
-public class TestConfiguration extends AbstractRunTest{
+public class TestConfiguration extends AbstractDotnetTest {
 	private String name = "Test_config1";
 	private String location = "test location";
 	private String arguments = "test Arg";
