@@ -15,6 +15,7 @@ import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
 import java.io.File;
 import java.net.URL;
 
+import org.eclipse.acute.ProjectFileAccessor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -114,7 +115,7 @@ public class DotnetExportWizardPage extends WizardPage {
 		if (projectFile != null) {
 			projectPath = new Path(projectFile.getRawLocation().toString());
 		}
-		targetFrameworks = DotnetExportAccessor.getTargetFrameworks(projectPath);
+		targetFrameworks = ProjectFileAccessor.getTargetFrameworks(projectPath);
 		defaultRuntime = DotnetExportAccessor.getDefaultRuntime();
 	}
 
@@ -284,7 +285,7 @@ public class DotnetExportWizardPage extends WizardPage {
 			frameworkViewer.getList().deselectAll();
 			frameworkViewer.add("Loading frameworks");
 			frameworkViewer.getList().setEnabled(false);
-			targetFrameworks = DotnetExportAccessor.getTargetFrameworks(projectPath);
+			targetFrameworks = ProjectFileAccessor.getTargetFrameworks(projectPath);
 			frameworkViewer.getList().removeAll();
 			if (targetFrameworks.length > 0) {
 				frameworkViewer.add(targetFrameworks);

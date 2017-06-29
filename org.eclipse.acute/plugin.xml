@@ -131,4 +131,50 @@
                <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+           name=".NET Core Test"
+           delegate="org.eclipse.acute.dotnettest.DotnetTestDelegate"
+           modes="run"
+           id="org.eclipse.acute.dotnettest.DotnetTestDelegate">
+        </launchConfigurationType>
+   </extension>
+   <extension
+       point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+       <launchConfigurationTabGroup
+           class="org.eclipse.acute.dotnettest.DotnetTestTabGroup"
+           id="org.eclipse.acute.dotnettest.DotnetTestTabGroup"
+           type="org.eclipse.acute.dotnettest.DotnetTestDelegate">
+       </launchConfigurationTabGroup>
+   </extension>
+    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+         <launchConfigurationTypeImage
+            id="org.eclipse.acute.dotnettest.DotnetTestTypeImage"
+            configTypeID="org.eclipse.acute.dotnettest.DotnetTestDelegate"
+            icon="icons/dotnet.png">
+         </launchConfigurationTypeImage>
+    </extension>
+    <extension point="org.eclipse.debug.ui.launchShortcuts">
+       <shortcut
+           id="org.eclipse.acute.dotnettest.Shortcut"
+           class="org.eclipse.acute.dotnettest.DotnetTestDelegate"
+           label=".NET Core Test"
+           icon="icons/dotnet.png"
+           modes="run">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value="1"/>
+                  <iterate>
+                     <adapt type="org.eclipse.core.resources.IResource">
+                        <test property="org.eclipse.acute.isDotnetProject"  
+                           forcePluginActivation="true"/>
+                     </adapt>
+                  </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
+   </extension>
 </plugin>
