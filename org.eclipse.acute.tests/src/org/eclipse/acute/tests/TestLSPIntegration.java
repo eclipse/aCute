@@ -55,7 +55,7 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 		try {
 			editor = IDE.openEditor(activePage, this.csharpSourceFile);
 			Assert.assertTrue(editor instanceof ExtensionBasedTextEditor);
-			LanguageServer languageServer = LanguageServiceAccessor.getLanguageServer(this.csharpSourceFile, capabilities -> capabilities.getHoverProvider() != null);
+			LanguageServer languageServer = LanguageServiceAccessor.getLanguageServers(this.csharpSourceFile, capabilities -> capabilities.getHoverProvider() != null).iterator().next();
 			String uri = this.csharpSourceFile.getLocationURI().toString();
 			Assert.assertNotNull(languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(uri), uri, new Position(4, 21))).get(10, TimeUnit.SECONDS));
 		} finally {
