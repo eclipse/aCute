@@ -1,6 +1,6 @@
 # aCute: C# in Eclipse IDE
 
-Support for C# edition in Eclipse IDE. Relies on OmniSharp and Language Server Protocol.
+Support for C# editing in Eclipse IDE. Relies on OmniSharp and Language Server Protocol.
 
 ![screenshot](aCute.png "Logo Title Text 1")
 
@@ -14,7 +14,7 @@ Support for C# edition in Eclipse IDE. Relies on OmniSharp and Language Server P
 * On **Windows**, .NET SDK needs to be installed.
 * On **Mac**: ?
 
-Or see [Alternative server setup](#Alternative-server-setup)
+Or see [Alternative server setup](#alternative-server-setup)
 
 ## Installation in Eclipse IDE
 
@@ -28,7 +28,7 @@ aCute uses the [lsp4e](https://projects.eclipse.org/projects/technology.lsp4e) p
 
 ## Alternative server setup
 
-You can setup a local [OmniSharp Language Server](https://github.com/OmniSharp/omnisharp-node-client) fetched, configured and working locally. Then at least one of the following *environment variables* should be set to make Eclipse IDE able to locate your specific OmhiSharp-node-client:
+You can setup a local [OmniSharp Language Server](https://github.com/OmniSharp/omnisharp-node-client) fetched, configured and working locally. Then at least one of the following *environment variables* should be set to make Eclipse IDE able to locate your specific OmniSharp-node-client:
 * `OMNISHARP_LANGUAGE_SERVER_COMMAND`: a command-line to start omnisharp-node-client (such as `/usr/bin/node /home/mistria/git/omnisharp-node-client/languageserver/server.js`)
 * `OMNISHARP_LANGUAGE_SERVER_LOCATION`: the location when omnisharp-node-client is installed (such as `/home/mistria/git/omnisharp-node-client`).
 
