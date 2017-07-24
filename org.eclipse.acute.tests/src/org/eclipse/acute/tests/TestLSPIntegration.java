@@ -63,7 +63,7 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 		IFile csharpSourceFile = project.getFile("test.cs");
 		LanguageServer languageServer = LanguageServiceAccessor.getLanguageServers(csharpSourceFile, capabilities -> capabilities.getHoverProvider() != null).iterator().next();
 		String uri = csharpSourceFile.getLocationURI().toString();
-		Hover hover = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(uri), uri, new Position(4, 21))).get(10, TimeUnit.SECONDS);
+		Hover hover = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(uri), uri, new Position(4, 21))).get(1, TimeUnit.MINUTES);
 		Assert.assertNotNull(hover);
 	}
 	
