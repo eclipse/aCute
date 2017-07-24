@@ -2,7 +2,9 @@
 
 Support for C# editing in Eclipse IDE. Relies on OmniSharp and Language Server Protocol.
 
-![screenshot](aCute.png "Logo Title Text 1")
+[Video Demo of Editor and .NET Core Commands Integration](https://www.dropbox.com/s/yc60dsoslv0hedd/aCute.mp4)
+
+![screenshot](aCute.png "Screenshot of aCute editor")
 
 **NOTE**: aCute is in the process of being made an **Eclipse.org project** https://bugs.eclipse.org/bugs/show_bug.cgi?id=519692
 
