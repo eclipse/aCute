@@ -30,7 +30,7 @@ public class DotnetNewAccessor {
 	public static Map<String, String> getTemplates() {
 		Map<String, String> templateCommandToNameMap = new HashMap<>();
 		try {
-			String listCommand = "dotnet new -- list";
+			String listCommand = "dotnet new --list";
 
 			Runtime runtime = Runtime.getRuntime();
 			Process process = runtime.exec(listCommand);
