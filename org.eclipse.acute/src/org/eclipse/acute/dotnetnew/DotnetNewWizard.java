@@ -14,12 +14,15 @@ package org.eclipse.acute.dotnetnew;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.acute.dotnetnew.DotnetNewAccessor.Template;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -95,7 +98,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		String template = wizardPage.getTemplate();
+		Template template = wizardPage.getTemplate();
 		File location = wizardPage.getDirectory();
 		String projectName = wizardPage.getProjectName();
 
@@ -106,12 +109,13 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 		try {
 			getContainer().run(true, true, monitor -> {
 				monitor.beginTask("Creating .NET Core project", 0);
-				ProcessBuilder processBuilder;
-				if (template.isEmpty()) {
-					processBuilder = new ProcessBuilder("dotnet", "new");
-				} else {
-					processBuilder = new ProcessBuilder("dotnet", "new", template);
+				List<String> commandLine = new ArrayList<>();
+				commandLine.add("dotnet");
+				commandLine.add("new");
+				if (template != null) {
+					commandLine.addAll(template.getCLIOptions());
 				}
+				ProcessBuilder processBuilder = new ProcessBuilder(commandLine);
 				processBuilder.directory(location);
 
 				try {

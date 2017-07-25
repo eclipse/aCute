@@ -17,13 +17,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.eclipse.acute.AcutePlugin;
+import org.eclipse.acute.dotnetnew.DotnetNewAccessor.Template;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -31,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -38,6 +36,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -60,7 +59,6 @@ import org.osgi.framework.FrameworkUtil;
 public class DotnetNewWizardPage extends WizardPage {
 
 	private Set<IWorkingSet> workingSets;
-	private Map<String, String> templatesMap;
 	private File directory;
 	private String projectName;
 	private Boolean isDirectoryAndProjectLinked = true;
@@ -102,12 +100,12 @@ public class DotnetNewWizardPage extends WizardPage {
 		return projectName;
 	}
 
-	public String getTemplate() {
+	public @Nullable Template getTemplate() {
 		IStructuredSelection selection = (IStructuredSelection) templateViewer.getSelection();
 		if (selection.isEmpty()) {
-			return "";
+			return null;
 		}
-		return templatesMap.get(selection.getFirstElement());
+		return (Template) selection.getFirstElement();
 	}
 
 	public IWorkingSet[] getWorkingSets() {
@@ -218,6 +216,7 @@ public class DotnetNewWizardPage extends WizardPage {
 		list.setLayoutData(listBoxData);
 		templateViewer = new ListViewer(list);
 		templateViewer.setContentProvider(new ArrayContentProvider());
+		templateViewer.setComparator(new ViewerComparator()); // default uses getLabel()/toString()
 		templateViewer.add("Loading templates");
 		templateViewer.getList().setEnabled(false);
 		templateViewer.addSelectionChangedListener(e -> {
@@ -226,25 +225,19 @@ public class DotnetNewWizardPage extends WizardPage {
 		templateControlDecoration = new ControlDecoration(templateViewer.getControl(), SWT.TOP | SWT.LEFT);
 		templateControlDecoration.setImage(errorImage);
 
-		templatesMap = Collections.emptyMap();
 
 		Job.create("Retrieve Templates", (ICoreRunnable) monitor -> {
-			templatesMap = DotnetNewAccessor.getTemplates();
+			final java.util.List<Template> templates = DotnetNewAccessor.getTemplates();
 			Display.getDefault().asyncExec(() -> {
 				templateViewer.getList().removeAll();
-				if (!templatesMap.isEmpty()) {
+				if (!templates.isEmpty()) {
 					((GridData) templateViewer.getList().getLayoutData()).heightHint = 100;
 					Shell shell = templateViewer.getControl().getShell();
 					shell.setSize(shell.getSize().x, shell.getSize().y + 100);
-
-					SortedSet<String> templatesSortedSet = new TreeSet<>();
-					for (String temp : templatesMap.keySet()) {
-						templatesSortedSet.add(temp);
+					templateViewer.setInput(templates);
+					if (templateViewer.getSelection().isEmpty()) {
+						templateViewer.getList().setSelection(0);
 					}
-					for (String temp : templatesSortedSet) {
-						templateViewer.add(temp);
-					}
-					templateViewer.getList().setSelection(0);
 					templateViewer.getList().setEnabled(true);
 					setPageComplete(isPageComplete());
 				} else {
@@ -306,7 +299,7 @@ public class DotnetNewWizardPage extends WizardPage {
 			locationError = "Unable to create such directory";
 		} else if (directory.exists() && !directory.canWrite()) {
 			locationError = "Cannot write in this directory";
-		} else if (!templatesMap.isEmpty() && getTemplate().isEmpty()) {
+		} else if (getTemplate() == null) {
 			templateError = "No template selected";
 		} else {
 			File dotProject = new File(directory, IProjectDescription.DESCRIPTION_FILE_NAME);

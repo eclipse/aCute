@@ -14,11 +14,46 @@ package org.eclipse.acute.dotnetnew;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 public class DotnetNewAccessor {
+
+	public static class Template {
+		public final @NonNull String id;
+		public final @NonNull String label;
+		public final @Nullable String languageString;
+
+		public Template(@NonNull String label, @NonNull String id) {
+			this(label, id, null);
+		}
+
+		public Template(@NonNull String label, @NonNull String id, @Nullable String languageString) {
+			this.label = label;
+			this.id = id;
+			this.languageString = languageString;
+		}
+
+		@Override
+		public String toString() {
+			if (this.languageString == null) {
+				return this.label;
+			}
+			return this.label + " [" + this.languageString + "]";
+		}
+
+		public List<String> getCLIOptions() {
+			if (this.languageString != null) {
+				return Arrays.asList(this.id, "--language", this.languageString);
+			}
+			return Collections.singletonList(this.id);
+		}
+	}
 
 	/**
 	 * Retrieves and returns the list of available dotnet templates
@@ -27,9 +62,9 @@ public class DotnetNewAccessor {
 	 *         template in bash commands, as the key and the template's full name as
 	 *         the value.
 	 */
-	public static Map<String, String> getTemplates() {
-		Map<String, String> templateCommandToNameMap = new HashMap<>();
+	public static List<Template> getTemplates() {
 		try {
+			List<Template> templates = new ArrayList<>();
 			String listCommand = "dotnet new --list";
 
 			Runtime runtime = Runtime.getRuntime();
@@ -51,24 +86,23 @@ public class DotnetNewAccessor {
 						String[] template = inputLine.split("[\\s]{2,}");
 
 						if (template.length == 3) { // No language column
-							templateCommandToNameMap.put(template[0], template[1]);
+							templates.add(new Template(template[0], template[1]));
 						} else if (template.length > 3) { // Language column present
 							String[] languages = template[2].split(",");
 
 							for (String languageStringDirty : languages) {
 								String languageString = languageStringDirty.replaceAll("[\\s\\[\\]]", "");
-								templateCommandToNameMap.put(template[0] + " [" + languageString + "]",
-										template[1] + " -lang " + languageString);
+								templates.add(new Template(template[0], template[1], languageString));
 							}
 						} else {
 							break;
 						}
 					}
 				}
-				return templateCommandToNameMap;
+				return templates;
 			}
 		} catch (IOException e) {
-			return Collections.<String, String>emptyMap();
+			return Collections.emptyList();
 		}
 	}
 
