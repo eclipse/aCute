@@ -84,7 +84,7 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 					return false;
 				}
 			}
-		}.waitForCondition(editor.getEditorSite().getShell().getDisplay(), 10000);
+		}.waitForCondition(editor.getEditorSite().getShell().getDisplay(), 30000);
 		IMarker marker = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ZERO)[0];
 		assertTrue(marker.getType().contains("lsp4e"));
 		assertEquals(13, marker.getAttribute(IMarker.LINE_NUMBER, -1));
