@@ -66,6 +66,9 @@
    <bundle id="org.eclipse.xtext.xbase.lib" version="0.0.0">
       <category name="Dependencies"/>
    </bundle>
+   <bundle id="org.json" version="0.0.0">
+      <category name="Dependencies"/>
+   </bundle>
    <category-def name="aCute" label="aCute - C# in Eclipse IDE"/>
    <category-def name="Dependencies" label="Dependencies"/>
    <repository-reference location="http://download.eclipse.org/lsp4e/snapshots" enabled="true" />
