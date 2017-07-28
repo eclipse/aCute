@@ -31,6 +31,9 @@ before_install:
   - sleep 3 # give xvfb some time to start
 install:
   - true
+before_script:
+  - mono --version
+  - dotnet --version
 script:
   - if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" ]] ; then
        mvn clean install;
