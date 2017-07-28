@@ -12,6 +12,7 @@
 package org.eclipse.acute.SWTBotTests.dotnetrun;
 
 import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -19,6 +20,7 @@ import java.io.IOException;
 
 import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.junit.Test;
 
 public class TestConfiguration extends AbstractDotnetTest {
@@ -61,7 +63,7 @@ public class TestConfiguration extends AbstractDotnetTest {
 		        	isArgsPresent = true;
 		        }else if(line.equals("<booleanAttribute key=\"PROJECT_BUILD\" value=\"true\"/>")) {
 		        	isBuildBoolPresent = true;
-		        }else if(line.equals("<stringAttribute key=\"PROJECT_PATH\" value=\""+location+"\"/>")) {
+		        }else if(line.equals("<stringAttribute key=\"" + DebugPlugin.ATTR_WORKING_DIRECTORY + "\" value=\""+location+"\"/>")) {
 		        	isLocPresent = true;
 		        }
 		        line = br.readLine();

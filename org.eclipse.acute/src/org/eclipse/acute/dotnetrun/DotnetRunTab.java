@@ -14,6 +14,7 @@ import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -99,7 +100,9 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute("PROJECT_PATH", ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
+		configuration.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY,
+				ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
+		configuration.setAttribute(DebugPlugin.ATTR_PATH, "dotnet");
 		configuration.setAttribute("PROJECT_ARGUMENTS", "");
 		configuration.setAttribute("PROJECT_BUILD", true);
 		configuration.setAttribute("PROJECT_RESTORE", true);
@@ -108,7 +111,7 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			pathText.setText(configuration.getAttribute("PROJECT_PATH", ""));
+			pathText.setText(configuration.getAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, ""));
 		} catch (CoreException ce) {
 			pathText.setText(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
 		}
@@ -131,7 +134,7 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute("PROJECT_PATH", pathText.getText());
+		configuration.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, pathText.getText());
 		configuration.setAttribute("PROJECT_ARGUMENTS", argumentsText.getText());
 		configuration.setAttribute("PROJECT_BUILD", buildCheckBoxButton.getSelection());
 		configuration.setAttribute("PROJECT_RESTORE", restoreCheckBoxButton.getSelection());

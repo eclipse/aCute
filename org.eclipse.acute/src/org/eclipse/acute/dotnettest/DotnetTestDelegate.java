@@ -91,7 +91,7 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
-		String projectLocation = configuration.getAttribute("PROJECT_PATH", "");
+		String projectLocation = configuration.getAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, "");
 		String projectConfiguration = configuration.getAttribute("CONFIGURATION", "Debug");
 		String projectFramework = configuration.getAttribute("FRAMEWORK", "");
 		String testSelectionMethod = configuration.getAttribute("TEST_SELECTION_TYPE", ALL_TESTS);
@@ -195,7 +195,7 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 				}
 				resource = resource.getParent();
 			}
-			wc.setAttribute("PROJECT_PATH", resource.getLocation().toString());
+			wc.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, resource.getLocation().toString());
 
 			return wc;
 		} catch (CoreException e) {

@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.acute.AcutePlugin;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -32,7 +33,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.Launch;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -92,7 +93,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
-		String projectLocation = configuration.getAttribute("PROJECT_PATH", "");
+		String projectLocation = configuration.getAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, "");
 		boolean buildProject = configuration.getAttribute("PROJECT_BUILD", true);
 		boolean restoreProject = configuration.getAttribute("PROJECT_RESTORE", true);
 		String projectArguments = configuration.getAttribute("PROJECT_ARGUMENTS", "");
@@ -127,12 +128,13 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 		}
 
 		if (restoreProject) {
-			ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-			ILaunch newLaunch = new Launch(null, ILaunchManager.RUN_MODE, null);
-
-			Process restoreProcess = DebugPlugin.exec(new String[] { "dotnet", "restore" }, new File(projectLocation));
-			DebugPlugin.newProcess(launch, restoreProcess, ".NET Core Restore");
-			launchManager.addLaunch(newLaunch);
+			String[] cmdLine = new String[] { "dotnet", "restore" };
+			Process restoreProcess = DebugPlugin.exec(cmdLine, new File(projectLocation));
+			IProcess process = DebugPlugin.newProcess(launch, restoreProcess, "dotnet restore");
+			process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine));
+			process.setAttribute(DebugPlugin.ATTR_PATH, configuration.getAttribute(DebugPlugin.ATTR_PATH, ""));
+			process.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY,
+					configuration.getAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, ""));
 
 			try {
 				restoreProcess.waitFor();
@@ -143,8 +145,10 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 			}
 		}
 
-		Process p = DebugPlugin.exec(commandList.toArray(new String[commandList.size()]), new File(projectLocation));
-		DebugPlugin.newProcess(launch, p, ".NET Core Project");
+		String[] cmdLine = commandList.toArray(new String[commandList.size()]);
+		Process p = DebugPlugin.exec(cmdLine, new File(projectLocation));
+		IProcess process = DebugPlugin.newProcess(launch, p, "dotnet run");
+		process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine));
 	}
 
 	private ILaunchConfiguration getLaunchConfiguration(String mode, IResource resource) {
@@ -172,11 +176,11 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 			if (resource.getLocation().toFile().isFile()) {
 				resource = resource.getParent();
 			}
-			wc.setAttribute("PROJECT_PATH", resource.getLocation().toString());
-
+			wc.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, resource.getLocation().toString());
+			wc.setAttribute(DebugPlugin.ATTR_PATH, "dotnet");
 			return wc;
 		} catch (CoreException e) {
-			e.printStackTrace();
+			AcutePlugin.logError(e);
 		}
 		return null;
 	}

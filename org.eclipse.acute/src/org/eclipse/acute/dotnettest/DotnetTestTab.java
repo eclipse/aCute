@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -239,7 +240,7 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute("PROJECT_PATH", "");
+		configuration.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, "");
 		configuration.setAttribute("TEST_SELECTION_TYPE", DotnetTestDelegate.ALL_TESTS);
 		configuration.setAttribute("TEST_FILTER", "");
 		configuration.setAttribute("TEST_CLASS", "");
@@ -253,7 +254,7 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			pathText.setText(configuration.getAttribute("PROJECT_PATH", ""));
+			pathText.setText(configuration.getAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, ""));
 		} catch (CoreException ce) {
 			pathText.setText("");
 		}
@@ -323,7 +324,7 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute("PROJECT_PATH", pathText.getText());
+		configuration.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, pathText.getText());
 		configuration.setAttribute("TEST_SELECTION_TYPE", testType);
 		configuration.setAttribute("TEST_FILTER", filterText.getText());
 		configuration.setAttribute("TEST_CLASS", classText.getText());
