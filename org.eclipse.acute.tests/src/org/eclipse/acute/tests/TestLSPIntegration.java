@@ -59,11 +59,11 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 	@Test
 	public void testLSFound() throws Exception {
 		IProject project = getProject("basic");
-		//dotnetRestore(project);
+		dotnetRestore(project);
 		IFile csharpSourceFile = project.getFile("test.cs");
 		LanguageServer languageServer = LanguageServiceAccessor.getLanguageServers(csharpSourceFile, capabilities -> capabilities.getHoverProvider() != null).iterator().next();
 		String uri = csharpSourceFile.getLocationURI().toString();
-		Hover hover = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(uri), uri, new Position(4, 21))).get(1, TimeUnit.MINUTES);
+		Hover hover = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(uri), uri, new Position(4, 21))).get(3, TimeUnit.MINUTES);
 		Assert.assertNotNull(hover);
 	}
 	
