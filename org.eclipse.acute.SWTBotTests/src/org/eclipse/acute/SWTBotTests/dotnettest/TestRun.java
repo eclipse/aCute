@@ -83,7 +83,7 @@ public class TestRun extends AbstractDotnetTest{
 			public boolean test() throws Exception {
 				for(SWTBotTreeItem item : debugTree.getAllItems()) {
 					for (String node : item.expand().getNodes()) {
-						if(node.matches("<terminated, exit value: \\d>.NET Core Tests")) {
+						if(node.matches("<terminated, exit value: \\d>dotnet test")) {
 							return true;
 						}
 					}
@@ -102,8 +102,8 @@ public class TestRun extends AbstractDotnetTest{
 		
 		for(SWTBotTreeItem item : debugTree.getAllItems()) {
 			for (String node : item.expand().getNodes()) {
-				if(node.matches("<terminated, exit value: \\d>.NET Core Tests")) {
-					return Integer.parseInt(node.replace("<terminated, exit value: ", "").replace(">.NET Core Tests", ""));
+				if(node.matches("<terminated, exit value: \\d>dotnet test")) {
+					return Integer.parseInt(node.replace("<terminated, exit value: ", "").replace(">dotnet test", ""));
 				}
 			}
 		}
