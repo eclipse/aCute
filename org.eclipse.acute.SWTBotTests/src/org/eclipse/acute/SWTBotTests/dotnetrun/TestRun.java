@@ -56,7 +56,7 @@ public class TestRun extends AbstractDotnetTest{
 			public boolean test() throws Exception {
 				for(SWTBotTreeItem item : tree.getAllItems()) {
 					for (String node : item.expand().getNodes()) {
-						if(node.matches("<terminated, exit value: 0>.NET Core Project")) {
+						if(node.matches("<terminated, exit value: 0>dotnet run")) {
 							return true;
 						}
 					}
