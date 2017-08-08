@@ -9,12 +9,9 @@ addons:
     sources:
     - sourceline: 'deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ trusty main'
       key_url: 'https://apt-mo.trafficmanager.net/keys/microsoft.asc'
-    - sourceline: 'deb http://download.mono-project.com/repo/ubuntu trusty main'
-      key_url: 'http://download.mono-project.com/repo/xamarin.gpg'
     packages:
     - metacity
-    - dotnet-dev-1.0.1
-    - mono-complete
+    - dotnet-sdk-2.0.0-preview2-006497
 #cache:
 #  directories:
 #  - "$HOME/apache-maven-3.5.0"
@@ -32,7 +29,6 @@ before_install:
 install:
   - true
 before_script:
-  - mono --version
   - dotnet --version
 script:
   - if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" ]] ; then

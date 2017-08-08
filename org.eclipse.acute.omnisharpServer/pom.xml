@@ -32,7 +32,7 @@
 						</goals>
 						<phase>generate-resources</phase>
 						<configuration>
-							<url>https://github.com/OmniSharp/omnisharp-node-client/archive/v7.0.7.zip</url>
+							<url>https://github.com/OmniSharp/omnisharp-node-client/archive/v7.1.2.zip</url>
 							<unpack>true</unpack>
 							<outputDirectory>server/</outputDirectory>
 							<skipCache>true</skipCache>
@@ -56,7 +56,7 @@
 							<arguments>
 								<arg>install</arg>
 							</arguments>
-							<workingDirectory>server/omnisharp-node-client-7.0.7</workingDirectory>
+							<workingDirectory>server/omnisharp-node-client-7.1.2</workingDirectory>
 						</configuration>
 					</execution>
 				</executions>
