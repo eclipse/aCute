@@ -45,21 +45,9 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 		super.setUp();
 	}
 
-	private void dotnetRestore(IProject project) throws Exception {
-		String[] command = new String[] {"/bin/bash", "-c", "dotnet restore"};
-		if (Platform.getOS().equals(Platform.OS_WIN32)) {
-			command = new String[] {"cmd", "/c", "dotnet restore"};
-		}
-		ProcessBuilder builder = new ProcessBuilder(command);
-		builder.directory(project.getLocation().toFile());
-		Process dotnetRestoreProcess = builder.start();
-		dotnetRestoreProcess.waitFor();
-	}
-
 	@Test
 	public void testLSFound() throws Exception {
 		IProject project = getProject("basic");
-		dotnetRestore(project);
 		IFile csharpSourceFile = project.getFile("test.cs");
 		LanguageServer languageServer = LanguageServiceAccessor.getLanguageServers(csharpSourceFile, capabilities -> capabilities.getHoverProvider() != null).iterator().next();
 		String uri = csharpSourceFile.getLocationURI().toString();
@@ -81,7 +69,6 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 	@Test
 	public void testLSWorks() throws Exception {
 		IProject project = getProject("basicWithError");
-		dotnetRestore(project);
 		IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IEditorPart editor = null;
 		IFile file = project.getFile("testError.cs");
