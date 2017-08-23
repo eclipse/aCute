@@ -21,7 +21,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -33,7 +36,20 @@ import org.xml.sax.SAXException;
 public class ProjectFileAccessor {
 	private static final String[] EMPTY_ARRAY = new String[0];
 
-	public static String[] getTargetFrameworks(Path projectFile) {
+	public static IPath getProjectFile(IContainer project) {
+		try {
+			for (IResource projItem : project.members()) {
+				if (projItem.getName().equals("project.json") || projItem.getName().matches("^.*\\.csproj$")) {
+					return projItem.getFullPath();
+				}
+			}
+		} catch (CoreException e) {
+			return null;
+		}
+		return null;
+	}
+
+	public static String[] getTargetFrameworks(IPath projectFile) {
 		if (projectFile == null) {
 			return EMPTY_ARRAY;
 		} else if (projectFile.getFileExtension().equals("json")) {
@@ -60,16 +76,21 @@ public class ProjectFileAccessor {
 				NodeList nList = doc.getElementsByTagName("PropertyGroup");
 				if (nList.getLength() > 0) {
 					Node propertyGroup = nList.item(0);
-					Node framework = ((Element) propertyGroup).getElementsByTagName("TargetFramework").item(0);
-					if (framework != null) {
-						String allFrameworks = framework.getTextContent();
-						if (!allFrameworks.isEmpty()) {
-							return framework.getTextContent().split(";");
+					String tagName = "TargetFramework";
+					NodeList frameworkNodeList = ((Element) propertyGroup).getElementsByTagName(tagName);
+					if (frameworkNodeList.getLength() > 0) {
+						String[] framework = { frameworkNodeList.item(0).getTextContent() };
+						return framework;
+					} else {
+						Node framework = ((Element) propertyGroup).getElementsByTagName(tagName + "s").item(0);
+						if (framework != null) {
+							String allFrameworks = framework.getTextContent();
+							if (!allFrameworks.isEmpty()) {
+								return framework.getTextContent().split(";");
+							}
 						}
 					}
-					return EMPTY_ARRAY;
 				}
-				return EMPTY_ARRAY;
 			} catch (ParserConfigurationException | SAXException | IOException e) {
 				return EMPTY_ARRAY;
 			}

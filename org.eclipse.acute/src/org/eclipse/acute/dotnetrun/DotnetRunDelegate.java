@@ -19,12 +19,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.acute.AcutePlugin;
+import org.eclipse.acute.ProjectFileAccessor;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
@@ -93,11 +98,14 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
-		String projectLocation = configuration.getAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, "");
+		String projectLocation = configuration.getAttribute("PROJECT_FOLDER", "");
 		boolean buildProject = configuration.getAttribute("PROJECT_BUILD", true);
-		boolean restoreProject = configuration.getAttribute("PROJECT_RESTORE", true);
 		String projectArguments = configuration.getAttribute("PROJECT_ARGUMENTS", "");
+		String projectConfiguration = configuration.getAttribute("PROJECT_CONFIGURATION", "Debug");
 		String inputFileLocation = configuration.getAttribute("org.eclipse.debug.ui.ATTR_CAPTURE_STDIN_FILE", "");
+		IContainer projectFolder = ResourcesPlugin.getWorkspace().getRoot()
+				.getContainerForLocation(new Path(projectLocation));
+		File projectFileLocation = new File(projectLocation);
 
 		File inputFile;
 
@@ -111,30 +119,31 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 						MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 								"Unable to Launch", "Unable to read input file.");
 					});
+					return;
 				}
 			}
-
 		}
 
-		List<String> commandList = new ArrayList<>();
-		commandList.add("dotnet");
-		commandList.add("run");
-		if (!projectArguments.isEmpty()) {
-			commandList.addAll(Arrays.asList(projectArguments.split("\\s+")));
+		String projectFramework;
+
+		IPath projectFilePath = new Path(
+				projectFileLocation.getParent() + ProjectFileAccessor.getProjectFile(projectFolder));
+		String[] frameworks = ProjectFileAccessor.getTargetFrameworks(projectFilePath);
+		if (frameworks.length > 0) {
+			projectFramework = frameworks[0];
+		} else {
+			Display.getDefault().asyncExec(() -> {
+				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+						"Unable to Launch", "Unable to retrieve target framework");
+			});
+			return;
 		}
 
-		if (!buildProject) {
-			commandList.add("--no-build");
-		}
-
-		if (restoreProject) {
-			String[] cmdLine = new String[] { "dotnet", "restore" };
-			Process restoreProcess = DebugPlugin.exec(cmdLine, new File(projectLocation));
-			IProcess process = DebugPlugin.newProcess(launch, restoreProcess, "dotnet restore");
+		if (buildProject) {
+			String[] cmdLine = new String[] { "dotnet", "build" };
+			Process restoreProcess = DebugPlugin.exec(cmdLine, projectFileLocation);
+			IProcess process = DebugPlugin.newProcess(launch, restoreProcess, "dotnet build");
 			process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine));
-			process.setAttribute(DebugPlugin.ATTR_PATH, configuration.getAttribute(DebugPlugin.ATTR_PATH, ""));
-			process.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY,
-					configuration.getAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, ""));
 
 			try {
 				restoreProcess.waitFor();
@@ -143,12 +152,41 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 			if (restoreProcess.exitValue() != 0) { // errors will be shown in console
 				return;
 			}
+			projectFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		}
 
-		String[] cmdLine = commandList.toArray(new String[commandList.size()]);
-		Process p = DebugPlugin.exec(cmdLine, new File(projectLocation));
-		IProcess process = DebugPlugin.newProcess(launch, p, "dotnet run");
-		process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine));
+		IContainer binaryFileContainer = projectFolder
+				.getFolder(new Path("/bin/" + projectConfiguration + "/" + projectFramework));
+		IFile binaryFile = null;
+		if (binaryFileContainer.exists()) {
+			for (IResource resource : binaryFileContainer.members()) {
+				if (resource.getName().matches("^.*\\.dll$") && resource.getType() == IResource.FILE) {
+					binaryFile = (IFile) resource;
+				}
+			}
+		}
+
+		if (binaryFile != null) {
+			List<String> commandList = new ArrayList<>();
+			commandList.add("dotnet");
+			commandList.add("exec");
+			commandList.add(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+					+ binaryFile.getFullPath().toOSString());
+			if (!projectArguments.isEmpty()) {
+				commandList.addAll(Arrays.asList(projectArguments.split("\\s+")));
+			}
+
+			String[] cmdLine = commandList.toArray(new String[commandList.size()]);
+			Process p = DebugPlugin.exec(cmdLine, projectFileLocation);
+			IProcess process = DebugPlugin.newProcess(launch, p, "dotnet exec");
+			process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine));
+		} else {
+			Display.getDefault().asyncExec(() -> {
+				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+						"Unable to Launch", "Unable to find binary file");
+			});
+			return;
+		}
 	}
 
 	private ILaunchConfiguration getLaunchConfiguration(String mode, IResource resource) {
@@ -176,8 +214,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 			if (resource.getLocation().toFile().isFile()) {
 				resource = resource.getParent();
 			}
-			wc.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, resource.getLocation().toString());
-			wc.setAttribute(DebugPlugin.ATTR_PATH, "dotnet");
+			wc.setAttribute("PROJECT_FOLDER", resource.getLocation().toString());
 			return wc;
 		} catch (CoreException e) {
 			AcutePlugin.logError(e);

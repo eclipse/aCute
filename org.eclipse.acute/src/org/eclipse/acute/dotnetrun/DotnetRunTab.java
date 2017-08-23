@@ -14,7 +14,7 @@ import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -24,17 +24,22 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.ContainerSelectionDialog;;
 
 public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 
 	private Text pathText;
 	private Text argumentsText;
+	private Button debugRadio;
+	private Button releaseRadio;
 	private Button buildCheckBoxButton;
-	private Button restoreCheckBoxButton;
+
+	private String configuration = "Debug";
 
 	@Override
 	public void createControl(Composite parent) {
@@ -55,10 +60,14 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 		Button browseButton = new Button(container, SWT.NONE);
 		browseButton.setText("Browse...");
 		browseButton.addSelectionListener(widgetSelectedAdapter(e -> {
-			DirectoryDialog dialog = new DirectoryDialog(browseButton.getShell());
-			String path = dialog.open();
-			if (path != null) {
-				pathText.setText(path.toString());
+			ContainerSelectionDialog dialog = new ContainerSelectionDialog(browseButton.getShell(),
+					ResourcesPlugin.getWorkspace().getRoot(), false, "Project Folder:");
+			int path = dialog.open();
+			Object[] results = dialog.getResult();
+			if (path == 0 && results.length > 0) {
+				pathText.setText(
+						ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().getAbsolutePath().toString()
+						+ ((Path) results[0]).toOSString());
 				setDirty(true);
 				updateLaunchConfigurationDialog();
 			}
@@ -77,6 +86,24 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 			updateLaunchConfigurationDialog();
 		});
 
+		Listener configRadioListener = new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				configuration = ((Button) e.widget).getText();
+				setDirty(true);
+				updateLaunchConfigurationDialog();
+			}
+		};
+
+		debugRadio = new Button(container, SWT.RADIO);
+		debugRadio.setText("Debug");
+		debugRadio.setSelection(true);
+		debugRadio.addListener(SWT.Selection, configRadioListener);
+
+		releaseRadio = new Button(container, SWT.RADIO);
+		releaseRadio.setText("Release");
+		releaseRadio.addListener(SWT.Selection, configRadioListener);
+
 		new Label(container, SWT.NONE).setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 4, 1));
 
 		buildCheckBoxButton = new Button(container, SWT.CHECK);
@@ -87,31 +114,21 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 			setDirty(true);
 			updateLaunchConfigurationDialog();
 		}));
-
-		restoreCheckBoxButton = new Button(container, SWT.CHECK);
-		restoreCheckBoxButton.setSelection(true);
-		restoreCheckBoxButton.setText("Restore project");
-		restoreCheckBoxButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1));
-		restoreCheckBoxButton.addSelectionListener(widgetSelectedAdapter(e -> {
-			setDirty(true);
-			updateLaunchConfigurationDialog();
-		}));
 	}
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY,
+		configuration.setAttribute("PROJECT_FOLDER",
 				ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
-		configuration.setAttribute(DebugPlugin.ATTR_PATH, "dotnet");
 		configuration.setAttribute("PROJECT_ARGUMENTS", "");
 		configuration.setAttribute("PROJECT_BUILD", true);
-		configuration.setAttribute("PROJECT_RESTORE", true);
+		configuration.setAttribute("PROJECT_FRAMEWORK", "");
 	}
 
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			pathText.setText(configuration.getAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, ""));
+			pathText.setText(configuration.getAttribute("PROJECT_FOLDER", ""));
 		} catch (CoreException ce) {
 			pathText.setText(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
 		}
@@ -121,23 +138,25 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 			argumentsText.setText("");
 		}
 		try {
+			this.configuration = configuration.getAttribute("PROJECT_CONFIGURATION", "Debug");
+			debugRadio.setSelection(this.configuration.equals("Debug"));
+			releaseRadio.setSelection(!debugRadio.getSelection());
+		} catch (CoreException ce) {
+			// no initialize required
+		}
+		try {
 			buildCheckBoxButton.setSelection(configuration.getAttribute("PROJECT_BUILD", true));
 		} catch (CoreException ce) {
 			buildCheckBoxButton.setSelection(true);
-		}
-		try {
-			restoreCheckBoxButton.setSelection(configuration.getAttribute("PROJECT_RESTORE", true));
-		} catch (CoreException ce) {
-			restoreCheckBoxButton.setSelection(true);
 		}
 	}
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, pathText.getText());
+		configuration.setAttribute("PROJECT_FOLDER", pathText.getText());
 		configuration.setAttribute("PROJECT_ARGUMENTS", argumentsText.getText());
 		configuration.setAttribute("PROJECT_BUILD", buildCheckBoxButton.getSelection());
-		configuration.setAttribute("PROJECT_RESTORE", restoreCheckBoxButton.getSelection());
+		configuration.setAttribute("PROJECT_CONFIGURATION", this.configuration);
 		setDirty(false);
 	}
 
