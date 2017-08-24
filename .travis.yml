@@ -41,6 +41,6 @@ script:
     fi
 after_success:
   - if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" ]] ; then
-     cd repository/
-     mvn deploy
+     cd repository/;
+     mvn deploy;
     fi
