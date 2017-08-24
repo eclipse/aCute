@@ -4,6 +4,9 @@ jdk: oraclejdk8
 env:
   global:
     - secure: "uJIvjASschndkC56H4XGfykkvnImF85U1ViIiDbipKYizil8TvDqKMLdenKJTrmkiEAE0Ngn0q/718CpJSJ+2vE1rCUtTSyWU1guLdRxT3Y3/7ZWuXuTkdlP3oa53yMqWmUBYD6G2B7bGmTezZ/w4aQUOwDQbxKVkQc2Xi3RxOnbZczfLuVMH6TZWuisgO51SmxhgWu3aRyJE9QKQGafRdQWbcC8DCI8/0Pc6ilIbhzlw3H5lz9f+NJls5/7Dw8B2fi3N3PB/9tmqGa2rOcbD75vNOvzL0KdRdGWbUMWlYMpZQ51Cn9MTV76XOefgrB3iFLYD7EiEnnZSCEeoU0BEnQagMzpFtOwJvPVgiYk+S9FuQbJUM0Z3DETyZf4Cq/DlQKUiSVvowSVPNvl0h8SiyA4QJeUdU29p6zjfSOCeKm7nBvGEuh66U0S/t7ShOUDBkVCRgevHtfHdztuRn49eGSlo6paDf/ozd4EOV9AwsupmmoKjb3RtY412e7vO1mD0cGYxWDS3dqB6B1/LQbyZrR+33qrGKGLketr3A4FDu3iTXOwUam8U9dFjkxYo7PoWuT/9+4IJ8DJQGICmxmqa40ggEQDeNq2RnsxvB7dSVfSr3+Ojvuh3kct991rNxE/7s+6iuBy1Oi379pExO3wiPA9v9eOdV1hza5aV+MS3eQ="
+cache:
+  directories:
+    - $HOME/.m2
 addons:
   apt:
     sources:
