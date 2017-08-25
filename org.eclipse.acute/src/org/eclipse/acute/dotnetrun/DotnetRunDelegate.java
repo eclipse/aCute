@@ -101,6 +101,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 		String projectLocation = configuration.getAttribute("PROJECT_FOLDER", "");
 		boolean buildProject = configuration.getAttribute("PROJECT_BUILD", true);
 		String projectArguments = configuration.getAttribute("PROJECT_ARGUMENTS", "");
+		String projectFramework = configuration.getAttribute("PROJECT_FRAMEWORK", "");
 		String projectConfiguration = configuration.getAttribute("PROJECT_CONFIGURATION", "Debug");
 		String inputFileLocation = configuration.getAttribute("org.eclipse.debug.ui.ATTR_CAPTURE_STDIN_FILE", "");
 		IContainer projectFolder = ResourcesPlugin.getWorkspace().getRoot()
@@ -124,19 +125,19 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 			}
 		}
 
-		String projectFramework;
-
-		IPath projectFilePath = new Path(
-				projectFileLocation.getParent() + ProjectFileAccessor.getProjectFile(projectFolder));
-		String[] frameworks = ProjectFileAccessor.getTargetFrameworks(projectFilePath);
-		if (frameworks.length > 0) {
-			projectFramework = frameworks[0];
-		} else {
-			Display.getDefault().asyncExec(() -> {
-				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-						"Unable to Launch", "Unable to retrieve target framework");
-			});
-			return;
+		if (projectFramework.isEmpty()) {
+			IPath projectFilePath = new Path(
+					projectFileLocation.getParent() + ProjectFileAccessor.getProjectFile(projectFolder));
+			String[] frameworks = ProjectFileAccessor.getTargetFrameworks(projectFilePath);
+			if (frameworks.length > 0) {
+				projectFramework = frameworks[0];
+			} else {
+				Display.getDefault().asyncExec(() -> {
+					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+							"Unable to Launch", "Unable to retrieve target framework");
+				});
+				return;
+			}
 		}
 
 		if (buildProject) {
