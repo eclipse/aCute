@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.acute.AcutePlugin;
 import org.eclipse.acute.ProjectFileAccessor;
@@ -138,55 +139,65 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 			});
 			return;
 		}
-
-		if (buildProject) {
-			String[] cmdLine = new String[] { "dotnet", "build" };
-			Process restoreProcess = DebugPlugin.exec(cmdLine, projectFileLocation);
-			IProcess process = DebugPlugin.newProcess(launch, restoreProcess, "dotnet build");
-			process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine));
-
+		final String finalProjectArguments = projectArguments;
+		CompletableFuture.runAsync(() -> {
 			try {
-				restoreProcess.waitFor();
-			} catch (InterruptedException e) {
-			}
-			if (restoreProcess.exitValue() != 0) { // errors will be shown in console
-				return;
-			}
-			projectFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
-		}
+				if (buildProject) {
+					String[] cmdLine = new String[] { "dotnet", "build" };
+					Process restoreProcess = DebugPlugin.exec(cmdLine, projectFileLocation);
+					IProcess process = DebugPlugin.newProcess(launch, restoreProcess, "dotnet build");
+					process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine));
 
-		IContainer binaryFileContainer = projectFolder
-				.getFolder(new Path("/bin/" + projectConfiguration + "/" + projectFramework));
-		IFile binaryFile = null;
-		if (binaryFileContainer.exists()) {
-			for (IResource resource : binaryFileContainer.members()) {
-				if (resource.getName().matches("^.*\\.dll$") && resource.getType() == IResource.FILE) {
-					binaryFile = (IFile) resource;
+					try {
+						restoreProcess.waitFor();
+					} catch (InterruptedException e) {
+					}
+					if (restoreProcess.exitValue() != 0) { // errors will be shown in console
+						return;
+					}
+					projectFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 				}
-			}
-		}
 
-		if (binaryFile != null) {
-			List<String> commandList = new ArrayList<>();
-			commandList.add("dotnet");
-			commandList.add("exec");
-			commandList.add(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
-					+ binaryFile.getFullPath().toOSString());
-			if (!projectArguments.isEmpty()) {
-				commandList.addAll(Arrays.asList(projectArguments.split("\\s+")));
-			}
+				IContainer binaryFileContainer = projectFolder
+						.getFolder(new Path("/bin/" + projectConfiguration + "/" + projectFramework));
+				IFile binaryFile = null;
+				if (binaryFileContainer.exists()) {
+					for (IResource resource : binaryFileContainer.members()) {
+						if (resource.getName().matches("^.*\\.dll$") && resource.getType() == IResource.FILE) {
+							binaryFile = (IFile) resource;
+						}
+					}
+				}
 
-			String[] cmdLine = commandList.toArray(new String[commandList.size()]);
-			Process p = DebugPlugin.exec(cmdLine, projectFileLocation);
-			IProcess process = DebugPlugin.newProcess(launch, p, "dotnet exec");
-			process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine));
-		} else {
-			Display.getDefault().asyncExec(() -> {
-				MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-						"Unable to Launch", "Unable to find binary file");
-			});
-			return;
-		}
+				if (binaryFile != null) {
+					List<String> commandList = new ArrayList<>();
+					commandList.add("dotnet");
+					commandList.add("exec");
+					commandList.add(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+							+ binaryFile.getFullPath().toOSString());
+					if (!finalProjectArguments.isEmpty()) {
+						commandList.addAll(Arrays.asList(finalProjectArguments.split("\\s+")));
+					}
+
+					String[] cmdLine = commandList.toArray(new String[commandList.size()]);
+					Process p = DebugPlugin.exec(cmdLine, projectFileLocation);
+					IProcess process = DebugPlugin.newProcess(launch, p, "dotnet exec");
+					process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine));
+				} else {
+					Display.getDefault().asyncExec(() -> {
+						MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+								"Unable to Launch", "Unable to find binary file");
+					});
+					return;
+				}
+
+			} catch (CoreException e) {
+				Display.getDefault().asyncExec(() -> {
+					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+							"Exception in Launch", e.getLocalizedMessage());
+				});
+			}
+		});
 	}
 
 	private ILaunchConfiguration getLaunchConfiguration(String mode, IResource resource) {
