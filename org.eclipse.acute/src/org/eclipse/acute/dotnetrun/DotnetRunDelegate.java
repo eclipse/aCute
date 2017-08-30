@@ -141,6 +141,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 			}
 		}
 		final String finalProjectArguments = projectArguments;
+		final String framework = projectFramework;
 		CompletableFuture.runAsync(() -> {
 			try {
 				if (buildProject) {
@@ -160,7 +161,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 				}
 
 				IContainer binaryFileContainer = projectFolder
-						.getFolder(new Path("/bin/" + projectConfiguration + "/" + projectFramework));
+						.getFolder(new Path("/bin/" + projectConfiguration + "/" + framework));
 				IFile binaryFile = null;
 				if (binaryFileContainer.exists()) {
 					for (IResource resource : binaryFileContainer.members()) {
