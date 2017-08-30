@@ -70,39 +70,39 @@
            delegate="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
            modes="run"
            id="org.eclipse.acute.dotnetrun.DotnetRunDelegate">
-        </launchConfigurationType>
+      </launchConfigurationType>
    </extension>
    <extension
-       point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-       <launchConfigurationTabGroup
-           class="org.eclipse.acute.dotnetrun.DotnetRunTabGroup"
-           id="org.eclipse.acute.dotnetrun.DotnetRunTabGroup"
-           type="org.eclipse.acute.dotnetrun.DotnetRunDelegate">
-       </launchConfigurationTabGroup>
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.eclipse.acute.dotnetrun.DotnetRunTabGroup"
+            id="org.eclipse.acute.dotnetrun.DotnetRunTabGroup"
+            type="org.eclipse.acute.dotnetrun.DotnetRunDelegate">
+      </launchConfigurationTabGroup>
    </extension>
-    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-         <launchConfigurationTypeImage
+   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
             id="org.eclipse.acute.dotnetrun.DotnetRunTypeImage"
             configTypeID="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
             icon="icons/dotnet.png">
-         </launchConfigurationTypeImage>
-    </extension>
-    <extension point="org.eclipse.core.expressions.propertyTesters">
-       <propertyTester
-          id="org.eclipse.acute.dotnetProjectTester"
-          type="org.eclipse.core.resources.IResource"
-          namespace="org.eclipse.acute"
-          properties="isDotnetProject"
-          class="org.eclipse.acute.Tester">
-       </propertyTester>
-    </extension>
-    <extension point="org.eclipse.debug.ui.launchShortcuts">
-       <shortcut
-           id="org.eclipse.acute.dotnetrun.Shortcut"
-           class="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
-           label=".NET Core Project"
-           icon="icons/dotnet.png"
-           modes="run">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            id="org.eclipse.acute.dotnetProjectTester"
+            type="org.eclipse.core.resources.IResource"
+            namespace="org.eclipse.acute"
+            properties="isDotnetProject"
+            class="org.eclipse.acute.Tester">
+      </propertyTester>
+   </extension>
+   <extension point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            id="org.eclipse.acute.dotnetrun.Shortcut"
+            class="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
+            label=".NET Core Project"
+            icon="icons/dotnet.png"
+            modes="run">
          <contextualLaunch>
             <enablement>
                <with variable="selection">
@@ -110,7 +110,7 @@
                   <iterate>
                      <adapt type="org.eclipse.core.resources.IResource">
                         <test property="org.eclipse.acute.isDotnetProject"  
-                           forcePluginActivation="true"/>
+                              forcePluginActivation="true"/>
                      </adapt>
                   </iterate>
                </with>
@@ -124,44 +124,44 @@
             id="org.eclipse.acute.ExportWizard"
             name=".NET Core Project Exporter"
             class="org.eclipse.acute.dotnetexport.DotnetExportWizard"
-           icon="icons/dotnet.png">
-               <description>
-                  A wizard to assist with exporting .NET Core projects
-               </description>
-               <selection class="org.eclipse.core.resources.IResource"/>
+            icon="icons/dotnet.png">
+         <description>
+            A wizard to assist with exporting .NET Core projects
+         </description>
+         <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
    </extension>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-           name=".NET Core Test"
-           delegate="org.eclipse.acute.dotnettest.DotnetTestDelegate"
-           modes="run"
-           id="org.eclipse.acute.dotnettest.DotnetTestDelegate">
-        </launchConfigurationType>
+            name=".NET Core Test"
+            delegate="org.eclipse.acute.dotnettest.DotnetTestDelegate"
+            modes="run"
+            id="org.eclipse.acute.dotnettest.DotnetTestDelegate">
+      </launchConfigurationType>
    </extension>
    <extension
-       point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-       <launchConfigurationTabGroup
-           class="org.eclipse.acute.dotnettest.DotnetTestTabGroup"
-           id="org.eclipse.acute.dotnettest.DotnetTestTabGroup"
-           type="org.eclipse.acute.dotnettest.DotnetTestDelegate">
-       </launchConfigurationTabGroup>
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.eclipse.acute.dotnettest.DotnetTestTabGroup"
+            id="org.eclipse.acute.dotnettest.DotnetTestTabGroup"
+            type="org.eclipse.acute.dotnettest.DotnetTestDelegate">
+      </launchConfigurationTabGroup>
    </extension>
-    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-         <launchConfigurationTypeImage
+   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
             id="org.eclipse.acute.dotnettest.DotnetTestTypeImage"
             configTypeID="org.eclipse.acute.dotnettest.DotnetTestDelegate"
             icon="icons/dotnet.png">
-         </launchConfigurationTypeImage>
-    </extension>
-    <extension point="org.eclipse.debug.ui.launchShortcuts">
-       <shortcut
-           id="org.eclipse.acute.dotnettest.Shortcut"
-           class="org.eclipse.acute.dotnettest.DotnetTestDelegate"
-           label=".NET Core Test"
-           icon="icons/dotnet.png"
-           modes="run">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            id="org.eclipse.acute.dotnettest.Shortcut"
+            class="org.eclipse.acute.dotnettest.DotnetTestDelegate"
+            label=".NET Core Test"
+            icon="icons/dotnet.png"
+            modes="run">
          <contextualLaunch>
             <enablement>
                <with variable="selection">
@@ -169,12 +169,100 @@
                   <iterate>
                      <adapt type="org.eclipse.core.resources.IResource">
                         <test property="org.eclipse.acute.isDotnetProject"  
-                           forcePluginActivation="true"/>
+                              forcePluginActivation="true"/>
                      </adapt>
                   </iterate>
                </with>
             </enablement>
          </contextualLaunch>
       </shortcut>
+   </extension>
+   <extension
+         id="org.eclipse.acute.builder.IncrementalDotnetBuilder"
+         name=".NET Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run class="org.eclipse.acute.builder.IncrementalDotnetBuilder"/>
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command
+               commandId="org.eclipse.acute.builder.AddDotnetBuilder"
+               style="push">
+            <visibleWhen checkEnabled="false">
+               <and>
+                  <count value="1"/>
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <adapt type="org.eclipse.core.resources.IProject">
+                        <test
+                              property="org.eclipse.acute.isDotnetProject"  
+                              forcePluginActivation="true">
+                        </test>
+                     </adapt>
+                  </iterate>
+                  <iterate>
+                     <not>
+                        <test
+                              forcePluginActivation="true"
+                              property="org.eclipse.acute.builder.isDotnetBuilderEnabled">
+                        </test>
+                     </not>
+                  </iterate>
+               </and>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.eclipse.acute.builder.RemoveDotnetBuilder"
+               style="push">
+            <visibleWhen checkEnabled="true">
+               <and>
+                  <count value="1"/>
+                  <iterate ifEmpty="false" operator="and">
+                     <adapt type="org.eclipse.core.resources.IProject">
+                        <test
+                              property="org.eclipse.acute.isDotnetProject"  
+                              forcePluginActivation="true">
+                        </test>
+                     </adapt>
+                  </iterate>
+                  <iterate>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.eclipse.acute.builder.isDotnetBuilderEnabled">
+                     </test>
+                  </iterate>
+               </and>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+          point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.acute.builder.AddDotnetBuilder"
+            name="Add .NET Builder"
+            id="org.eclipse.acute.builder.AddDotnetBuilder">
+      </command>
+      <command
+            defaultHandler="org.eclipse.acute.builder.RemoveDotnetBuilder"
+            id="org.eclipse.acute.builder.RemoveDotnetBuilder"
+            name="Remove .NET Builder">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="org.eclipse.acute.builder.TestDotnetBuilderEnabled"
+            id="org.eclipse.acute.builder.IncrementalDotnetBuilderTester"
+            namespace="org.eclipse.acute.builder"
+            properties="isDotnetBuilderEnabled"
+            type="java.lang.Object">
+      </propertyTester>
    </extension>
 </plugin>
