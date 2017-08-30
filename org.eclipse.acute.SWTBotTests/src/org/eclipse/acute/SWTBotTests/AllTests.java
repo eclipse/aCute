@@ -23,7 +23,7 @@ import org.eclipse.acute.SWTBotTests.dotnetexport.AllExportTests;
 	AllNewTests.class,
 	AllRunTests.class,
 	AllExportTests.class,
-	AllExportTests.class
+	AllTestTests.class
 })
 public class AllTests {
 

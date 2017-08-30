@@ -48,6 +48,12 @@ public class AbstractDotnetTest {
 		shell.activate();
 		bot.table(0).select("Debug");
 		bot.button("Open").click();
+
+		bot.menu("Window").menu("Show View").menu("Other...").click();
+		shell = bot.shell("Show View");
+		shell.activate();
+		bot.tree().expandNode("General").getNode("Project Explorer").select().click();
+		bot.button("Open").click();
 	}
 	
 	@Before

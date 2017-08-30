@@ -18,6 +18,7 @@
 <unit id="org.eclipse.platform.ide" version="0.0.0"/>
 <unit id="org.eclipse.ui.genericeditor" version="0.0.0"/>
 <unit id="org.eclipse.ui.tests.harness" version="0.0.0"/>
+<unit id="org.eclipse.sdk.ide" version="0.0.0"/>
 <repository location="http://download.eclipse.org/eclipse/updates/4.7/"/>
 <unit id="org.junit" version="0.0.0"/>
 </location>
