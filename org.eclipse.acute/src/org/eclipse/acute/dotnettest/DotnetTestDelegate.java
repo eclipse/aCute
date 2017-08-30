@@ -150,7 +150,7 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 			ILaunch newLaunch = new Launch(null, ILaunchManager.RUN_MODE, null);
 
 			Process restoreProcess = DebugPlugin.exec(new String[] { "dotnet", "restore" }, projectFile);
-			DebugPlugin.newProcess(launch, restoreProcess, ".NET Core Restore");
+			DebugPlugin.newProcess(launch, restoreProcess, "dotnet restore");
 			launchManager.addLaunch(newLaunch);
 
 			try {
@@ -163,7 +163,7 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 		}
 
 		Process p = DebugPlugin.exec(commandList.toArray(new String[commandList.size()]), projectFile);
-		DebugPlugin.newProcess(launch, p, ".NET Core Tests");
+		DebugPlugin.newProcess(launch, p, "dotnet test");
 	}
 
 	private ILaunchConfiguration getLaunchConfiguration(String mode, IResource resource) {

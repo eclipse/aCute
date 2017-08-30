@@ -31,7 +31,6 @@ public class TestRun extends AbstractDotnetTest{
 	@Override
 	public void setup() throws CoreException {
 		super.setup();
-		
 		SWTBotView view = bot.viewByTitle("Project Explorer");
 		List<Tree> controls = new ChildrenControlFinder(
 				view.getWidget()).findControls(WidgetOfType.widgetOfType(Tree.class));
