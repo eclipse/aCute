@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="cs"
+            id="org.eclipse.acute.csharp"
+            name="C# file"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editorContentTypeBinding
+            contentTypeId="org.eclipse.acute.csharp"
+            editorId="org.eclipse.ui.genericeditor.GenericEditor">
+      </editorContentTypeBinding>
+   </extension>
+   <extension
+         point="org.eclipse.lsp4e.languageServer">
+      <server
+            class="org.eclipse.acute.OmnisharpStreamConnectionProvider"
+            id="org.eclipse.acute.omnisharp"
+            label="org.eclipse.acute.OmniSharp">
+      </server>
+      <contentTypeMapping
+            contentType="org.eclipse.acute.csharp"
+            id="org.eclipse.acute.omnisharp">
+      </contentTypeMapping>
+   </extension>
+   <extension
+         point="org.eclipse.tm4e.registry.grammars">
+      <grammar
+            path="grammar/csharp.tmLanguage"
+            scopeName="source.cs">
+      </grammar>
+      <scopeNameContentTypeBinding
+            contentTypeId="org.eclipse.acute.csharp"
+            scopeName="source.cs">
+      </scopeNameContentTypeBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.genericeditor.presentationReconcilers">
+      <presentationReconciler
+            class="org.eclipse.tm4e.ui.text.TMPresentationReconciler"
+            contentType="org.eclipse.acute.csharp">
+      </presentationReconciler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.acute.dotnet"
+            name=".NET Core">
+      </category>
+      <wizard
+            category="org.eclipse.acute.dotnet"
+            class="org.eclipse.acute.dotnetnew.DotnetNewWizard"
+            icon="icons/dotnet.png"
+            id="org.eclipse.acute.newWizard"
+            name=".NET Core project"
+            project="true">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+           name=".NET Core Project"
+           delegate="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
+           modes="run"
+           id="org.eclipse.acute.dotnetrun.DotnetRunDelegate">
+        </launchConfigurationType>
+   </extension>
+   <extension
+       point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+       <launchConfigurationTabGroup
+           class="org.eclipse.acute.dotnetrun.DotnetRunTabGroup"
+           id="org.eclipse.acute.dotnetrun.DotnetRunTabGroup"
+           type="org.eclipse.acute.dotnetrun.DotnetRunDelegate">
+       </launchConfigurationTabGroup>
+   </extension>
+    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+         <launchConfigurationTypeImage
+            id="org.eclipse.acute.dotnetrun.DotnetRunTypeImage"
+            configTypeID="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
+            icon="icons/dotnet.png">
+         </launchConfigurationTypeImage>
+    </extension>
+    <extension point="org.eclipse.core.expressions.propertyTesters">
+       <propertyTester
+          id="org.eclipse.acute.dotnetProjectTester"
+          type="org.eclipse.core.resources.IResource"
+          namespace="org.eclipse.acute"
+          properties="isDotnetProject"
+          class="org.eclipse.acute.Tester">
+       </propertyTester>
+    </extension>
+    <extension point="org.eclipse.debug.ui.launchShortcuts">
+       <shortcut
+           id="org.eclipse.acute.dotnetrun.Shortcut"
+           class="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
+           label=".NET Core Project"
+           icon="icons/dotnet.png"
+           modes="run">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value="1"/>
+                  <iterate>
+                     <adapt type="org.eclipse.core.resources.IResource">
+                        <test property="org.eclipse.acute.isDotnetProject"  
+                           forcePluginActivation="true"/>
+                     </adapt>
+                  </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
+   </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            id="org.eclipse.acute.ExportWizard"
+            name=".NET Core Project Exporter"
+            class="org.eclipse.acute.dotnetexport.DotnetExportWizard"
+           icon="icons/dotnet.png">
+               <description>
+                  A wizard to assist with exporting .NET Core projects
+               </description>
+               <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+           name=".NET Core Test"
+           delegate="org.eclipse.acute.dotnettest.DotnetTestDelegate"
+           modes="run"
+           id="org.eclipse.acute.dotnettest.DotnetTestDelegate">
+        </launchConfigurationType>
+   </extension>
+   <extension
+       point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+       <launchConfigurationTabGroup
+           class="org.eclipse.acute.dotnettest.DotnetTestTabGroup"
+           id="org.eclipse.acute.dotnettest.DotnetTestTabGroup"
+           type="org.eclipse.acute.dotnettest.DotnetTestDelegate">
+       </launchConfigurationTabGroup>
+   </extension>
+    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+         <launchConfigurationTypeImage
+            id="org.eclipse.acute.dotnettest.DotnetTestTypeImage"
+            configTypeID="org.eclipse.acute.dotnettest.DotnetTestDelegate"
+            icon="icons/dotnet.png">
+         </launchConfigurationTypeImage>
+    </extension>
+    <extension point="org.eclipse.debug.ui.launchShortcuts">
+       <shortcut
+           id="org.eclipse.acute.dotnettest.Shortcut"
+           class="org.eclipse.acute.dotnettest.DotnetTestDelegate"
+           label=".NET Core Test"
+           icon="icons/dotnet.png"
+           modes="run">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value="1"/>
+                  <iterate>
+                     <adapt type="org.eclipse.core.resources.IResource">
+                        <test property="org.eclipse.acute.isDotnetProject"  
+                           forcePluginActivation="true"/>
+                     </adapt>
+                  </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
+   </extension>
+</plugin>
