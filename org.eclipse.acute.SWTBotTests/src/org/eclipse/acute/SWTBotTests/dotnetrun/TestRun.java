@@ -11,6 +11,7 @@
 
 package org.eclipse.acute.SWTBotTests.dotnetrun;
 
+import java.security.Timestamp;
 import java.util.List;
 
 import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
@@ -49,18 +50,11 @@ public class TestRun extends AbstractDotnetTest{
 		List<Tree> controls = new ChildrenControlFinder(
 				debugView.getWidget()).findControls(WidgetOfType.widgetOfType(Tree.class));
 		SWTBotTree tree = new SWTBotTree((Tree) controls.get(0));
-		
 		bot.waitUntil(new ICondition() {
 			@Override
 			public boolean test() throws Exception {
-				for(SWTBotTreeItem item : tree.getAllItems()) {
-					for (String node : item.expand().getNodes()) {
-						if(node.matches("<terminated, exit value: 0>dotnet exec")) {
-							return true;
-						}
-					}
-				}
-				return false;
+				SWTBotView consoleView = bot.viewByPartName("Console");
+				return consoleView.bot().label().getText().matches("<terminated> .* \\[\\.NET Core Project\\] dotnet exec");
 			}
 			@Override public void init(SWTBot bot) {
 				debugView.setFocus();
@@ -68,7 +62,7 @@ public class TestRun extends AbstractDotnetTest{
 			@Override
 			public String getFailureMessage() {
 				SWTBotView consoleView = bot.viewByPartName("Console");
-				return "Test program failed: "+ consoleView.bot().styledText().getText();
+				return "No termination found. the "+consoleView.bot().label().getText()+" console outputted: "+ consoleView.bot().styledText().getText();
 			}
 		},30000);
 		

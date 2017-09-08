@@ -24,6 +24,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.ui.IWorkingSet;
 
@@ -76,8 +77,9 @@ public class AbstractNewWizardTest extends AbstractDotnetTest {
 				fail("Unable to get containing folder content");
 			}
 		}
+		bot.waitUntil(Conditions.widgetIsEnabled(bot.button("Finish")),60000);//delay to load templates
 		bot.button("Finish").click();
-		bot.waitUntil(Conditions.shellCloses(shell),30000);
+		bot.waitUntil(Conditions.shellCloses(shell),60000);//delay to build project
 		
 		IProject createdProject = root.getProject(projectName);
 		assertTrue("No .project file", createdProject.getFile(".project") != null);
