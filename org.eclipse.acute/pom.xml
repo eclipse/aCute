@@ -16,7 +16,7 @@
 				<version>1.3.0</version>
 				<executions>
 					<execution>
-						<id>fetch-grammar</id>
+						<id>fetch-csharp-grammar</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>wget</goal>
@@ -24,6 +24,19 @@
 						<configuration>
 							<url>https://raw.githubusercontent.com/dotnet/csharp-tmLanguage/master/grammars/csharp.tmLanguage</url>
 							<outputDirectory>${project.basedir}/grammar</outputDirectory>
+							<overwrite>true</overwrite>
+						</configuration>
+					</execution>
+					<execution>
+						<id>fetch-MSBuild-grammar</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://raw.githubusercontent.com/tillig/SublimeMSBuild/1.2.5/MSBuild.tmLanguage</url>
+							<outputDirectory>${project.basedir}/grammar</outputDirectory>
+							<skipCache>true</skipCache>
 							<overwrite>true</overwrite>
 						</configuration>
 					</execution>

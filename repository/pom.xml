@@ -77,8 +77,8 @@
   								<layout>p2</layout>
   							</repository>
   							<repository>
-  								<id>eclipse-4.8.RC2</id>
-  								<url>http://download.eclipse.org/eclipse/updates/4.8milestones/S-4.8RC2-201805240900/</url>
+  								<id>eclipse-4.8</id>
+  								<url>http://download.eclipse.org/eclipse/updates/4.8/</url>
   								<layout>p2</layout>
   							</repository>
   						</repositories>
