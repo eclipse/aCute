@@ -14,7 +14,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.tm4e.ui,
  org.eclipse.core.resources;bundle-version="3.12.0",
  org.eclipse.ui.ide,
- org.json;bundle-version="1.0.0",
  javax.xml;bundle-version="1.3.4",
  org.eclipse.debug.core,
  org.eclipse.debug.ui,
@@ -22,7 +21,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench,
  org.eclipse.core.expressions;bundle-version="3.6.0",
  org.eclipse.core.externaltools,
- org.eclipse.jdt.annotation;resolution:=optional
+ org.eclipse.jdt.annotation;resolution:=optional,
+ com.google.gson;bundle-version="2.7.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.variables

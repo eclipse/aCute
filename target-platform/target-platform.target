@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="aCute" sequenceNumber="5">
+<?pde version="3.8"?><target name="aCute" sequenceNumber="6">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.lsp4e" version="0.0.0"/>
@@ -16,11 +16,11 @@
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jdt.annotation" version="0.0.0"/>
 <unit id="org.eclipse.platform.ide" version="0.0.0"/>
+<unit id="org.eclipse.sdk.ide" version="0.0.0"/>
 <unit id="org.eclipse.ui.genericeditor" version="0.0.0"/>
 <unit id="org.eclipse.ui.tests.harness" version="0.0.0"/>
-<unit id="org.eclipse.sdk.ide" version="0.0.0"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.7/"/>
 <unit id="org.junit" version="0.0.0"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.7/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <repository location="http://download.eclipse.org/releases/oxygen/"/>
@@ -36,7 +36,6 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="javax.xml" version="1.3.4.v201005080400"/>
-<unit id="org.json" version="1.0.0.v201011060100"/>
 <repository location="http://download.eclipse.org/tools/orbit/R-builds/R20170516192513/repository"/>
 </location>
 </locations>

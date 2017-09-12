@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.acute;
 
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,13 +24,14 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class ProjectFileAccessor {
 	private static final String[] EMPTY_ARRAY = new String[0];
@@ -52,21 +52,20 @@ public class ProjectFileAccessor {
 	public static String[] getTargetFrameworks(IPath projectFile) {
 		if (projectFile == null) {
 			return EMPTY_ARRAY;
-		} else if (projectFile.getFileExtension().equals("json")) {
-			try {
-				JSONObject object = new JSONObject(new String(Files.readAllBytes(Paths.get(projectFile.toString()))));
-				Iterator<String> frameworkIterator = object.getJSONObject("frameworks").keys();
+		} else if (projectFile.getFileExtension().equals("json")) { // TODO consider defining and checking content-type
+			try (FileReader reader = new FileReader(projectFile.toFile())) {
+				Gson gson = new Gson();
+				JsonObject object = gson.fromJson(reader, JsonObject.class);
 				List<String> frameworks = new ArrayList<>();
-				while (frameworkIterator.hasNext()) {
-					frameworks.add(frameworkIterator.next());
+				for (Entry<String, ?> framework : object.getAsJsonObject("frameworks").entrySet()) {
+					frameworks.add(framework.getKey());
 				}
-				return frameworks.toArray(EMPTY_ARRAY);
-			} catch (JSONException | IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 				return EMPTY_ARRAY;
 			}
-
-		} else if (projectFile.getFileExtension().equals("csproj")) {
+		} else if (projectFile.getFileExtension().equals("csproj")) { // TODO consider defining and checking
+																		// content-type
 			try {
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder builder = factory.newDocumentBuilder();
