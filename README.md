@@ -10,10 +10,9 @@ aCute is an Eclipse.org project. See https://projects.eclipse.org/projects/tools
 
 ## Prerequisites
 
-* On **any OS**, `node` needs to be available in your PATH.
-* On **Linux**, `mono-devel` needs to be installed. ([dotnet-core not supported by OmniSharp Language Server yet](https://github.com/OmniSharp/omnisharp-node-client/issues/398)).
+* On **any OS**, `node` and `dotnet`(v2.0 or later) needs to be available in your PATH.
 * On **Windows**, .NET SDK needs to be installed.
-* On **Mac**: ?
+* On **Mac**: Unknown. If you discover an issue or required prerequisite, please [report the issue.](https://github.com/eclipse/aCute/issues)
 
 Or see [Alternative server setup](#alternative-server-setup)
 
