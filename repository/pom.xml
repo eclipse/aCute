@@ -14,7 +14,7 @@
 			<plugin>
 				<groupId>org.jboss.tools.tycho-plugins</groupId>
 				<artifactId>repository-utils</artifactId>
-				<version>0.26.1</version>
+				<version>1.0.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
