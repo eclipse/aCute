@@ -20,4 +20,7 @@ pipeline {
       }
     }
   }
+  environment {
+    PATH = '/shared/common/node-v7.10.0-linux-x64/bin:/shared/common/dotnet-sdk-2.0.0-linux-x64:$PATH'
+  }
 }
