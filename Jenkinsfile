@@ -5,7 +5,7 @@ pipeline {
       steps {
         withEnv(["PATH+NODE=/shared/common/node-v7.10.0-linux-x64/bin"]) {
           withMaven(maven: 'apache-maven-latest', jdk: 'jdk1.8.0-latest') {
-            sh 'mvn clean verify'
+            sh 'mvn clean verify -DskipTests'
           }
         }
       }
