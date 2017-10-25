@@ -3,7 +3,10 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'mvn clean verify'
+        withMaven(maven: 'apache-maven-latest', jdk: 'jdk1.8.0-latest') {
+          sh 'mvn clean verify'
+        }
+        
       }
     }
     stage('Deploy') {
