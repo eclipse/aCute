@@ -2,6 +2,7 @@ pipeline {
 	agent any
 	stages {
 		stage('Build') {
+			cleanWs()
 			steps {
 				wrap([$class: 'Xvnc', useXauthority: true]) {
 					withEnv(["PATH+NODE=/shared/common/node-v7.10.0-linux-x64/bin", "PATH+DOTNET=/shared/common/dotnet-sdk-2.0.0-linux-x64"]) {
