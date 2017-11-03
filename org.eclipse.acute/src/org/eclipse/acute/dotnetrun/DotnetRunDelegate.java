@@ -160,23 +160,15 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 					projectFolder.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 				}
 
-				IContainer binaryFileContainer = projectFolder
-						.getFolder(new Path("/bin/" + projectConfiguration + "/" + framework));
-				IFile binaryFile = null;
-				if (binaryFileContainer.exists()) {
-					for (IResource resource : binaryFileContainer.members()) {
-						if (resource.getName().matches("^.*\\.dll$") && resource.getType() == IResource.FILE) {
-							binaryFile = (IFile) resource;
-						}
-					}
-				}
+				IPath projectFile = ProjectFileAccessor.getProjectFile(projectFolder);
+				File binaryFile = new File(projectLocation + "/bin/" + projectConfiguration + "/" + framework + "/"
+						+ projectFile.removeFileExtension().addFileExtension("dll").lastSegment());
 
-				if (binaryFile != null) {
+				if (binaryFile.exists() && binaryFile.isFile()) {
 					List<String> commandList = new ArrayList<>();
 					commandList.add("dotnet");
 					commandList.add("exec");
-					commandList.add(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
-							+ binaryFile.getFullPath().toOSString());
+					commandList.add(binaryFile.getAbsolutePath());
 					if (!finalProjectArguments.isEmpty()) {
 						commandList.addAll(Arrays.asList(finalProjectArguments.split("\\s+")));
 					}
@@ -188,7 +180,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 				} else {
 					Display.getDefault().asyncExec(() -> {
 						MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-								"Unable to Launch", "Unable to find binary file");
+								"Unable to Launch", "Unable to find binary file at " + binaryFile.getAbsolutePath());
 					});
 					return;
 				}
