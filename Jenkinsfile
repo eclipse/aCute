@@ -4,6 +4,7 @@ pipeline {
 		stage('Build') {
 			steps {
 				cleanWs()
+				git url: 'https://github.com/eclipse/aCute.git'
 				wrap([$class: 'Xvnc', useXauthority: true]) {
 					withEnv(["PATH+NODE=/shared/common/node-v7.10.0-linux-x64/bin", "PATH+DOTNET=/shared/common/dotnet-sdk-2.0.0-linux-x64"]) {
 						withMaven(maven: 'apache-maven-latest', jdk: 'jdk1.8.0-latest') {
