@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.acute.AcutePlugin;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -65,7 +66,7 @@ public class DotnetNewAccessor {
 	public static List<Template> getTemplates() {
 		try {
 			List<Template> templates = new ArrayList<>();
-			String listCommand = "dotnet new --list";
+			String listCommand = AcutePlugin.getDotnetCommand() + " new --list";
 
 			Runtime runtime = Runtime.getRuntime();
 			Process process = runtime.exec(listCommand);
@@ -101,7 +102,7 @@ public class DotnetNewAccessor {
 				}
 				return templates;
 			}
-		} catch (IOException e) {
+		} catch (IllegalStateException | IOException e) {
 			return Collections.emptyList();
 		}
 	}

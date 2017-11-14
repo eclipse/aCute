@@ -14,13 +14,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.eclipse.acute.AcutePlugin;
+
 public class DotnetExportAccessor {
 
 	public static String getDefaultRuntime() {
-		String listCommand = "dotnet --info";
-
-		Runtime runtime = Runtime.getRuntime();
 		try {
+			String listCommand = AcutePlugin.getDotnetCommand() + " --info";
+			Runtime runtime = Runtime.getRuntime();
 			Process process = runtime.exec(listCommand);
 
 			try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
@@ -32,7 +33,7 @@ public class DotnetExportAccessor {
 					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (IllegalStateException | IOException e) {
 			return "";
 		}
 		return "";

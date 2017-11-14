@@ -145,7 +145,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 		CompletableFuture.runAsync(() -> {
 			try {
 				if (buildProject) {
-					String[] cmdLine = new String[] { "dotnet", "build" };
+					String[] cmdLine = new String[] { AcutePlugin.getDotnetCommand(), "build" };
 					Process restoreProcess = DebugPlugin.exec(cmdLine, projectFileLocation);
 					IProcess process = DebugPlugin.newProcess(launch, restoreProcess, "dotnet build");
 					process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine));
@@ -166,7 +166,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 
 				if (binaryFile.exists() && binaryFile.isFile()) {
 					List<String> commandList = new ArrayList<>();
-					commandList.add("dotnet");
+					commandList.add(AcutePlugin.getDotnetCommand());
 					commandList.add("exec");
 					commandList.add(binaryFile.getAbsolutePath());
 					if (!finalProjectArguments.isEmpty()) {
@@ -190,6 +190,8 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 							"Exception in Launch", e.getLocalizedMessage());
 				});
+			} catch (IllegalStateException e) {
+				// handled by getDotnetCommand()
 			}
 		});
 	}

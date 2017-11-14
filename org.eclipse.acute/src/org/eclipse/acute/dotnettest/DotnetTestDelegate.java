@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.acute.AcutePlugin;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -115,7 +116,11 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 		}
 
 		List<String> commandList = new ArrayList<>();
-		commandList.add("dotnet");
+		try {
+			commandList.add(AcutePlugin.getDotnetCommand());
+		} catch (Exception e) {
+			return;
+		}
 		commandList.add("test");
 
 		if (!projectConfiguration.isEmpty()) {
@@ -149,7 +154,8 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 			ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
 			ILaunch newLaunch = new Launch(null, ILaunchManager.RUN_MODE, null);
 
-			Process restoreProcess = DebugPlugin.exec(new String[] { "dotnet", "restore" }, projectFile);
+			Process restoreProcess = DebugPlugin.exec(new String[] { AcutePlugin.getDotnetCommand(), "restore" },
+					projectFile);
 			DebugPlugin.newProcess(launch, restoreProcess, "dotnet restore");
 			launchManager.addLaunch(newLaunch);
 
