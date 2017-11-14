@@ -265,4 +265,18 @@
             type="java.lang.Object">
       </propertyTester>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.acute.AcutePreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.eclipse.acute.AcutePreferencePage"
+            id="org.eclipse.acute.preferencePage"
+            name=".NET Core">
+      </page>
+   </extension>
 </plugin>

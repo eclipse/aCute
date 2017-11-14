@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.acute.AcutePlugin;
 import org.eclipse.acute.builder.IncrementalDotnetBuilder;
 import org.eclipse.acute.dotnetnew.DotnetNewAccessor.Template;
 import org.eclipse.core.resources.ICommand;
@@ -112,7 +113,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 			getContainer().run(true, true, monitor -> {
 				monitor.beginTask("Creating .NET Core project", 0);
 				List<String> commandLine = new ArrayList<>();
-				commandLine.add("dotnet");
+				commandLine.add(AcutePlugin.getDotnetCommand());
 				commandLine.add("new");
 				if (template != null) {
 					commandLine.addAll(template.getCLIOptions());
@@ -150,6 +151,8 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 		} catch (InvocationTargetException | InterruptedException e) {
 			MessageDialog.openError(getShell(), "Cannot create .NET Core template",
 					"The 'dotnet new' command failed: " + e);
+		} catch (IllegalStateException e) {
+			// handled by getDotnetCommand()
 		}
 		return true;
 	}

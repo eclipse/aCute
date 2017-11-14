@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.acute.AcutePlugin;
+
 public class DotnetTestAccessor {
 
 	/**
@@ -37,7 +39,7 @@ public class DotnetTestAccessor {
 
 		try {
 			ProcessBuilder restorePB;
-			restorePB = new ProcessBuilder("dotnet", "restore");
+			restorePB = new ProcessBuilder(AcutePlugin.getDotnetCommand(), "restore");
 			restorePB.directory(projectFile);
 			Process restoreProcess = restorePB.start();
 			restoreProcess.waitFor();
@@ -45,12 +47,12 @@ public class DotnetTestAccessor {
 			if (restoreProcess.exitValue() != 0) { // errors will be shown in console
 				return tests;
 			}
-		} catch (InterruptedException | IOException e) {
+		} catch (IllegalStateException | InterruptedException | IOException e) {
 			return tests;
 		}
 
 		ProcessBuilder processBuilder;
-		processBuilder = new ProcessBuilder("dotnet", "test", "--list-tests");
+		processBuilder = new ProcessBuilder(AcutePlugin.getDotnetCommand(), "test", "--list-tests");
 		processBuilder.directory(projectFile);
 
 		try {

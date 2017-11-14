@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.acute.AcutePlugin;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -76,8 +77,15 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 		if (!exportLocation.exists()) {
 			exportLocation.mkdirs();
 		}
+		String dotnetPath;
+		try {
+			dotnetPath = AcutePlugin.getDotnetCommand();
+		} catch (IllegalStateException e) {
+			return false;
+		}
+
 		List<String> restoreCommandList = new ArrayList<>();
-		restoreCommandList.add("dotnet");
+		restoreCommandList.add(dotnetPath);
 		restoreCommandList.add("restore");
 		if (isSCD) {
 			restoreCommandList.add("-r");
@@ -85,7 +93,7 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 		}
 
 		List<String> exportCommandList = new ArrayList<>();
-		exportCommandList.add("dotnet");
+		exportCommandList.add(dotnetPath);
 		exportCommandList.add("publish");
 		if (isSCD) {
 			exportCommandList.add("-r");
