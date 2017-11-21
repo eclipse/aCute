@@ -10,18 +10,15 @@
  *******************************************************************************/
 package org.eclipse.acute.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.lsp4e.LanguageServiceAccessor;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.Position;
@@ -32,9 +29,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.genericeditor.ExtensionBasedTextEditor;
 import org.eclipse.ui.tests.harness.util.DisplayHelper;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -45,21 +40,9 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 		super.setUp();
 	}
 
-	private void dotnetRestore(IProject project) throws Exception {
-		String[] command = new String[] {"/bin/bash", "-c", "dotnet restore"};
-		if (Platform.getOS().equals(Platform.OS_WIN32)) {
-			command = new String[] {"cmd", "/c", "dotnet restore"};
-		}
-		ProcessBuilder builder = new ProcessBuilder(command);
-		builder.directory(project.getLocation().toFile());
-		Process dotnetRestoreProcess = builder.start();
-		dotnetRestoreProcess.waitFor();
-	}
-
 	@Test
 	public void testLSFound() throws Exception {
 		IProject project = getProject("basic");
-		dotnetRestore(project);
 		IFile csharpSourceFile = project.getFile("test.cs");
 		LanguageServer languageServer = LanguageServiceAccessor.getLanguageServers(csharpSourceFile, capabilities -> capabilities.getHoverProvider() != null).iterator().next();
 		String uri = csharpSourceFile.getLocationURI().toString();
@@ -77,11 +60,10 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 		Assert.assertNotNull(hover);
 		Assert.assertFalse(hover.getContents().isEmpty());
 	}
-	
+
 	@Test
 	public void testLSWorks() throws Exception {
 		IProject project = getProject("basicWithError");
-		dotnetRestore(project);
 		IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IEditorPart editor = null;
 		IFile file = project.getFile("testError.cs");

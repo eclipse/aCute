@@ -45,10 +45,32 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 
 	@Override
 	public void start() throws IOException {
+		// workaround for https://github.com/OmniSharp/omnisharp-node-client/issues/265
+		String[] command;
+		try {
+			command = new String[] { "/bin/bash", "-c", AcutePlugin.getDotnetCommand(), "restore" };
+			if (Platform.getOS().equals(Platform.OS_WIN32)) {
+				command = new String[] { "cmd", "/c", AcutePlugin.getDotnetCommand(), "restore" };
+			}
+			Process restoreProcess = Runtime.getRuntime().exec(command);
+			try {
+				restoreProcess.waitFor();
+			} catch (InterruptedException e) {
+				AcutePlugin.logError(e);
+			}
+		} catch (IllegalStateException e) {
+			AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
+					AcutePlugin.getDefault().getBundle().getSymbolicName(),
+					"`dotnet restore` not performed!\n"
+							+ "Main issue and remediation: The `dotnet` path is not set in the .NET Core preferences. Please set it.\n"
+							+ "Possible alternative remediation:\n"
+							+ "* `dotnet` (v2.0 or later) is a prerequisite. Install it on your system if missing."));
+		}
+
 		String commandLine = System.getenv("OMNISHARP_LANGUAGE_SERVER_COMMAND");
 		String omnisharpLocation = System.getenv("OMNISHARP_LANGUAGE_SERVER_LOCATION");
 		if (commandLine != null) {
-			String[] command = new String[] {"/bin/bash", "-c", commandLine};
+			command = new String[] {"/bin/bash", "-c", commandLine};
 			if (Platform.getOS().equals(Platform.OS_WIN32)) {
 				command = new String[] {"cmd", "/c", commandLine};
 			}
