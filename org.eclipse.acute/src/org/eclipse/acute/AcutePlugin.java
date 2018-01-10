@@ -65,6 +65,10 @@ public class AcutePlugin extends AbstractUIPlugin {
 		getDefault().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, t.getMessage(), t));
 	}
 
+	public static void logError(String message) {
+		getDefault().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, message));
+	}
+
 	/**
 	 * Used to retrieve the path to the <code>dotnet</code> command. If no path has
 	 * been set, then a warning will be given allowing the opening the preferences

@@ -24,7 +24,6 @@
 						<configuration>
 							<url>https://raw.githubusercontent.com/dotnet/csharp-tmLanguage/master/grammars/csharp.tmLanguage</url>
 							<outputDirectory>${project.basedir}/grammar</outputDirectory>
-							<skipCache>true</skipCache>
 							<overwrite>true</overwrite>
 						</configuration>
 					</execution>

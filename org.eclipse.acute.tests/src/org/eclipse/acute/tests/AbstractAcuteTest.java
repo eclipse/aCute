@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.acute.tests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.acute.AcutePlugin;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -44,13 +47,14 @@ public class AbstractAcuteTest {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param projectName the name that will be used as prefix for the project, and that will be used to find
 	 * the content of the project from the plugin "projects" folder
-	 * @throws IOException 
-	 * @throws CoreException 
+	 * @throws IOException
+	 * @throws CoreException
+	 * @throws InterruptedException
 	 */
-	protected IProject provisionProject(String projectName) throws IOException, CoreException {
+	protected IProject provisionProject(String projectName) throws IOException, CoreException, InterruptedException {
 		URL url = FileLocator.find(Platform.getBundle("org.eclipse.acute.tests"), Path.fromPortableString("projects/" + projectName), Collections.emptyMap());
 		url = FileLocator.toFileURL(url);
 		File folder = new File(url.getFile());
@@ -59,6 +63,10 @@ public class AbstractAcuteTest {
 			project.create(new NullProgressMonitor());
 			this.provisionedProjects.put(projectName, project);
 			FileUtils.copyDirectory(folder, project.getLocation().toFile());
+			// workaround for https://github.com/OmniSharp/omnisharp-node-client/issues/265
+			ProcessBuilder dotnetRestoreBuilder = new ProcessBuilder(AcutePlugin.getDotnetCommand(), "restore");
+			dotnetRestoreBuilder.directory(project.getLocation().toFile());
+			assertEquals(0, dotnetRestoreBuilder.start().waitFor());
 			project.open(new NullProgressMonitor());
 			project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 			return project;
@@ -82,11 +90,11 @@ public class AbstractAcuteTest {
 
 	/**
 	 * @param projectPrefix the prefix of the project, as it can be found in plugin's "projects" folder
-	 * @return a project with the content from the specified projectPrefix 
-	 * @throws CoreException 
-	 * @throws IOException 
+	 * @return a project with the content from the specified projectPrefix
+	 * @throws CoreException
+	 * @throws IOException
 	 */
-	protected IProject getProject(String projectPrefix) throws IOException, CoreException {
+	protected IProject getProject(String projectPrefix) throws Exception {
 		if (!this.provisionedProjects.containsKey(projectPrefix)) {
 			provisionProject(projectPrefix);
 		}

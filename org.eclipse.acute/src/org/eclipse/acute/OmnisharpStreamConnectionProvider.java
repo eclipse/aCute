@@ -10,29 +10,25 @@
  *******************************************************************************/
 package org.eclipse.acute;
 
-import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilterInputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.stream.Collectors;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.BoundedInputStream;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.lsp4e.server.StreamConnectionProvider;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.UIJob;
 
 public class OmnisharpStreamConnectionProvider implements StreamConnectionProvider {
 
@@ -48,11 +44,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 		// workaround for https://github.com/OmniSharp/omnisharp-node-client/issues/265
 		String[] command;
 		try {
-			command = new String[] { "/bin/bash", "-c", AcutePlugin.getDotnetCommand(), "restore" };
-			if (Platform.getOS().equals(Platform.OS_WIN32)) {
-				command = new String[] { "cmd", "/c", AcutePlugin.getDotnetCommand(), "restore" };
-			}
-			Process restoreProcess = Runtime.getRuntime().exec(command);
+			Process restoreProcess = Runtime.getRuntime().exec(new String[] { AcutePlugin.getDotnetCommand(), "restore" });
 			try {
 				restoreProcess.waitFor();
 			} catch (InterruptedException e) {
@@ -68,89 +60,81 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 		}
 
 		String commandLine = System.getenv("OMNISHARP_LANGUAGE_SERVER_COMMAND");
-		String omnisharpLocation = System.getenv("OMNISHARP_LANGUAGE_SERVER_LOCATION");
+		if (commandLine == null) {
+			File serverPath = getServer();
+			commandLine = getDefaultCommandLine(serverPath);
+		}
 		if (commandLine != null) {
-			command = new String[] {"/bin/bash", "-c", commandLine};
-			if (Platform.getOS().equals(Platform.OS_WIN32)) {
-				command = new String[] {"cmd", "/c", commandLine};
-			}
-			this.process = Runtime.getRuntime().exec(command);
-		} else if (omnisharpLocation != null) {
-			ProcessBuilder builder = new ProcessBuilder(
-					getNodeJsLocation().getAbsolutePath(),
-					omnisharpLocation);
-			process = builder.start();
+			this.process = Runtime.getRuntime().exec(commandLine);
 		} else {
-			URL serverFileUrl = getClass().getResource("/server/omnisharp-node-client-7.1.2/languageserver/server.js");
-			if (serverFileUrl != null) {
-				File serverFile = new File(FileLocator.toFileURL(serverFileUrl).getPath());
-				if (serverFile.exists()) {
-					File nodeJsLocation = getNodeJsLocation();
-					if (nodeJsLocation == null || !nodeJsLocation.isFile()) {
-						AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
-								AcutePlugin.getDefault().getBundle().getSymbolicName(),
-								"Couldn't find nodejs in your machine. Please make sure it's part of your PATH."));
-						return;
+			AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
+					AcutePlugin.getDefault().getBundle().getSymbolicName(),
+					"Omnisharp not found!\n" +
+							"Main issue and remediation: The `org.eclipse.acute.omnisharpServer` fragment is missing. Please add it.\n" + "Possible alternative settings:\n" + "* set `OMNISHARP_LANGUAGE_SERVER_COMMAND` to the command that should be used to start the server (with full path)."));
+		}
+	}
+
+	/**
+	 *
+	 * @return path to server, unzipping it if necessary. Can be null is fragment is missing.
+	 */
+	private @Nullable File getServer() throws IOException {
+		File serverPath = new File(AcutePlugin.getDefault().getStateLocation().toFile(), "omnisharp-roslyn");
+		if (!serverPath.exists()) {
+			serverPath.mkdirs();
+			try (
+				InputStream stream = FileLocator.openStream(AcutePlugin.getDefault().getBundle(), new Path("omnisharp-roslyn.tar"), true);
+				TarArchiveInputStream tarStream = new TarArchiveInputStream(stream);
+			) {
+				TarArchiveEntry entry = null;
+				while ((entry = tarStream.getNextTarEntry()) != null) {
+					if (!entry.isDirectory()) {
+						File targetFile = new File(serverPath, entry.getName());
+						targetFile.getParentFile().mkdirs();
+						InputStream in = new BoundedInputStream(tarStream, entry.getSize()); // mustn't be closed
+						try (
+							FileOutputStream out = new FileOutputStream(targetFile);
+						) {
+							IOUtils.copy(in, out);
+							if (!Platform.OS_WIN32.equals(Platform.getOS())) {
+								int xDigit = entry.getMode() % 10;
+								targetFile.setExecutable(xDigit > 0, (xDigit & 1) == 1);
+								int wDigit = (entry.getMode() / 10) % 10;
+								targetFile.setWritable(wDigit > 0, (wDigit & 1) == 1);
+								int rDigit = (entry.getMode() / 100) % 10;
+								targetFile.setReadable(rDigit > 0, (rDigit & 1) == 1);
+							}
+						}
 					}
-					ProcessBuilder builder = new ProcessBuilder(
-							nodeJsLocation.getAbsolutePath(),
-							serverFile.getAbsolutePath());
-					AcutePlugin.getDefault().getLog().log(new Status(IStatus.INFO,
-							AcutePlugin.getDefault().getBundle().getSymbolicName(),
-							"Omnisharp command-line: " + builder.command().stream().collect(Collectors.joining(" "))));
-					process = builder.start();
-					return;
 				}
-			} else {
-				AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
-						AcutePlugin.getDefault().getBundle().getSymbolicName(),
-						"Omnisharp not found!\n"
-								+
-								"Main issue and remediation: The `org.eclipse.acute.omnisharpServer` fragment is missing. Please add it.\n" +
-								"Possible alternative settings:\n" +
-								"* set `OMNISHARP_LANGUAGE_SERVER_COMMAND` to the command that should be used to start the server (with full path).\n" +
-						"* set `OMNISHARP_LANGUAGE_SERVER_LOCATION` to the full path of thel language server file."));
 			}
 		}
+		return serverPath;
 	}
 
-	private static File getNodeJsLocation() {
-		String location = null;
-		String[] command = new String[] {"/bin/bash", "-c", "which node"};
-		if (Platform.getOS().equals(Platform.OS_WIN32)) {
-			command = new String[] {"cmd", "/c", "where node"};
-		}
-		BufferedReader reader = null;
-		try {
-			Process p = Runtime.getRuntime().exec(command);
-			reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			location = reader.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			IOUtils.closeQuietly(reader);
+	/**
+	 *
+	 * @param commandLine
+	 * @return the command-line to run the server, or null is expected resources are not found
+	 * @throws IOException
+	 */
+	protected @Nullable String getDefaultCommandLine(File serverPath) throws IOException {
+		File serverFileUrl = null;
+		if (Platform.OS_WIN32.equals(Platform.getOS())) {
+			serverFileUrl = new File(serverPath, "server/Omnisharp.exe");
+		} else {
+			serverFileUrl = new File(serverPath, "run");
 		}
 
-		// Try default install path as last resort
-		if (location == null && Platform.getOS().equals(Platform.OS_MACOSX)) {
-			location = "/usr/local/bin/node";
+		if (serverFileUrl == null || !serverFileUrl.exists()) {
+			AcutePlugin.logError("Server file not found. Has Omnisharp server been unpacked in " + serverPath + " ?");
+			return null;
+		} else if (!serverFileUrl.canExecute()) {
+			AcutePlugin.logError("Server file " + serverFileUrl + " is not executable.");
+			// return value anyway
 		}
-
-		if (Files.exists(Paths.get(location))) {
-			return new File(location);
-		}
-		new UIJob(PlatformUI.getWorkbench().getDisplay(), "Missing `node` in PATH") {
-			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
-				MessageDialog.openError(getDisplay().getActiveShell(), "Missing Node.js",
-						"`node` is missing in your PATH, C# editor won't work fully.\n" +
-						"Please install `node` and make it available in your PATH");
-				return Status.OK_STATUS;
-			}
-		}.schedule();
-		return null;
+		return serverFileUrl.getAbsolutePath() + " -stdio -lsp";
 	}
-
 
 	@Override
 	public InputStream getInputStream() {
@@ -217,7 +201,9 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 
 	@Override
 	public void stop() {
-		process.destroy();
+		if (process != null) {
+			process.destroy();
+		}
 	}
 
 }
