@@ -11,13 +11,17 @@
 	<properties>
 		<tycho-version>1.0.0</tycho-version>
 		<tycho-extras-version>${tycho-version}</tycho-extras-version>
-		<tycho.scmUrl>scm:git:https://github.com/mickaelistria/aCute.git</tycho.scmUrl>
+		<tycho.scmUrl>scm:git:https://github.com/eclipse/acute.git</tycho.scmUrl>
 	</properties>
 
 	<modules>
 		<module>target-platform</module>
 		<module>org.eclipse.acute</module>
-		<module>org.eclipse.acute.omnisharpServer</module>
+		<module>roslynFragments/org.eclipse.acute.omnisharpServer.linux.x86_64</module>
+		<module>roslynFragments/org.eclipse.acute.omnisharpServer.linux.x86</module>
+		<module>roslynFragments/org.eclipse.acute.omnisharpServer.win32.x86_64</module>
+		<module>roslynFragments/org.eclipse.acute.omnisharpServer.win32.x86</module>
+		<!-- module>roslynFragments/org.eclipse.acute.omnisharpServer.macosx.x86_64</module -->
 		<module>org.eclipse.acute.tests</module>
 		<module>org.eclipse.acute.SWTBotTests</module>
 		<module>org.eclipse.acute.feature</module>
@@ -44,6 +48,33 @@
 							<version>${project.version}</version>
 						</artifact>
 					</target>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
 				</configuration>
 			</plugin>
 			<plugin>

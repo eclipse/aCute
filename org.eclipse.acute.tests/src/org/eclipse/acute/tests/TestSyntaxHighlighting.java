@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.acute.tests;
 
-import java.io.IOException;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
@@ -26,8 +23,8 @@ import org.junit.Test;
 public class TestSyntaxHighlighting extends AbstractAcuteTest {
 
 	@Test
-	public void testSyntaxHighlighting() throws CoreException, IOException {
-		IFile csharpSourceFile = getProject("basic").getFile("test.cs");
+	public void testSyntaxHighlighting() throws Exception {
+		IFile csharpSourceFile = getProject("csproj").getFile("Program.cs");
 		TextEditor editor = (TextEditor) IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), csharpSourceFile, "org.eclipse.ui.genericeditor.GenericEditor");
 		StyledText editorTextWidget = (StyledText)editor.getAdapter(Control.class);
 		new DisplayHelper() {

@@ -11,6 +11,7 @@
 	<properties>
 		<testSuite>${project.artifactId}</testSuite>
 		<testClass>org.eclipse.acute.tests.AllTests</testClass>
+		<tycho.testArgLine>-Xmx512m</tycho.testArgLine>
 	</properties>
 
 	<build>
@@ -23,8 +24,8 @@
 					 <dependency-resolution>
 						<extraRequirements>
 							<requirement>
-								<type>eclipse-plugin</type>
-								<id>org.eclipse.acute.omnisharpServer</id>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.acute.feature</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 						</extraRequirements>

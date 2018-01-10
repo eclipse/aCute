@@ -18,7 +18,7 @@
    <bundle id="org.jcodings" version="1.0.18.v20170306-1742">
       <category name="Dependencies"/>
    </bundle>
-   <bundle id="org.objectweb.asm" version="5.2.0.v20170126-0011">
+   <bundle id="org.objectweb.asm" version="0.0.0">
       <category name="Dependencies"/>
    </bundle>
    <bundle id="org.eclipse.lsp4e" version="0.0.0">
