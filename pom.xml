@@ -12,6 +12,7 @@
 		<tycho-version>1.0.0</tycho-version>
 		<tycho-extras-version>${tycho-version}</tycho-extras-version>
 		<tycho.scmUrl>scm:git:https://github.com/eclipse/acute.git</tycho.scmUrl>
+		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 	</properties>
 
 	<modules>
@@ -162,6 +163,7 @@
 					<configuration>
 						<timestampProvider>jgit</timestampProvider>
 						<jgit.ignore>pom.xml</jgit.ignore>
+						<jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
 					</configuration>
 				</plugin>
 				<plugin>
