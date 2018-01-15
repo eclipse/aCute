@@ -10,7 +10,7 @@ aCute is an Eclipse.org project. See https://projects.eclipse.org/projects/tools
 
 ## Prerequisites
 
-* On **any OS**, `node` and `dotnet`(v2.0 or later) needs to be available in your PATH.
+* On **any OS**, `dotnet`(v2.0 or later) needs to be available in your PATH.
 * On **Windows**, .NET SDK needs to be installed.
 * On **Mac**: Unknown. If you discover an issue or required prerequisite, please [report the issue.](https://github.com/eclipse/aCute/issues)
 
@@ -20,7 +20,7 @@ Or see [Alternative server setup](#alternative-server-setup)
 
 Using Eclipse Marketplace: https://marketplace.eclipse.org/content/acute-c-edition-eclipse-ide-experimental
 
-Using p2 repository: use `http://repository.jboss.org/nexus/content/unzip/unzip/org/eclipse/acute/repository/0.1.0-SNAPSHOT/repository-0.1.0-SNAPSHOT.zip-unzip/` in the [Install New Software wizard](http://help.eclipse.org/topic/org.eclipse.platform.doc.user/tasks/tasks-127.htm)
+Using p2 repository: use `http://download.eclipse.org/acute/snapshots/` in the [Install New Software wizard](http://help.eclipse.org/topic/org.eclipse.platform.doc.user/tasks/tasks-127.htm)
 
 ## Concept
 
@@ -29,7 +29,6 @@ aCute uses the [lsp4e](https://projects.eclipse.org/projects/technology.lsp4e) p
 ## Alternative server setup
 
 You can setup a local [OmniSharp Language Server](https://github.com/OmniSharp/omnisharp-node-client) fetched, configured and working locally. Then at least one of the following *environment variables* should be set to make Eclipse IDE able to locate your specific OmniSharp-node-client:
-* `OMNISHARP_LANGUAGE_SERVER_COMMAND`: a command-line to start omnisharp-node-client (such as `/usr/bin/node /home/mistria/git/omnisharp-node-client/languageserver/server.js`)
-* `OMNISHARP_LANGUAGE_SERVER_LOCATION`: the location when omnisharp-node-client is installed (such as `/home/mistria/git/omnisharp-node-client`).
+* `OMNISHARP_LANGUAGE_SERVER_COMMAND`: a command-line to start omnisharp-node-client (such as `/usr/bin/node /home/mistria/git/omnisharp-node-client/languageserver/server.js` or `/home/mistria/omnisharp-roslyn/run -lsp -stdio`)
 
 Note that this approach isn't recommended nor supported by the aCute project developers. It's mainly useful for contributors who want to hack things around Omnisharp-node-client and/or aCute.
