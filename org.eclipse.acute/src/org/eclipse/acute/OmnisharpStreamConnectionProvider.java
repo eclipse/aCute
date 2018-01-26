@@ -42,7 +42,6 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 	@Override
 	public void start() throws IOException {
 		// workaround for https://github.com/OmniSharp/omnisharp-node-client/issues/265
-		String[] command;
 		try {
 			Process restoreProcess = Runtime.getRuntime().exec(new String[] { AcutePlugin.getDotnetCommand(), "restore" });
 			try {
@@ -204,6 +203,10 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 		if (process != null) {
 			process.destroy();
 		}
+	}
+
+	@Override public @Nullable InputStream getErrorStream() {
+		return process.getErrorStream();
 	}
 
 }

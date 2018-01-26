@@ -9,7 +9,7 @@
 		<maven>3.1.1</maven>
 	</prerequisites>
 	<properties>
-		<tycho-version>1.0.0</tycho-version>
+		<tycho-version>1.1.0</tycho-version>
 		<tycho-extras-version>${tycho-version}</tycho-extras-version>
 		<tycho.scmUrl>scm:git:https://github.com/eclipse/acute.git</tycho.scmUrl>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
@@ -274,6 +274,10 @@
 			<id>jboss</id>
 			<url>https://repository.jboss.org/</url>
 			<snapshots><enabled>true</enabled></snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>tycho-staged</id>
+			<url>https://oss.sonatype.org/content/repositories/orgeclipsetycho-1046/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
