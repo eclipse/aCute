@@ -39,17 +39,21 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 	public OmnisharpStreamConnectionProvider() {
 	}
 
+	private boolean showDotnetCommandError = true;
+
 	@Override
 	public void start() throws IOException {
 		// workaround for https://github.com/OmniSharp/omnisharp-node-client/issues/265
 		try {
-			Process restoreProcess = Runtime.getRuntime().exec(new String[] { AcutePlugin.getDotnetCommand(), "restore" });
+			Process restoreProcess = Runtime.getRuntime().exec(new String[] { AcutePlugin.getDotnetCommand(showDotnetCommandError), "restore" });
+			showDotnetCommandError = true;
 			try {
 				restoreProcess.waitFor();
 			} catch (InterruptedException e) {
 				AcutePlugin.logError(e);
 			}
 		} catch (IllegalStateException e) {
+			showDotnetCommandError = false;
 			AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
 					AcutePlugin.getDefault().getBundle().getSymbolicName(),
 					"`dotnet restore` not performed!\n"

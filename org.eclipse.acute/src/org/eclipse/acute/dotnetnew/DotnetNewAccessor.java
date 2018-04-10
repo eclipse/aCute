@@ -62,6 +62,8 @@ public class DotnetNewAccessor {
 	 * @return Map<String, String>: Contains the short name, used to refer to the
 	 *         template in bash commands, as the key and the template's full name as
 	 *         the value.
+	 * @throws IllegalStateException
+	 *             If no `dotnet` path has been set
 	 */
 	public static List<Template> getTemplates() {
 		try {
@@ -102,7 +104,7 @@ public class DotnetNewAccessor {
 				}
 				return templates;
 			}
-		} catch (IllegalStateException | IOException e) {
+		} catch (IOException e) {
 			return Collections.emptyList();
 		}
 	}

@@ -20,6 +20,8 @@ import java.net.URL;
 import java.util.Set;
 
 import org.eclipse.acute.AcutePlugin;
+import org.eclipse.acute.AcutePreferenceInitializer;
+import org.eclipse.acute.AcutePreferencePage;
 import org.eclipse.acute.dotnetnew.DotnetNewAccessor.Template;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -31,7 +33,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
@@ -48,10 +54,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.WorkingSetGroup;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -72,6 +80,7 @@ public class DotnetNewWizardPage extends WizardPage {
 	private ControlDecoration locationControlDecoration;
 	private ControlDecoration projectNameControlDecoration;
 	private ControlDecoration templateControlDecoration;
+	private IPropertyChangeListener updateTemplatesListener;
 
 	protected DotnetNewWizardPage() {
 		super(DotnetNewWizardPage.class.getName());
@@ -102,7 +111,7 @@ public class DotnetNewWizardPage extends WizardPage {
 
 	public @Nullable Template getTemplate() {
 		IStructuredSelection selection = (IStructuredSelection) templateViewer.getSelection();
-		if (selection.isEmpty()) {
+		if (templateViewer.getList().isEnabled() && selection.isEmpty()) {
 			return null;
 		}
 		return (Template) selection.getFirstElement();
@@ -202,11 +211,7 @@ public class DotnetNewWizardPage extends WizardPage {
 			e.gc.drawLine(0, e.height/2, e.width/2, e.height/2);
 			e.gc.drawLine(e.width/2, e.height/2, e.width/2, 0);
 		});
-		new Label(container, SWT.NONE);
-
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE).setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false, 4, 1));
 
 		Label projectTemplateLabel = new Label(container, SWT.NONE);
 		projectTemplateLabel.setText("Project Template");
@@ -217,37 +222,39 @@ public class DotnetNewWizardPage extends WizardPage {
 		templateViewer = new ListViewer(list);
 		templateViewer.setContentProvider(new ArrayContentProvider());
 		templateViewer.setComparator(new ViewerComparator()); // default uses getLabel()/toString()
-		templateViewer.add("Loading templates");
-		templateViewer.getList().setEnabled(false);
 		templateViewer.addSelectionChangedListener(e -> {
 			setPageComplete(isPageComplete());
 		});
 		templateControlDecoration = new ControlDecoration(templateViewer.getControl(), SWT.TOP | SWT.LEFT);
 		templateControlDecoration.setImage(errorImage);
+		updateTemplateList();
 
-
-		Job.create("Retrieve Templates", (ICoreRunnable) monitor -> {
-			final java.util.List<Template> templates = DotnetNewAccessor.getTemplates();
-			Display.getDefault().asyncExec(() -> {
-				templateViewer.getList().removeAll();
-				if (!templates.isEmpty()) {
-					((GridData) templateViewer.getList().getLayoutData()).heightHint = 100;
-					Shell shell = templateViewer.getControl().getShell();
-					shell.setSize(shell.getSize().x, shell.getSize().y + 100);
-					templateViewer.setInput(templates);
-					if (templateViewer.getSelection().isEmpty()) {
-						templateViewer.getList().setSelection(0);
-					}
-					templateViewer.getList().setEnabled(true);
-					setPageComplete(isPageComplete());
-				} else {
-					templateViewer.add("No available templates");
+		//Update Template List with preferences change
+		IPreferenceStore store = AcutePlugin.getDefault().getPreferenceStore();
+		updateTemplatesListener = new IPropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getProperty().equals(AcutePreferenceInitializer.explicitDotnetPathPreference)) {
+					updateTemplateList();
 				}
-				templateViewer.getControl().getParent().layout();
-			});
-		}).schedule();
+			}
+		};
+		store.addPropertyChangeListener(updateTemplatesListener);
 
 		new Label(container, SWT.NONE);
+
+		new Label(container, SWT.NONE);
+		Link preferencesLink = new Link(container, SWT.NONE);
+		preferencesLink.setText("<a>.NET Preferences</a>");
+		preferencesLink.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,2,1));
+		preferencesLink.addSelectionListener(widgetSelectedAdapter(s -> Display.getDefault().asyncExec(() -> {
+			PreferenceDialog preferenceDialog = PreferencesUtil.createPreferenceDialogOn(getShell(),
+					AcutePreferencePage.PAGE_ID,
+					new String[] { AcutePreferencePage.PAGE_ID }, null);
+			preferenceDialog.setBlockOnOpen(false);
+			preferenceDialog.open();
+		})));
+		new Label(container, SWT.NONE).setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false, 4, 1));
 
 		Composite workingSetComposite = new Composite(container, SWT.NONE);
 		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1);
@@ -263,6 +270,53 @@ public class DotnetNewWizardPage extends WizardPage {
 		if (directory != null) {
 			updateDirectory(directory.getAbsolutePath());
 		}
+	}
+
+	private void updateTemplateList() {
+		if(templateViewer.getList().isDisposed()) {
+			return;
+		}
+		setTemplateViewToText("Loading templates...");
+		try {
+			AcutePlugin.getDotnetCommand();
+		} catch (IllegalStateException e) {
+			setTemplateViewToText("Error with `dotnet` command, see preferences");
+			return;
+		}
+		Job.create("Retrieve Templates", (ICoreRunnable) monitor -> {
+			final java.util.List<Template> templates = DotnetNewAccessor.getTemplates();
+			Display.getDefault().asyncExec(() -> {
+				templateViewer.getList().removeAll();
+				if (!templates.isEmpty()) {
+					((GridData) templateViewer.getList().getLayoutData()).heightHint = 100;
+					Shell shell = templateViewer.getControl().getShell();
+					shell.setSize(shell.getSize().x, shell.getSize().y + 100);
+					templateViewer.setInput(templates);
+					if (templateViewer.getSelection().isEmpty()) {
+						templateViewer.getList().setSelection(0);
+					}
+					templateViewer.getList().setEnabled(true);
+					setPageComplete(isPageComplete());
+				} else {
+					templateViewer.add("No available templates, see preferences");
+				}
+				templateViewer.getControl().getParent().layout();
+			});
+		}).schedule();
+	}
+
+	private void setTemplateViewToText(String text) {
+		Display.getDefault().asyncExec(() -> {
+			if(templateViewer.getList().getItemCount() > 1) {
+				((GridData) templateViewer.getList().getLayoutData()).heightHint = SWT.DEFAULT;
+				Shell shell = templateViewer.getControl().getShell();
+				shell.setSize(shell.getSize().x, shell.getSize().y - 100);
+			}
+			templateViewer.getList().removeAll();
+			templateViewer.add(text);
+			templateViewer.getControl().getParent().layout();
+			templateViewer.getList().setEnabled(false);
+		});
 	}
 
 	private void updateProjectName() {
@@ -361,5 +415,9 @@ public class DotnetNewWizardPage extends WizardPage {
 	public void dispose() {
 		super.dispose();
 		this.linkImage.dispose();
+		if (updateTemplatesListener != null){
+			IPreferenceStore store = AcutePlugin.getDefault().getPreferenceStore();
+			store.removePropertyChangeListener(updateTemplatesListener);
+		}
 	}
 }

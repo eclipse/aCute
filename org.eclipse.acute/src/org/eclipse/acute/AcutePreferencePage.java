@@ -33,6 +33,7 @@ public class AcutePreferencePage extends PreferencePage implements IWorkbenchPre
 	private IPreferenceStore store;
 
 	private Text explicitDotnetPathText;
+	private Label versionLabel;
 
 	@Override
 	public void init(IWorkbench workbench) {
@@ -66,10 +67,18 @@ public class AcutePreferencePage extends PreferencePage implements IWorkbenchPre
 		}
 		File dotnetCommand = new File(explicitDotnetPathText.getText());
 		if (!dotnetCommand.exists() || !dotnetCommand.isFile()) {
-			setErrorMessage("Input a valid path to `dotnet` command");
+			setErrorMessage("Input a valid path to `dotnet` command executable");
 			return false;
 		} else if (!dotnetCommand.canExecute()) {
-			setErrorMessage("Inputted command is not executable");
+			setErrorMessage("Inputted path does not lead to an executable command");
+			return false;
+		}
+		String version = DotnetVersionUtil.getVersion(explicitDotnetPathText.getText());
+		if (!DotnetVersionUtil.isValidVersionFormat(version)) {
+			setErrorMessage("`dotnet --version` failed to return a version");
+			return false;
+		} else if (!DotnetVersionUtil.isValidVersionNumber(version)) {
+			setErrorMessage("`dotnet` version 2.0 or greater is required");
 			return false;
 		}
 		setErrorMessage(null);
@@ -101,6 +110,7 @@ public class AcutePreferencePage extends PreferencePage implements IWorkbenchPre
 		explicitDotnetPathText.setLayoutData(textIndent);
 		explicitDotnetPathText.addModifyListener(e -> {
 			setValid(isPageValid());
+			versionLabel.setText("Command version: " + DotnetVersionUtil.getVersion(explicitDotnetPathText.getText()));
 		});
 
 		Button browseButton = new Button(container, SWT.NONE);
@@ -113,6 +123,9 @@ public class AcutePreferencePage extends PreferencePage implements IWorkbenchPre
 				explicitDotnetPathText.setText(path);
 			}
 		}));
+		versionLabel = new Label(container, SWT.NONE);
+		versionLabel.setLayoutData(textIndent);
+		versionLabel.setEnabled(false);
 	}
 
 }

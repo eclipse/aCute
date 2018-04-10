@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc. and others.
+ * Copyright (c) 2017, 2018 Red Hat Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,33 +70,64 @@ public class AcutePlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Used to retrieve the path to the <code>dotnet</code> command. If no path has
-	 * been set, then a warning will be given allowing the opening the preferences
-	 * view and throws the {@link IllegalStateException} exception
+	 * Calls {@link #getDotnetCommand(boolean)} with the <code>true</code> parameter
+	 * enabling the command error dialogs to be shown
 	 *
 	 * @return Path to the <code>dotnet</code> command specified in the preferences
 	 * @throws IllegalStateException
 	 *             If no path has been set
 	 */
 	public static String getDotnetCommand() {
+		return getDotnetCommand(true);
+	}
+
+	/**
+	 * Used to retrieve the path to the <code>dotnet</code> command. If no path has
+	 * been set, then a warning will be given allowing the opening the preferences
+	 * view and throws the {@link IllegalStateException} exception
+	 *
+	 * @param showErrors if <code>true</code> and the set path is not valid, an error dialog will
+	 * be shown pointing the user to the preferences to fix the problem
+	 * @return Path to the <code>dotnet</code> command specified in the preferences
+	 * @throws IllegalStateException
+	 *             If no path has been set
+	 */
+	public static String getDotnetCommand(boolean showErrors) {
 		String path = plugin.getPreferenceStore().getString(AcutePreferenceInitializer.explicitDotnetPathPreference);
 		if (path.isEmpty()) {
-			Display.getDefault().asyncExec(() -> {
-				Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-				int dialogResponse = MessageDialog.open(MessageDialog.CONFIRM, shell, "No `dotnet` Path Set",
-						"There is no path to the `dotnet` command, please specify the correct path in the preferences.",
-						SWT.NONE, "Open Preferences", "Cancel");
-				if (dialogResponse == 0) {
-					PreferenceDialog preferenceDialog = PreferencesUtil.createPreferenceDialogOn(shell,
-							AcutePreferencePage.PAGE_ID,
-							new String[] { AcutePreferencePage.PAGE_ID }, null);
-					preferenceDialog.setBlockOnOpen(false);
-					preferenceDialog.open();
-				}
-			});
-			throw new IllegalStateException();
+			if(showErrors) {
+				openCommandErrorDialog("No `dotnet` Path Set",
+						"There is no path to the `dotnet` command, please specify the correct path in the preferences.");
+			}
 		} else {
-			return path;
+			String version = DotnetVersionUtil.getVersion(path);
+			if (!DotnetVersionUtil.isValidVersionFormat(version)) {
+				if(showErrors) {
+					openCommandErrorDialog("Invalid `dotnet` Path Set","`dotnet --version` failed to return a version, please specify the correct command path in the preferences.");
+				}
+			} else if (!DotnetVersionUtil.isValidVersionNumber(version)) {
+				if(showErrors) {
+					openCommandErrorDialog("Invalid `dotnet` Version","`dotnet` version 2.0 or greater is required, please specify a command path to a new version of `dotnet` in the preferences.");
+				}
+			} else {
+				return path;
+			}
 		}
+		throw new IllegalStateException();
+	}
+
+	private static void openCommandErrorDialog(String title, String content) {
+		Display.getDefault().asyncExec(() -> {
+			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			int dialogResponse = MessageDialog.open(MessageDialog.CONFIRM, shell, title,
+					content, SWT.NONE, "Open Preferences", "Cancel");
+			if (dialogResponse == 0) {
+				PreferenceDialog preferenceDialog = PreferencesUtil.createPreferenceDialogOn(shell,
+						AcutePreferencePage.PAGE_ID,
+						new String[] { AcutePreferencePage.PAGE_ID }, null);
+				preferenceDialog.setBlockOnOpen(false);
+				preferenceDialog.open();
+			}
+		});
 	}
 }
