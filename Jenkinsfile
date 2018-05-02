@@ -16,7 +16,7 @@ pipeline {
 				wrap([$class: 'Xvnc', useXauthority: true]) {
 					withEnv(["PATH+NODE=/shared/common/node-v7.10.0-linux-x64/bin", "PATH+DOTNET=/shared/common/dotnet-sdk-2.0.0-linux-x64"]) {
 						withMaven(maven: 'apache-maven-latest', jdk: 'jdk1.8.0-latest') {
-							sh 'mvn clean verify -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true'
+							sh 'mvn clean verify -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true -PpackAndSign'
 						}
 					}
 				}
