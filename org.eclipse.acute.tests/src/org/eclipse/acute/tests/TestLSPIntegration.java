@@ -13,6 +13,7 @@ package org.eclipse.acute.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +26,7 @@ import org.eclipse.lsp4e.LSPEclipseUtils;
 import org.eclipse.lsp4e.LanguageServiceAccessor;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.MarkedString;
+import org.eclipse.lsp4j.MarkupContent;
 import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.TextDocumentIdentifier;
 import org.eclipse.lsp4j.TextDocumentPositionParams;
@@ -57,11 +59,19 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 		CompletableFuture<Hover> hoverRequest = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(LSPEclipseUtils.toUri(csharpSourceFile).toString()), new Position(10, 23)));
 		Hover res = hoverRequest.get(3, TimeUnit.SECONDS);
 		Assert.assertNotNull(res);
-		Either<String, MarkedString> either = res.getContents().get(0);
-		if (either.isLeft()) {
-			Assert.assertTrue(either.getLeft().contains("WriteLine"));
-		} else if (either.isRight()) {
-			Assert.assertTrue(either.getRight().getValue().contains("WriteLine"));
+		Either<List<Either<String, MarkedString>>, MarkupContent> contents = res.getContents();
+		if (contents.isLeft()) {
+			Either<String, MarkedString> either = contents.getLeft().get(0);
+			if (either.isLeft()) {
+				Assert.assertTrue(either.getLeft().contains("WriteLine"));
+			} else if (either.isRight()) {
+				Assert.assertTrue(either.getRight().getValue().contains("WriteLine"));
+			} else {
+				Assert.fail("Illegal value");
+			}
+		} else if (contents.isRight()) {
+			MarkupContent markupContent = contents.getRight();
+			Assert.assertTrue(markupContent.getValue().contains("WriteLine"));
 		} else {
 			Assert.fail("Illegal value");
 		}
