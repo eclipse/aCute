@@ -32,7 +32,8 @@ public class AcutePreferenceInitializer extends AbstractPreferenceInitializer {
 	private String getBestDotnetPathGuess() {
 		try {
 			String[] command = new String[] { "/bin/bash", "-c", "which dotnet" };
-			if (Platform.getOS().equals(Platform.OS_WIN32)) {
+			String os = System.getProperty("os.name");
+			if (os.toLowerCase().contains("windows")) {
 				command = new String[] { "cmd", "/c", "which dotnet" };
 			}
 			ProcessBuilder builder = new ProcessBuilder(command);
