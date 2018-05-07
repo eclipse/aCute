@@ -36,7 +36,7 @@ public class DotnetVersionUtil {
 		try {
 			String[] command = new String[] { "/bin/bash", "-c", dotnetPath + " --version" };
 			if (Platform.getOS().equals(Platform.OS_WIN32)) {
-				command = new String[] { "cmd", "/c", "which dotnet" };
+				command = new String[] { "cmd", "/c", "\"" + dotnetPath + "\" --version" };
 			}
 			ProcessBuilder builder = new ProcessBuilder(command);
 			Process process = builder.start();
