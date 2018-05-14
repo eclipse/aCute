@@ -49,6 +49,13 @@
       </presentationReconciler>
    </extension>
    <extension
+         point="org.eclipse.tm4e.languageconfiguration.languageConfigurations">
+      <languageConfiguration
+            contentTypeId="org.eclipse.acute.csharp"
+            path="language-configurations/language-configuration.json">
+      </languageConfiguration>
+   </extension>
+   <extension
          point="org.eclipse.ui.newWizards">
       <category
             id="org.eclipse.acute.dotnet"
