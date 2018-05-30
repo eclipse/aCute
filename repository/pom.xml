@@ -24,8 +24,8 @@
 						<configuration>
 							<skipWebContentGeneration>true</skipWebContentGeneration>
 							<associateSites>
-								<associateSite>http://download.eclipse.org/lsp4e/snapshots/</associateSite>
-								<associateSite>http://download.eclipse.org/tm4e/snapshots/</associateSite>
+								<associateSite>http://download.eclipse.org/lsp4e/releases/latest/</associateSite>
+								<associateSite>http://download.eclipse.org/tm4e/releases/latest/</associateSite>
 							</associateSites>
 						</configuration>
 					</execution>
@@ -77,8 +77,8 @@
   								<layout>p2</layout>
   							</repository>
   							<repository>
-  								<id>eclipse-4.7</id>
-  								<url>http://download.eclipse.org/eclipse/updates/4.7/R-4.7.1a-201710090410/</url>
+  								<id>eclipse-4.8.RC2</id>
+  								<url>http://download.eclipse.org/eclipse/updates/4.8milestones/S-4.8RC2-201805240900/</url>
   								<layout>p2</layout>
   							</repository>
   						</repositories>
