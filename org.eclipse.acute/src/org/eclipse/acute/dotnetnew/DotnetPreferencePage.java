@@ -11,13 +11,14 @@
  *******************************************************************************/
 package org.eclipse.acute.dotnetnew;
 
+import org.eclipse.acute.Messages;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 public class DotnetPreferencePage extends PreferencePage {
 	public DotnetPreferencePage() {
-		setTitle("Dotnet settings");
+		setTitle(Messages.DotnetPreferencePage_dotnetSettings);
 	}
 
 	@Override

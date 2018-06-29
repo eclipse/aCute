@@ -7,7 +7,7 @@
             base-type="org.eclipse.core.runtime.text"
             file-extensions="cs"
             id="org.eclipse.acute.csharp"
-            name="C# file"
+            name="%content-type.name"
             priority="normal">
       </content-type>
    </extension>
@@ -59,21 +59,21 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="org.eclipse.acute.dotnet"
-            name=".NET Core">
+            name="%category.name">
       </category>
       <wizard
             category="org.eclipse.acute.dotnet"
             class="org.eclipse.acute.dotnetnew.DotnetNewWizard"
             icon="icons/dotnet.png"
             id="org.eclipse.acute.newWizard"
-            name=".NET Core project"
+            name="%new.wizard.name"
             project="true">
       </wizard>
    </extension>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-           name=".NET Core Project"
+           name="%launchConfigurationType.name"
            delegate="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
            modes="run"
            id="org.eclipse.acute.dotnetrun.DotnetRunDelegate">
@@ -107,7 +107,7 @@
       <shortcut
             id="org.eclipse.acute.dotnetrun.Shortcut"
             class="org.eclipse.acute.dotnetrun.DotnetRunDelegate"
-            label=".NET Core Project"
+            label="%shortcut.label"
             icon="icons/dotnet.png"
             modes="run">
          <contextualLaunch>
@@ -116,7 +116,7 @@
                   <count value="1"/>
                   <iterate>
                      <adapt type="org.eclipse.core.resources.IResource">
-                        <test property="org.eclipse.acute.isDotnetProject"  
+                        <test property="org.eclipse.acute.isDotnetProject"
                               forcePluginActivation="true"/>
                      </adapt>
                   </iterate>
@@ -129,11 +129,11 @@
          point="org.eclipse.ui.exportWizards">
       <wizard
             id="org.eclipse.acute.ExportWizard"
-            name=".NET Core Project Exporter"
+            name="%export.wizard.name"
             class="org.eclipse.acute.dotnetexport.DotnetExportWizard"
             icon="icons/dotnet.png">
          <description>
-            A wizard to assist with exporting .NET Core projects
+            %export.wizard.description
          </description>
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
@@ -141,7 +141,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            name=".NET Core Test"
+            name="%launchConfigurationType.name.test"
             delegate="org.eclipse.acute.dotnettest.DotnetTestDelegate"
             modes="run"
             id="org.eclipse.acute.dotnettest.DotnetTestDelegate">
@@ -166,7 +166,7 @@
       <shortcut
             id="org.eclipse.acute.dotnettest.Shortcut"
             class="org.eclipse.acute.dotnettest.DotnetTestDelegate"
-            label=".NET Core Test"
+            label="%shortcut.label.test"
             icon="icons/dotnet.png"
             modes="run">
          <contextualLaunch>
@@ -175,7 +175,7 @@
                   <count value="1"/>
                   <iterate>
                      <adapt type="org.eclipse.core.resources.IResource">
-                        <test property="org.eclipse.acute.isDotnetProject"  
+                        <test property="org.eclipse.acute.isDotnetProject"
                               forcePluginActivation="true"/>
                      </adapt>
                   </iterate>
@@ -186,7 +186,7 @@
    </extension>
    <extension
          id="org.eclipse.acute.builder.IncrementalDotnetBuilder"
-         name=".NET Builder"
+         name="%builder.name"
          point="org.eclipse.core.resources.builders">
       <builder>
          <run class="org.eclipse.acute.builder.IncrementalDotnetBuilder"/>
@@ -253,13 +253,13 @@
           point="org.eclipse.ui.commands">
       <command
             defaultHandler="org.eclipse.acute.builder.AddDotnetBuilder"
-            name="Add .NET Builder"
+            name="%command.name.add"
             id="org.eclipse.acute.builder.AddDotnetBuilder">
       </command>
       <command
             defaultHandler="org.eclipse.acute.builder.RemoveDotnetBuilder"
             id="org.eclipse.acute.builder.RemoveDotnetBuilder"
-            name="Remove .NET Builder">
+            name="%command.name.remove">
       </command>
    </extension>
    <extension
@@ -283,7 +283,7 @@
       <page
             class="org.eclipse.acute.AcutePreferencePage"
             id="org.eclipse.acute.preferencePage"
-            name=".NET Core">
+            name="%preferencePage">
       </page>
    </extension>
 </plugin>

@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.acute.AcutePlugin;
+import org.eclipse.acute.Messages;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -32,6 +33,7 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -46,7 +48,7 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		setWindowTitle("Export .NET Core Project");
+		setWindowTitle(Messages.DotnetExportWizard_exportProject);
 
 		Iterator<Object> selectionIterator = selection.iterator();
 		IFile projectFile = null;
@@ -86,38 +88,38 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 
 		List<String> restoreCommandList = new ArrayList<>();
 		restoreCommandList.add(dotnetPath);
-		restoreCommandList.add("restore");
+		restoreCommandList.add("restore"); //$NON-NLS-1$
 		if (isSCD) {
-			restoreCommandList.add("-r");
+			restoreCommandList.add("-r"); //$NON-NLS-1$
 			restoreCommandList.add(runtime);
 		}
 
 		List<String> exportCommandList = new ArrayList<>();
 		exportCommandList.add(dotnetPath);
-		exportCommandList.add("publish");
+		exportCommandList.add("publish"); //$NON-NLS-1$
 		if (isSCD) {
-			exportCommandList.add("-r");
+			exportCommandList.add("-r"); //$NON-NLS-1$
 			exportCommandList.add(runtime);
 		}
-		exportCommandList.add("-o");
+		exportCommandList.add("-o"); //$NON-NLS-1$
 		exportCommandList.add(exportLocation.getAbsolutePath());
-		exportCommandList.add("-f");
+		exportCommandList.add("-f"); //$NON-NLS-1$
 		exportCommandList.add(framework);
-		exportCommandList.add("-c");
+		exportCommandList.add("-c"); //$NON-NLS-1$
 		exportCommandList.add(configuration);
 
 		if (!version.isEmpty()) {
-			exportCommandList.add("--version-suffix");
+			exportCommandList.add("--version-suffix"); //$NON-NLS-1$
 			exportCommandList.add(version);
 		}
 
-		Job.create(".NET Core Export", (ICoreRunnable) monitor -> {
+		Job.create(Messages.DotnetExportWizard_dotnetCoreExport, (ICoreRunnable) monitor -> {
 			try {
 				ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
 				ILaunch newLaunch = new Launch(null, ILaunchManager.RUN_MODE, null);
 
 				Process restoreProcess = DebugPlugin.exec(restoreCommandList.toArray(new String[0]), projectLocation);
-				DebugPlugin.newProcess(newLaunch, restoreProcess, ".NET Restore");
+				DebugPlugin.newProcess(newLaunch, restoreProcess, Messages.DotnetExportWizard_dotnetRestore);
 				launchManager.addLaunch(newLaunch);
 
 				try {
@@ -129,7 +131,7 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 				}
 
 				Process publishProcess = DebugPlugin.exec(exportCommandList.toArray(new String[0]), projectLocation);
-				DebugPlugin.newProcess(newLaunch, publishProcess, ".NET Core Export");
+				DebugPlugin.newProcess(newLaunch, publishProcess, Messages.DotnetExportWizard_dotnetCoreExport);
 				launchManager.addLaunch(newLaunch);
 
 				try {
@@ -147,8 +149,8 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 
 			} catch (CoreException e) {
 				Display.getDefault().asyncExec(() -> {
-					MessageDialog.openError(getShell(), "Cannot export .NET Core project",
-							"The 'dotnet publish' command failed: " + e);
+					MessageDialog.openError(getShell(), Messages.DotnetExportWizard_exportError_title,
+							NLS.bind(Messages.DotnetExportWizard_exportError_message, e));
 				});
 			}
 		}).schedule();
@@ -159,8 +161,8 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 		if (container != null) {
 			try {
 				for (IResource projResource : container.members()) {
-					if (projResource.getFileExtension() != null && (projResource.getFileExtension().equals("csproj")
-							|| projResource.getName().equals("project.json"))) {
+					if (projResource.getFileExtension() != null && (projResource.getFileExtension().equals("csproj") //$NON-NLS-1$
+							|| projResource.getName().equals("project.json"))) { //$NON-NLS-1$
 						return (IFile) projResource;
 					}
 				}

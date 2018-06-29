@@ -39,7 +39,7 @@ public class ProjectFileAccessor {
 	public static IPath getProjectFile(IContainer project) {
 		try {
 			for (IResource projItem : project.members()) {
-				if (projItem.getName().equals("project.json") || projItem.getName().matches("^.*\\.csproj$")) {
+				if (projItem.getName().equals("project.json") || projItem.getName().matches("^.*\\.csproj$")) { //$NON-NLS-1$ //$NON-NLS-2$
 					return projItem.getFullPath();
 				}
 			}
@@ -52,19 +52,19 @@ public class ProjectFileAccessor {
 	public static String[] getTargetFrameworks(IPath projectFile) {
 		if (projectFile == null) {
 			return EMPTY_ARRAY;
-		} else if (projectFile.getFileExtension().equals("json")) { // TODO consider defining and checking content-type
+		} else if (projectFile.getFileExtension().equals("json")) { // TODO consider defining and checking content-type //$NON-NLS-1$
 			try (FileReader reader = new FileReader(projectFile.toFile())) {
 				Gson gson = new Gson();
 				JsonObject object = gson.fromJson(reader, JsonObject.class);
 				List<String> frameworks = new ArrayList<>();
-				for (Entry<String, ?> framework : object.getAsJsonObject("frameworks").entrySet()) {
+				for (Entry<String, ?> framework : object.getAsJsonObject("frameworks").entrySet()) { //$NON-NLS-1$
 					frameworks.add(framework.getKey());
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				return EMPTY_ARRAY;
 			}
-		} else if (projectFile.getFileExtension().equals("csproj")) { // TODO consider defining and checking
+		} else if (projectFile.getFileExtension().equals("csproj")) { // TODO consider defining and checking //$NON-NLS-1$
 																		// content-type
 			try {
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -72,20 +72,20 @@ public class ProjectFileAccessor {
 				Document doc = builder.parse(projectFile.toFile());
 				doc.getDocumentElement().normalize();
 
-				NodeList nList = doc.getElementsByTagName("PropertyGroup");
+				NodeList nList = doc.getElementsByTagName("PropertyGroup"); //$NON-NLS-1$
 				if (nList.getLength() > 0) {
 					Node propertyGroup = nList.item(0);
-					String tagName = "TargetFramework";
+					String tagName = "TargetFramework"; //$NON-NLS-1$
 					NodeList frameworkNodeList = ((Element) propertyGroup).getElementsByTagName(tagName);
 					if (frameworkNodeList.getLength() > 0) {
 						String[] framework = { frameworkNodeList.item(0).getTextContent() };
 						return framework;
 					} else {
-						Node framework = ((Element) propertyGroup).getElementsByTagName(tagName + "s").item(0);
+						Node framework = ((Element) propertyGroup).getElementsByTagName(tagName + "s").item(0); //$NON-NLS-1$
 						if (framework != null) {
 							String allFrameworks = framework.getTextContent();
 							if (!allFrameworks.isEmpty()) {
-								return framework.getTextContent().split(";");
+								return framework.getTextContent().split(";"); //$NON-NLS-1$
 							}
 						}
 					}
