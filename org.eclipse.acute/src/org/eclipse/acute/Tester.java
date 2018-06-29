@@ -28,16 +28,7 @@ public class Tester extends PropertyTester {
 			if (resource == null) {
 				return false;
 			}
-			IProject project = resource.getProject();
-			try {
-				for (IResource projItem : project.members()) {
-					if (projItem.getName().equals("project.json") || projItem.getName().matches("^.*\\.csproj$")) { //$NON-NLS-1$ //$NON-NLS-2$
-						return true;
-					}
-				}
-			} catch (CoreException e) {
-				return false;
-			}
+			return isDotnetProject(resource.getProject());
 		}
 		return false;
 	}
@@ -50,5 +41,17 @@ public class Tester extends PropertyTester {
 		} else {
 			return null;
 		}
+	}
+
+	public static boolean isDotnetProject(IProject p) {
+		try {
+			for (IResource projItem : p.members()) {
+				if (projItem.getName().equals("project.json") || projItem.getName().matches("^.*\\.csproj$")) { //$NON-NLS-1$ //$NON-NLS-2$
+					return true;
+				}
+			}
+		} catch (CoreException e) {
+		}
+		return false;
 	}
 }

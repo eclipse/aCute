@@ -44,6 +44,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -61,8 +62,6 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 	public static final String PROJECT_ARGUMENTS = "PROJECT_ARGUMENTS"; //$NON-NLS-1$
 	public static final String PROJECT_FRAMEWORK = "PROJECT_FRAMEWORK"; //$NON-NLS-1$
 	public static final String PROJECT_CONFIGURATION = "PROJECT_CONFIGURATION"; //$NON-NLS-1$
-	public static final String ATTR_CAPTURE_STDIN_FILE = "org.eclipse.debug.ui.ATTR_CAPTURE_STDIN_FILE"; //$NON-NLS-1$
-
 
 	@Override
 	public void launch(ISelection selection, String mode) {
@@ -116,7 +115,7 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 		String projectArguments = configuration.getAttribute(PROJECT_ARGUMENTS, ""); //$NON-NLS-1$
 		String projectFramework = configuration.getAttribute(PROJECT_FRAMEWORK, ""); //$NON-NLS-1$
 		String projectConfiguration = configuration.getAttribute(PROJECT_CONFIGURATION, "Debug"); //$NON-NLS-1$
-		String inputFileLocation = configuration.getAttribute(ATTR_CAPTURE_STDIN_FILE, ""); //$NON-NLS-1$
+		String inputFileLocation = configuration.getAttribute(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, ""); //$NON-NLS-1$
 		IContainer projectFolder = ResourcesPlugin.getWorkspace().getRoot()
 				.getContainerForLocation(new Path(projectLocation));
 		File projectFileLocation = new File(projectLocation);

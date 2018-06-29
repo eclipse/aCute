@@ -192,6 +192,11 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 			pathText.setText(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
 		}
 		try {
+			argumentsText.setText(configuration.getAttribute(DotnetRunDelegate.PROJECT_ARGUMENTS, "")); //$NON-NLS-1$
+		} catch (CoreException ce) {
+			argumentsText.setText(""); //$NON-NLS-1$
+		}
+		try {
 			List frameworkList = frameworkViewer.getList();
 			int index = frameworkList.indexOf(configuration.getAttribute(DotnetRunDelegate.PROJECT_FRAMEWORK, "")); //$NON-NLS-1$
 			if (index >= 0) {
@@ -201,11 +206,6 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 			}
 		} catch (CoreException ce) {
 			// no initialize required
-		}
-		try {
-			argumentsText.setText(configuration.getAttribute(DotnetRunDelegate.PROJECT_ARGUMENTS, "")); //$NON-NLS-1$
-		} catch (CoreException ce) {
-			argumentsText.setText(""); //$NON-NLS-1$
 		}
 		try {
 			this.configuration = configuration.getAttribute(DotnetRunDelegate.PROJECT_CONFIGURATION, "Debug"); //$NON-NLS-1$

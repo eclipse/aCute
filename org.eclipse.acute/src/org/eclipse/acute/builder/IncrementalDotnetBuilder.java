@@ -44,7 +44,7 @@ public class IncrementalDotnetBuilder extends IncrementalProjectBuilder {
 		}
 		if (errorMarkers.length == 0) {
 			try {
-				String[] commandList = { "dotnet", "build" }; //$NON-NLS-1$ //$NON-NLS-2$
+				String[] commandList = { AcutePlugin.getDotnetCommand(), "build" }; //$NON-NLS-1$
 				buildProcess = DebugPlugin.exec(commandList,
 						project.getLocation().toFile());
 				buildProcess.waitFor();

@@ -314,4 +314,72 @@
             name="%preferencePage">
       </page>
    </extension>
+ <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.eclipse.acute.debug.DotnetDebugLaunchDelegate"
+            id="org.eclipse.acute.debug.launchType"
+            modes="debug"
+            name=".NET Core Debug Adapter Launcher"
+            public="true"
+            sourceLocatorId="org.eclipse.lsp4e.debug.sourceLocator"
+            sourcePathComputerId="org.eclipse.lsp4e.debug.sourcePathComputer">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.eclipse.acute.debug.DebugLaunchTabGroup"
+            description="Debug .NET apps"
+            id="org.eclipse.acute.debug.tabGroup"
+            type="org.eclipse.acute.debug.launchType">
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="org.eclipse.acute.debug.launchType"
+            icon="icons/dotnet.png"
+            id="org.eclipse.acute.debug.typeImage">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="org.eclipse.acute.debug.DotnetDebugLaunchShortcut"
+            icon="icons/dotnet.png"
+            id="org.eclipse.acute.debug.Shortcut"
+            label="%shortcut.label"
+            modes="debug">
+         <contextualLaunch>
+            <enablement>
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <test
+                              forcePluginActivation="true"
+                              property="org.eclipse.acute.isDotnetProject">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.core.resources.IResource"
+            class="org.eclipse.acute.LaunchableAdapterFactory">
+         <adapter
+               type="org.eclipse.debug.ui.actions.ILaunchable">
+         </adapter>
+      </factory>
+   </extension>
 </plugin>

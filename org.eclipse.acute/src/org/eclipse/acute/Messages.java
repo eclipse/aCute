@@ -40,6 +40,11 @@ public class Messages extends NLS {
 	public static String omnisharpStreamConnection_serverNotFoundError;
 	public static String omnisharpStreamConnection_serverNotExecutableError;
 
+	public static String DotnetDebugLaunchDelegate_errorsOnProject_message;
+	public static String DotnetDebugLaunchDelegate_errorsOnProject_title;
+	public static String DotnetDebugLaunchDelegate_noFolderSelected_message;
+	public static String DotnetDebugLaunchDelegate_noFolderSelected_title;
+
 	public static String DotnetExportWizard_dotnetCoreExport;
 	public static String DotnetExportWizard_dotnetRestore;
 	public static String DotnetExportWizard_exportError_message;
@@ -157,6 +162,19 @@ public class Messages extends NLS {
 	public static String DotnetTestTab_testClass;
 	public static String DotnetTestTab_testFilter;
 	public static String DotnetTestTab_testMethod;
+
+	public static String AcuteDebugMainTab_project;
+	public static String AcuteDebugMainTab_promgramArgs;
+	public static String AcuteDebugMainTab_title;
+	public static String DebuggerTab_title;
+	public static String DebuggerTab_debuggerPath;
+	public static String DebuggerTab_debuggerArgs;
+	public static String DebuggerTab_useDefaultDebugger;
+	public static String DebuggerTab_selectDebugger;
+	public static String DebuggerTab_invalidFile_title;
+	public static String DebuggerTab_invalidFile_message;
+	public static String DebuggerTab_nonExecutableFile_title;
+	public static String DebuggerTab_nonExecutableFileMessage;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
