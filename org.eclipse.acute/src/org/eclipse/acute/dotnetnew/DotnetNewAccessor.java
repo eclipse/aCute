@@ -45,12 +45,12 @@ public class DotnetNewAccessor {
 			if (this.languageString == null) {
 				return this.label;
 			}
-			return this.label + " [" + this.languageString + "]";
+			return this.label + " [" + this.languageString + "]"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		public List<String> getCLIOptions() {
 			if (this.languageString != null) {
-				return Arrays.asList(this.id, "--language", this.languageString);
+				return Arrays.asList(this.id, "--language", this.languageString); //$NON-NLS-1$
 			}
 			return Collections.singletonList(this.id);
 		}
@@ -68,7 +68,7 @@ public class DotnetNewAccessor {
 	public static List<Template> getTemplates() {
 		try {
 			List<Template> templates = new ArrayList<>();
-			String listCommand = AcutePlugin.getDotnetCommand() + " new --list";
+			String listCommand = AcutePlugin.getDotnetCommand() + " new --list"; //$NON-NLS-1$
 
 			Runtime runtime = Runtime.getRuntime();
 			Process process = runtime.exec(listCommand);
@@ -78,7 +78,7 @@ public class DotnetNewAccessor {
 				Boolean templateListExists = false;
 
 				while ((inputLine = in.readLine()) != null) {
-					if (inputLine.matches("^-{30,}$")) {
+					if (inputLine.matches("^-{30,}$")) { //$NON-NLS-1$
 						templateListExists = true;
 						break;
 					}
@@ -86,15 +86,15 @@ public class DotnetNewAccessor {
 
 				if (templateListExists) {
 					while ((inputLine = in.readLine()) != null) {
-						String[] template = inputLine.split("[\\s]{2,}");
+						String[] template = inputLine.split("[\\s]{2,}"); //$NON-NLS-1$
 
 						if (template.length == 3) { // No language column
 							templates.add(new Template(template[0], template[1]));
 						} else if (template.length > 3) { // Language column present
-							String[] languages = template[2].split(",");
+							String[] languages = template[2].split(","); //$NON-NLS-1$
 
 							for (String languageStringDirty : languages) {
-								String languageString = languageStringDirty.replaceAll("[\\s\\[\\]]", "");
+								String languageString = languageStringDirty.replaceAll("[\\s\\[\\]]", ""); //$NON-NLS-1$ //$NON-NLS-2$
 								templates.add(new Template(template[0], template[1], languageString));
 							}
 						} else {

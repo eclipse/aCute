@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.acute.AcutePlugin;
+import org.eclipse.acute.Messages;
 import org.eclipse.acute.builder.IncrementalDotnetBuilder;
 import org.eclipse.acute.dotnetnew.DotnetNewAccessor.Template;
 import org.eclipse.core.resources.ICommand;
@@ -42,6 +43,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -62,7 +64,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		wizardPage = new DotnetNewWizardPage();
-		setWindowTitle("New .NET Core Project");
+		setWindowTitle(Messages.DotnetNewWizard_newProject);
 
 		Iterator<Object> selectionIterator = selection.iterator();
 		Set<IWorkingSet> workingSets = new HashSet<>();
@@ -111,10 +113,10 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 
 		try {
 			getContainer().run(true, true, monitor -> {
-				monitor.beginTask("Creating .NET Core project", 0);
+				monitor.beginTask(Messages.DotnetNewWizard_createProject, 0);
 				List<String> commandLine = new ArrayList<>();
 				commandLine.add(AcutePlugin.getDotnetCommand());
-				commandLine.add("new");
+				commandLine.add("new"); //$NON-NLS-1$
 				if (template != null) {
 					commandLine.addAll(template.getCLIOptions());
 				}
@@ -135,22 +137,22 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 						createProject(projectName, location, monitor);
 					} else {
 						Display.getDefault().asyncExec(() -> {
-							MessageDialog.openError(getShell(), "Cannot create .NET Core template",
-									"The 'dotnet new' command exited with :" + process.exitValue());
+							MessageDialog.openError(getShell(), Messages.DotnetNewWizard_createTemplateError_title,
+									NLS.bind(Messages.DotnetNewWizard_createTemplateErrorExitValue_message, process.exitValue()));
 						});
 					}
 					monitor.done();
 				} catch (IOException e) {
 					monitor.done();
 					Display.getDefault().asyncExec(() -> {
-						MessageDialog.openError(getShell(), "Cannot create .NET Core template",
-								"The 'dotnet new' command failed: " + e);
+						MessageDialog.openError(getShell(), Messages.DotnetNewWizard_createTemplateError_title,
+								NLS.bind(Messages.DotnetNewWizard_createTemplateError_message, e));
 					});
 				}
 			});
 		} catch (InvocationTargetException | InterruptedException e) {
-			MessageDialog.openError(getShell(), "Cannot create .NET Core template",
-					"The 'dotnet new' command failed: " + e);
+			MessageDialog.openError(getShell(), Messages.DotnetNewWizard_createTemplateError_title,
+					NLS.bind(Messages.DotnetNewWizard_createTemplateError_message, e));
 		} catch (IllegalStateException e) {
 			// handled by getDotnetCommand()
 		}
@@ -182,12 +184,12 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 			project.open(monitor);
 
 		} catch (CoreException e) {
-			MessageDialog.openError(getShell(), "Unable to load project description", e.toString());
+			MessageDialog.openError(getShell(), Messages.DotnetNewWizard_projectDescriptionLoadingError, e.toString());
 		}
 
 		IWorkingSetManager wsm = PlatformUI.getWorkbench().getWorkingSetManager();
-		IFile csPrgramFile = project.getFile("Program.cs");
-		IFile fsPrgramFile = project.getFile("Program.fs");
+		IFile csPrgramFile = project.getFile("Program.cs"); //$NON-NLS-1$
+		IFile fsPrgramFile = project.getFile("Program.fs"); //$NON-NLS-1$
 
 		Display.getDefault().asyncExec(() -> {
 
@@ -202,7 +204,7 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 						IDE.openEditor(page, fsPrgramFile);
 					}
 				} catch (CoreException e) {
-					MessageDialog.openError(getShell(), "Cannot open project", e.toString());
+					MessageDialog.openError(getShell(), Messages.DotnetNewWizard_openProjectError, e.toString());
 				}
 			}
 		});
@@ -211,10 +213,10 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 	private File newFolderLocation() {
 		IPath workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 		int appendedNumber = 0;
-		File newFile = workspacePath.append("NewDotnetProject").toFile();
+		File newFile = workspacePath.append("NewDotnetProject").toFile(); //$NON-NLS-1$
 		while (newFile.isDirectory()) {
 			appendedNumber++;
-			newFile = workspacePath.append("NewDotnetProject" + appendedNumber).toFile();
+			newFile = workspacePath.append("NewDotnetProject" + appendedNumber).toFile(); //$NON-NLS-1$
 		}
 		return newFile;
 	}

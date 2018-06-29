@@ -27,7 +27,7 @@ import org.eclipse.debug.core.DebugPlugin;
 
 public class IncrementalDotnetBuilder extends IncrementalProjectBuilder {
 
-	public static final String BUILDER_ID = "org.eclipse.acute.builder.IncrementalDotnetBuilder";
+	public static final String BUILDER_ID = "org.eclipse.acute.builder.IncrementalDotnetBuilder"; //$NON-NLS-1$
 
 	private Process buildProcess;
 
@@ -42,7 +42,7 @@ public class IncrementalDotnetBuilder extends IncrementalProjectBuilder {
 		}
 		if (errorMarkers.length == 0) {
 			try {
-				String[] commandList = { "dotnet", "build" };
+				String[] commandList = { "dotnet", "build" }; //$NON-NLS-1$ //$NON-NLS-2$
 				buildProcess = DebugPlugin.exec(commandList,
 						project.getLocation().toFile());
 				buildProcess.waitFor();
@@ -59,7 +59,7 @@ public class IncrementalDotnetBuilder extends IncrementalProjectBuilder {
 			buildProcess.destroyForcibly();
 		}
 
-		String[] commandList = { "dotnet", "clean" };
+		String[] commandList = { "dotnet", "clean" }; //$NON-NLS-1$ //$NON-NLS-2$
 		buildProcess = DebugPlugin.exec(commandList,
 				getProject().getLocation().toFile());
 		try {

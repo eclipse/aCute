@@ -12,6 +12,7 @@ package org.eclipse.acute.dotnetrun;
 
 import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
 
+import org.eclipse.acute.Messages;
 import org.eclipse.acute.ProjectFileAccessor;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -48,7 +49,7 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 
 	private String[] targetFrameworks;
 	private IContainer projectContainer;
-	private String configuration = "Debug";
+	private String configuration = "Debug"; //$NON-NLS-1$
 
 	@Override
 	public void createControl(Composite parent) {
@@ -57,7 +58,7 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 		GridLayoutFactory.swtDefaults().numColumns(4).applyTo(container);
 
 		Label locationLabel = new Label(container, SWT.NONE);
-		locationLabel.setText("Location:");
+		locationLabel.setText(Messages.DotnetRunTab_location);
 		locationLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 
 		pathText = new Text(container, SWT.BORDER);
@@ -70,10 +71,10 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 		});
 
 		Button browseButton = new Button(container, SWT.NONE);
-		browseButton.setText("Browse...");
+		browseButton.setText(Messages.DotnetRunTab_browse);
 		browseButton.addSelectionListener(widgetSelectedAdapter(e -> {
 			ContainerSelectionDialog dialog = new ContainerSelectionDialog(browseButton.getShell(),
-					ResourcesPlugin.getWorkspace().getRoot(), false, "Project Folder:");
+					ResourcesPlugin.getWorkspace().getRoot(), false, Messages.DotnetRunTab_projectFolder);
 			int path = dialog.open();
 			Object[] results = dialog.getResult();
 			if (path == 0 && results.length > 0) {
@@ -89,7 +90,7 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 
 		Label frameworkLabel = new Label(container, SWT.NONE);
 		frameworkLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 2, 1));
-		frameworkLabel.setText("Framework:");
+		frameworkLabel.setText(Messages.DotnetRunTab_framework);
 
 		List list = new List(container, SWT.V_SCROLL | SWT.BORDER);
 		GridData listBoxData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
@@ -98,14 +99,14 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 		list.setEnabled(false);
 		frameworkViewer = new ListViewer(list);
 		frameworkViewer.setContentProvider(new ArrayContentProvider());
-		frameworkViewer.add("No frameworks available");
+		frameworkViewer.add(Messages.DotnetRunTab_noFrameworks);
 		frameworkViewer.addSelectionChangedListener(e -> {
 			setDirty(true);
 			updateLaunchConfigurationDialog();
 		});
 
 		Label argumentLabel = new Label(container, SWT.NONE);
-		argumentLabel.setText("Arguments:");
+		argumentLabel.setText(Messages.DotnetRunTab_arguments);
 		argumentLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 
 		argumentsText = new Text(container, SWT.BORDER);
@@ -125,19 +126,19 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 		};
 
 		debugRadio = new Button(container, SWT.RADIO);
-		debugRadio.setText("Debug");
+		debugRadio.setText(Messages.DotnetRunTab_debug);
 		debugRadio.setSelection(true);
 		debugRadio.addListener(SWT.Selection, configRadioListener);
 
 		releaseRadio = new Button(container, SWT.RADIO);
-		releaseRadio.setText("Release");
+		releaseRadio.setText(Messages.DotnetRunTab_release);
 		releaseRadio.addListener(SWT.Selection, configRadioListener);
 
 		new Label(container, SWT.NONE).setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 4, 1));
 
 		buildCheckBoxButton = new Button(container, SWT.CHECK);
 		buildCheckBoxButton.setSelection(true);
-		buildCheckBoxButton.setText("Build project");
+		buildCheckBoxButton.setText(Messages.DotnetRunTab_buildProject);
 		buildCheckBoxButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1));
 		buildCheckBoxButton.addSelectionListener(widgetSelectedAdapter(e -> {
 			setDirty(true);
@@ -149,13 +150,13 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 		frameworkViewer.getList().removeAll();
 		IPath projectFilePath = ProjectFileAccessor.getProjectFile(projectContainer);
 		if (projectFilePath == null) {
-			frameworkViewer.add("No frameworks available");
+			frameworkViewer.add(Messages.DotnetRunTab_noFrameworks);
 			frameworkViewer.getList().setEnabled(false);
 			return;
 		}
 
 		frameworkViewer.getList().deselectAll();
-		frameworkViewer.add("Loading frameworks");
+		frameworkViewer.add(Messages.dotnetRunTab_loadingFrameworks);
 		frameworkViewer.getList().setEnabled(false);
 		targetFrameworks = ProjectFileAccessor.getTargetFrameworks(
 				new Path(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().getAbsolutePath().toString()
@@ -166,30 +167,31 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 			frameworkViewer.getList().select(0);
 			frameworkViewer.getList().setEnabled(true);
 		} else {
-			frameworkViewer.add("No frameworks available");
+			frameworkViewer.add(Messages.DotnetRunTab_noFrameworks);
 			frameworkViewer.getList().setEnabled(false);
 		}
 	}
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute("PROJECT_FOLDER",
+		configuration.setAttribute(DotnetRunDelegate.PROJECT_FOLDER,
 				ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
-		configuration.setAttribute("PROJECT_ARGUMENTS", "");
-		configuration.setAttribute("PROJECT_BUILD", true);
-		configuration.setAttribute("PROJECT_FRAMEWORK", "");
+		configuration.setAttribute(DotnetRunDelegate.PROJECT_ARGUMENTS, ""); //$NON-NLS-1$
+		configuration.setAttribute(DotnetRunDelegate.PROJECT_CONFIGURATION, "Debug"); //$NON-NLS-1$
+		configuration.setAttribute(DotnetRunDelegate.PROJECT_BUILD, true);
+		configuration.setAttribute(DotnetRunDelegate.PROJECT_FRAMEWORK, ""); //$NON-NLS-1$
 	}
 
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			pathText.setText(configuration.getAttribute("PROJECT_FOLDER", ""));
+			pathText.setText(configuration.getAttribute(DotnetRunDelegate.PROJECT_FOLDER, "")); //$NON-NLS-1$
 		} catch (CoreException ce) {
 			pathText.setText(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
 		}
 		try {
 			List frameworkList = frameworkViewer.getList();
-			int index = frameworkList.indexOf(configuration.getAttribute("PROJECT_FRAMEWORK", ""));
+			int index = frameworkList.indexOf(configuration.getAttribute(DotnetRunDelegate.PROJECT_FRAMEWORK, "")); //$NON-NLS-1$
 			if (index >= 0) {
 				frameworkViewer.getList().select(0);
 			} else {
@@ -199,19 +201,19 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 			// no initialize required
 		}
 		try {
-			argumentsText.setText(configuration.getAttribute("PROJECT_ARGUMENTS", ""));
+			argumentsText.setText(configuration.getAttribute(DotnetRunDelegate.PROJECT_ARGUMENTS, "")); //$NON-NLS-1$
 		} catch (CoreException ce) {
-			argumentsText.setText("");
+			argumentsText.setText(""); //$NON-NLS-1$
 		}
 		try {
-			this.configuration = configuration.getAttribute("PROJECT_CONFIGURATION", "Debug");
-			debugRadio.setSelection(this.configuration.equals("Debug"));
+			this.configuration = configuration.getAttribute(DotnetRunDelegate.PROJECT_CONFIGURATION, "Debug"); //$NON-NLS-1$
+			debugRadio.setSelection(this.configuration.equals("Debug")); //$NON-NLS-1$
 			releaseRadio.setSelection(!debugRadio.getSelection());
 		} catch (CoreException ce) {
 			// no initialize required
 		}
 		try {
-			buildCheckBoxButton.setSelection(configuration.getAttribute("PROJECT_BUILD", true));
+			buildCheckBoxButton.setSelection(configuration.getAttribute(DotnetRunDelegate.PROJECT_BUILD, true));
 		} catch (CoreException ce) {
 			buildCheckBoxButton.setSelection(true);
 		}
@@ -219,22 +221,22 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute("PROJECT_FOLDER", pathText.getText());
+		configuration.setAttribute(DotnetRunDelegate.PROJECT_FOLDER, pathText.getText());
 		String[] selections = frameworkViewer.getList().getSelection();
 		if (selections.length > 0) {
-			configuration.setAttribute("PROJECT_FRAMEWORK", frameworkViewer.getList().getSelection()[0]);
+			configuration.setAttribute(DotnetRunDelegate.PROJECT_FRAMEWORK, frameworkViewer.getList().getSelection()[0]);
 		} else {
-			configuration.setAttribute("PROJECT_FRAMEWORK", "");
+			configuration.setAttribute(DotnetRunDelegate.PROJECT_FRAMEWORK, ""); //$NON-NLS-1$
 		}
-		configuration.setAttribute("PROJECT_ARGUMENTS", argumentsText.getText());
-		configuration.setAttribute("PROJECT_BUILD", buildCheckBoxButton.getSelection());
-		configuration.setAttribute("PROJECT_CONFIGURATION", this.configuration);
+		configuration.setAttribute(DotnetRunDelegate.PROJECT_ARGUMENTS, argumentsText.getText());
+		configuration.setAttribute(DotnetRunDelegate.PROJECT_BUILD, buildCheckBoxButton.getSelection());
+		configuration.setAttribute(DotnetRunDelegate.PROJECT_CONFIGURATION, this.configuration);
 		setDirty(false);
 	}
 
 	@Override
 	public String getName() {
-		return "Main";
+		return Messages.DotnetRunTab_name;
 	}
 
 }

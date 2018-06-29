@@ -96,18 +96,17 @@ public class AcutePlugin extends AbstractUIPlugin {
 		String path = plugin.getPreferenceStore().getString(AcutePreferenceInitializer.explicitDotnetPathPreference);
 		if (path.isEmpty()) {
 			if(showErrors) {
-				openCommandErrorDialog("No `dotnet` Path Set",
-						"There is no path to the `dotnet` command, please specify the correct path in the preferences.");
+				openCommandErrorDialog(Messages.dotnetNoPathError_title, Messages.dotnetNoPathError_message);
 			}
 		} else {
 			String version = DotnetVersionUtil.getVersion(path);
 			if (!DotnetVersionUtil.isValidVersionFormat(version)) {
 				if(showErrors) {
-					openCommandErrorDialog("Invalid `dotnet` Path Set","`dotnet --version` failed to return a version, please specify the correct command path in the preferences.");
+					openCommandErrorDialog(Messages.dotnetInvalidPathError_title, Messages.dotnetInvalidPathError_message);
 				}
 			} else if (!DotnetVersionUtil.isValidVersionNumber(version)) {
 				if(showErrors) {
-					openCommandErrorDialog("Invalid `dotnet` Version","`dotnet` version 2.0 or greater is required, please specify a command path to a new version of `dotnet` in the preferences.");
+					openCommandErrorDialog(Messages.dotnetInvalidVersionError_title, Messages.dotnetInvalidVersionError_message);
 				}
 			} else {
 				return path;
@@ -120,7 +119,7 @@ public class AcutePlugin extends AbstractUIPlugin {
 		Display.getDefault().asyncExec(() -> {
 			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 			int dialogResponse = MessageDialog.open(MessageDialog.CONFIRM, shell, title,
-					content, SWT.NONE, "Open Preferences", "Cancel");
+					content, SWT.NONE, Messages.acutePlugin_openPreferences, Messages.acutePlugin_cancel);
 			if (dialogResponse == 0) {
 				PreferenceDialog preferenceDialog = PreferencesUtil.createPreferenceDialogOn(shell,
 						AcutePreferencePage.PAGE_ID,

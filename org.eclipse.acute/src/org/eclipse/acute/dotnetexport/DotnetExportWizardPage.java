@@ -15,6 +15,7 @@ import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
 import java.io.File;
 import java.net.URL;
 
+import org.eclipse.acute.Messages;
 import org.eclipse.acute.ProjectFileAccessor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
@@ -49,8 +50,8 @@ public class DotnetExportWizardPage extends WizardPage {
 	private String runtime;
 	private boolean isExportLocDefault = true;
 	private File exportLocation;
-	private String configuration = "Debug";
-	private String version = "";
+	private String configuration = "Debug"; //$NON-NLS-1$
+	private String version = ""; //$NON-NLS-1$
 
 	private String[] targetFrameworks;
 	private String defaultRuntime;
@@ -89,7 +90,7 @@ public class DotnetExportWizardPage extends WizardPage {
 	public String getTargetFramework() {
 		IStructuredSelection selection = (IStructuredSelection) frameworkViewer.getSelection();
 		if (selection.isEmpty()) {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 		return (String) selection.getFirstElement();
 	}
@@ -104,11 +105,11 @@ public class DotnetExportWizardPage extends WizardPage {
 
 	protected DotnetExportWizardPage(IFile projectFile) {
 		super(DotnetExportWizardPage.class.getName());
-		setTitle("Export a .NET Core Project");
-		setDescription("Export a .NET Core project, using the `dotnet publish` command");
+		setTitle(Messages.DotnetExportWizardPage_exportProject_title);
+		setDescription(Messages.DotnetExportWizardPage_exportProject_message);
 
 		Bundle bundle = FrameworkUtil.getBundle(this.getClass());
-		URL url = bundle.getEntry("images/dotnet.png");
+		URL url = bundle.getEntry("images/dotnet.png"); //$NON-NLS-1$
 		ImageDescriptor imageDescriptor = ImageDescriptor.createFromURL(url);
 		setImageDescriptor(imageDescriptor);
 
@@ -130,11 +131,11 @@ public class DotnetExportWizardPage extends WizardPage {
 
 		Label projectLabel = new Label(container, SWT.NONE);
 		projectLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
-		projectLabel.setText("Project File:");
+		projectLabel.setText(Messages.DotnetExportWizardPage_projectFile);
 
 		projectLocationLabel = new Label(container, SWT.NONE);
 		projectLocationLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		projectLocationLabel.setText("Location:");
+		projectLocationLabel.setText(Messages.DotnetExportWizardPage_location);
 		projectLocationText = new Text(container, SWT.BORDER);
 		projectLocationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		projectLocationText.addModifyListener(e -> {
@@ -145,7 +146,7 @@ public class DotnetExportWizardPage extends WizardPage {
 
 		projectBrowseButton = new Button(container, SWT.NONE);
 		projectBrowseButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		projectBrowseButton.setText("Browse...");
+		projectBrowseButton.setText(Messages.DotnetExportWizardPage_browse);
 		projectBrowseButton.addSelectionListener(widgetSelectedAdapter(e -> {
 			FileDialog dialog = new FileDialog(Display.getDefault().getActiveShell());
 			String path = dialog.open();
@@ -156,7 +157,7 @@ public class DotnetExportWizardPage extends WizardPage {
 
 		Label frameworkLabel = new Label(container, SWT.NONE);
 		frameworkLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		frameworkLabel.setText("Framework:");
+		frameworkLabel.setText(Messages.DotnetExportWizardPage_framework);
 
 		List list = new List(container, SWT.V_SCROLL | SWT.BORDER);
 		GridData listBoxData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
@@ -165,7 +166,7 @@ public class DotnetExportWizardPage extends WizardPage {
 		list.setEnabled(false);
 		frameworkViewer = new ListViewer(list);
 		frameworkViewer.setContentProvider(new ArrayContentProvider());
-		frameworkViewer.add("No frameworks available");
+		frameworkViewer.add(Messages.DotnetExportWizardPage_noFrameworksAvailable);
 		frameworkControlDecoration = new ControlDecoration(frameworkViewer.getControl(), SWT.TOP | SWT.LEFT);
 		frameworkControlDecoration.setImage(errorImage);
 		frameworkViewer.addSelectionChangedListener(e -> {
@@ -175,7 +176,7 @@ public class DotnetExportWizardPage extends WizardPage {
 
 		Button scdCheck = new Button(container, SWT.CHECK);
 		scdCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
-		scdCheck.setText("Self-Contained Deployment");
+		scdCheck.setText(Messages.DotnetExportWizardPage_selfContainedDeployment);
 		scdCheck.addSelectionListener(widgetSelectedAdapter(e -> {
 			updateDeployment(((Button) e.widget).getSelection());
 			setPageComplete(isPageComplete());
@@ -183,7 +184,7 @@ public class DotnetExportWizardPage extends WizardPage {
 
 		runtimeLabel = new Label(container, SWT.NONE);
 		runtimeLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
-		runtimeLabel.setText("Runtime:");
+		runtimeLabel.setText(Messages.DotnetExportWizardPage_runtime);
 
 		runtimeText = new Text(container, SWT.NONE);
 		runtimeText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -200,7 +201,7 @@ public class DotnetExportWizardPage extends WizardPage {
 
 		Button defaultLocationCheckbox = new Button(container, SWT.CHECK);
 		defaultLocationCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
-		defaultLocationCheckbox.setText("Use Default Export Location");
+		defaultLocationCheckbox.setText(Messages.DotnetExportWizardPage_useDefaultExportLocation);
 		defaultLocationCheckbox.setSelection(true);
 		defaultLocationCheckbox.addSelectionListener(widgetSelectedAdapter(e -> {
 			updateDefaultLocationState(((Button) e.widget).getSelection());
@@ -208,7 +209,7 @@ public class DotnetExportWizardPage extends WizardPage {
 
 		exportLocationLabel = new Label(container, SWT.NONE);
 		exportLocationLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		exportLocationLabel.setText("Location:");
+		exportLocationLabel.setText(Messages.DotnetExportWizardPage_location);
 		exportLocationText = new Text(container, SWT.BORDER);
 		exportLocationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		exportLocationText.addModifyListener(e -> {
@@ -220,7 +221,7 @@ public class DotnetExportWizardPage extends WizardPage {
 
 		exportBrowseButton = new Button(container, SWT.NONE);
 		exportBrowseButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		exportBrowseButton.setText("Browse...");
+		exportBrowseButton.setText(Messages.DotnetExportWizardPage_browse);
 		exportBrowseButton.addSelectionListener(widgetSelectedAdapter(e -> {
 			DirectoryDialog dialog = new DirectoryDialog(exportBrowseButton.getShell());
 			String path = dialog.open();
@@ -233,11 +234,11 @@ public class DotnetExportWizardPage extends WizardPage {
 
 		Label configLabel = new Label(container, SWT.NONE);
 		configLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		configLabel.setText("Configuration:");
+		configLabel.setText(Messages.DotnetExportWizardPage_configuration);
 
 		Label versionLabel = new Label(container, SWT.NONE);
 		versionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		versionLabel.setText("Version Suffix:");
+		versionLabel.setText(Messages.DotnetExportWizardPage_versionSuffix);
 
 		Composite configComp = new Composite(container, SWT.NULL);
 		configComp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
@@ -252,12 +253,12 @@ public class DotnetExportWizardPage extends WizardPage {
 		};
 
 		Button debugRadio = new Button(configComp, SWT.RADIO);
-		debugRadio.setText("Debug");
+		debugRadio.setText(Messages.DotnetExportWizardPage_debug);
 		debugRadio.setSelection(true);
 		debugRadio.addListener(SWT.Selection, configRadioListener);
 
 		Button releaseRadio = new Button(configComp, SWT.RADIO);
-		releaseRadio.setText("Release");
+		releaseRadio.setText(Messages.DotnetExportWizardPage_release);
 		releaseRadio.addListener(SWT.Selection, configRadioListener);
 
 		Text versionText = new Text(container, SWT.BORDER);
@@ -283,7 +284,7 @@ public class DotnetExportWizardPage extends WizardPage {
 		frameworkViewer.getList().removeAll();
 		if (isProjectFile(projectPath)) {
 			frameworkViewer.getList().deselectAll();
-			frameworkViewer.add("Loading frameworks");
+			frameworkViewer.add(Messages.DotnetExportWizardPage_loadingFrameworks);
 			frameworkViewer.getList().setEnabled(false);
 			targetFrameworks = ProjectFileAccessor.getTargetFrameworks(projectPath);
 			frameworkViewer.getList().removeAll();
@@ -292,11 +293,11 @@ public class DotnetExportWizardPage extends WizardPage {
 				frameworkViewer.getList().select(0);
 				frameworkViewer.getList().setEnabled(true);
 			} else {
-				frameworkViewer.add("No frameworks available");
+				frameworkViewer.add(Messages.DotnetExportWizardPage_noFrameworksAvailable);
 				frameworkViewer.getList().setEnabled(false);
 			}
 		} else {
-			frameworkViewer.add("No frameworks available");
+			frameworkViewer.add(Messages.DotnetExportWizardPage_noFrameworksAvailable);
 			frameworkViewer.getList().setEnabled(false);
 		}
 		setPageComplete(isPageComplete());
@@ -338,12 +339,12 @@ public class DotnetExportWizardPage extends WizardPage {
 			return;
 		}
 
-		String locationString = "";
+		String locationString = ""; //$NON-NLS-1$
 		if (isProjectFile(projectPath)) {
-			locationString = projectPath.toFile().getParent().toString() + "/bin/" + configuration + "/"
-					+ getTargetFramework() + "/";
+			locationString = projectPath.toFile().getParent().toString() + "/bin/" + configuration + "/" //$NON-NLS-1$ //$NON-NLS-2$
+					+ getTargetFramework() + "/"; //$NON-NLS-1$
 			if (isSCD) {
-				locationString += runtime + "/";
+				locationString += runtime + "/"; //$NON-NLS-1$
 			}
 		}
 
@@ -354,7 +355,7 @@ public class DotnetExportWizardPage extends WizardPage {
 	private boolean isProjectFile(Path path) {
 		if (path == null || path.isEmpty()) {
 			return false;
-		} else if (!path.lastSegment().matches("(.*\\.csproj|project.json)")) {
+		} else if (!path.lastSegment().matches("(.*\\.csproj|project.json)")) { //$NON-NLS-1$
 			return false;
 		} else if (!path.toFile().isFile()) {
 			return false;
@@ -364,39 +365,39 @@ public class DotnetExportWizardPage extends WizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		String runtimeError = "";
-		String exportLocationError = "";
-		String projectLocationError = "";
-		String configError = "";
-		String frameworkError = "";
+		String runtimeError = ""; //$NON-NLS-1$
+		String exportLocationError = ""; //$NON-NLS-1$
+		String projectLocationError = ""; //$NON-NLS-1$
+		String configError = ""; //$NON-NLS-1$
+		String frameworkError = ""; //$NON-NLS-1$
 
 		if (projectPath == null || projectPath.isEmpty()) {
-			projectLocationError = "Please specify the project location";
+			projectLocationError = Messages.DotnetExportWizardPage_pathError_empty;
 		} else if (projectPath.toFile().isDirectory()) {
-			projectLocationError = "Invalid project file: Is a directory";
-		} else if (!projectPath.lastSegment().matches("(.*\\.csproj|project.json)")) {
-			projectLocationError = "Invalid project file: Not a project file";
+			projectLocationError = Messages.DotnetExportWizardPage_pathError_isDirectory;
+		} else if (!projectPath.lastSegment().matches("(.*\\.csproj|project.json)")) { //$NON-NLS-1$
+			projectLocationError = Messages.DotnetExportWizardPage_pathError_notProjectFile;
 		} else if (!projectPath.toFile().isFile()) {
-			projectLocationError = "Invalid project file: File does not exist";
+			projectLocationError = Messages.DotnetExportWizardPage_pathError_doesNotExist;
 		} else if (getTargetFramework().isEmpty()) {
-			frameworkError = "Please specify a Framework";
+			frameworkError = Messages.DotnetExportWizardPage_frameworkError_empty;
 		} else if (isSCD && (runtime == null || runtime.isEmpty())) {
-			runtimeError = "Please specify a runtime";
-		} else if (!version.matches("\\w*")) {
-			configError = "Invalid version suffex";
+			runtimeError = Messages.DotnetExportWizardPage_runtimeError_empty;
+		} else if (!version.matches("\\w*")) { //$NON-NLS-1$
+			configError = Messages.DotnetExportWizardPage_versionError_invalidSuffix;
 		} else if (exportLocation == null || exportLocation.getPath().isEmpty()) {
-			exportLocationError = "Please specify an export location";
+			exportLocationError = Messages.DotnetExportWizardPage_exportLocationError_empty;
 		} else if (exportLocation.isFile()) {
-			exportLocationError = "Invalid export location: it is an existing file";
+			exportLocationError = Messages.DotnetExportWizardPage_exportLocationError_existingFile;
 		} else {
 			File existingParent = exportLocation.getParentFile();
 			while (existingParent != null && !existingParent.exists() && !existingParent.getPath().isEmpty()) {
 				existingParent = existingParent.getParentFile();
 			}
 			if (existingParent == null || (!exportLocation.exists() && !existingParent.canWrite())) {
-				exportLocationError = "Unable to create such directory";
+				exportLocationError = Messages.DotnetExportWizardPage_exportLocationError_unableToCreate;
 			} else if (exportLocation.exists() && !exportLocation.canWrite()) {
-				exportLocationError = "Cannot write in this directory";
+				exportLocationError = Messages.DotnetExportWizardPage_exportLocationError_unableToWrite;
 			}
 		}
 

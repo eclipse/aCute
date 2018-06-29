@@ -29,10 +29,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.lsp4e.server.StreamConnectionProvider;
+import org.eclipse.osgi.util.NLS;
 
 public class OmnisharpStreamConnectionProvider implements StreamConnectionProvider {
 
-	private boolean DEBUG = Boolean.parseBoolean(System.getProperty("omnisharp.lsp.debug"));
+	private boolean DEBUG = Boolean.parseBoolean(System.getProperty("omnisharp.lsp.debug")); //$NON-NLS-1$
 
 	private Process process;
 
@@ -45,7 +46,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 	public void start() throws IOException {
 		// workaround for https://github.com/OmniSharp/omnisharp-node-client/issues/265
 		try {
-			Process restoreProcess = Runtime.getRuntime().exec(new String[] { AcutePlugin.getDotnetCommand(showDotnetCommandError), "restore" });
+			Process restoreProcess = Runtime.getRuntime().exec(new String[] { AcutePlugin.getDotnetCommand(showDotnetCommandError), "restore" }); //$NON-NLS-1$
 			showDotnetCommandError = true;
 			try {
 				restoreProcess.waitFor();
@@ -56,13 +57,10 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 			showDotnetCommandError = false;
 			AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
 					AcutePlugin.getDefault().getBundle().getSymbolicName(),
-					"`dotnet restore` not performed!\n"
-							+ "Main issue and remediation: The `dotnet` path is not set in the .NET Core preferences. Please set it.\n"
-							+ "Possible alternative remediation:\n"
-							+ "* `dotnet` (v2.0 or later) is a prerequisite. Install it on your system if missing."));
+					Messages.omnisharpStreamConnection_dotnetRestoreError));
 		}
 
-		String commandLine = System.getenv("OMNISHARP_LANGUAGE_SERVER_COMMAND");
+		String commandLine = System.getenv("OMNISHARP_LANGUAGE_SERVER_COMMAND"); //$NON-NLS-1$
 		if (commandLine == null) {
 			File serverPath = getServer();
 			commandLine = getDefaultCommandLine(serverPath);
@@ -72,8 +70,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 		} else {
 			AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
 					AcutePlugin.getDefault().getBundle().getSymbolicName(),
-					"Omnisharp not found!\n" +
-							"Main issue and remediation: The `org.eclipse.acute.omnisharpServer` fragment is missing. Please add it.\n" + "Possible alternative settings:\n" + "* set `OMNISHARP_LANGUAGE_SERVER_COMMAND` to the command that should be used to start the server (with full path)."));
+					Messages.omnisharpStreamConnection_omnisharpNotFoundError));
 		}
 	}
 
@@ -82,11 +79,11 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 	 * @return path to server, unzipping it if necessary. Can be null is fragment is missing.
 	 */
 	private @Nullable File getServer() throws IOException {
-		File serverPath = new File(AcutePlugin.getDefault().getStateLocation().toFile(), "omnisharp-roslyn");
+		File serverPath = new File(AcutePlugin.getDefault().getStateLocation().toFile(), "omnisharp-roslyn"); //$NON-NLS-1$
 		if (!serverPath.exists()) {
 			serverPath.mkdirs();
 			try (
-				InputStream stream = FileLocator.openStream(AcutePlugin.getDefault().getBundle(), new Path("omnisharp-roslyn.tar"), true);
+				InputStream stream = FileLocator.openStream(AcutePlugin.getDefault().getBundle(), new Path("omnisharp-roslyn.tar"), true); //$NON-NLS-1$
 				TarArchiveInputStream tarStream = new TarArchiveInputStream(stream);
 			) {
 				TarArchiveEntry entry = null;
@@ -124,19 +121,19 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 	protected @Nullable String getDefaultCommandLine(File serverPath) throws IOException {
 		File serverFileUrl = null;
 		if (Platform.OS_WIN32.equals(Platform.getOS())) {
-			serverFileUrl = new File(serverPath, "server/Omnisharp.exe");
+			serverFileUrl = new File(serverPath, "server/Omnisharp.exe"); //$NON-NLS-1$
 		} else {
-			serverFileUrl = new File(serverPath, "run");
+			serverFileUrl = new File(serverPath, "run"); //$NON-NLS-1$
 		}
 
 		if (serverFileUrl == null || !serverFileUrl.exists()) {
-			AcutePlugin.logError("Server file not found. Has Omnisharp server been unpacked in " + serverPath + " ?");
+			AcutePlugin.logError(NLS.bind(Messages.omnisharpStreamConnection_serverNotFoundError,serverPath));
 			return null;
 		} else if (!serverFileUrl.canExecute()) {
-			AcutePlugin.logError("Server file " + serverFileUrl + " is not executable.");
+			AcutePlugin.logError(NLS.bind(Messages.omnisharpStreamConnection_serverNotExecutableError, serverFileUrl));
 			// return value anyway
 		}
-		return serverFileUrl.getAbsolutePath() + " -stdio -lsp";
+		return serverFileUrl.getAbsolutePath() + " -stdio -lsp"; //$NON-NLS-1$
 	}
 
 	@Override

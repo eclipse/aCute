@@ -20,7 +20,7 @@ public class DotnetExportAccessor {
 
 	public static String getDefaultRuntime() {
 		try {
-			String listCommand = AcutePlugin.getDotnetCommand() + " --info";
+			String listCommand = AcutePlugin.getDotnetCommand() + " --info"; //$NON-NLS-1$
 			Runtime runtime = Runtime.getRuntime();
 			Process process = runtime.exec(listCommand);
 
@@ -28,14 +28,14 @@ public class DotnetExportAccessor {
 				String inputLine;
 
 				while ((inputLine = in.readLine()) != null) {
-					if (inputLine.matches("^\\sRID:\\s+.*$")) {
-						return inputLine.replaceFirst("^\\sRID:\\s+", "").replaceAll("\\s", "");
+					if (inputLine.matches("^\\sRID:\\s+.*$")) { //$NON-NLS-1$
+						return inputLine.replaceFirst("^\\sRID:\\s+", "").replaceAll("\\s", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					}
 				}
 			}
 		} catch (IllegalStateException | IOException e) {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 }

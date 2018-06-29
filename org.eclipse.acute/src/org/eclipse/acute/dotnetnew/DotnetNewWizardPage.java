@@ -22,6 +22,7 @@ import java.util.Set;
 import org.eclipse.acute.AcutePlugin;
 import org.eclipse.acute.AcutePreferenceInitializer;
 import org.eclipse.acute.AcutePreferencePage;
+import org.eclipse.acute.Messages;
 import org.eclipse.acute.dotnetnew.DotnetNewAccessor.Template;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -84,11 +85,11 @@ public class DotnetNewWizardPage extends WizardPage {
 
 	protected DotnetNewWizardPage() {
 		super(DotnetNewWizardPage.class.getName());
-		setTitle("Create a .NET Core Project");
-		setDescription("Create a new .NET Core project, using the `dotnet new` command");
+		setTitle(Messages.DotnetNewWizardPage_createProject_title);
+		setDescription(Messages.DotnetNewWizardPage_createProject_message);
 
 		Bundle bundle = FrameworkUtil.getBundle(this.getClass());
-		URL url = bundle.getEntry("images/dotnet.png");
+		URL url = bundle.getEntry("images/dotnet.png"); //$NON-NLS-1$
 		ImageDescriptor imageDescriptor = ImageDescriptor.createFromURL(url);
 		setImageDescriptor(imageDescriptor);
 	}
@@ -101,7 +102,7 @@ public class DotnetNewWizardPage extends WizardPage {
 		if (isDirectoryAndProjectLinked) {
 			return directory;
 		} else {
-			return new File(directory.toString() + "/" + projectName);
+			return new File(directory.toString() + "/" + projectName); //$NON-NLS-1$
 		}
 	}
 
@@ -133,7 +134,7 @@ public class DotnetNewWizardPage extends WizardPage {
 
 		Label locationLabel = new Label(container, SWT.NONE);
 		locationLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		locationLabel.setText("Location");
+		locationLabel.setText(Messages.DotnetNewWizardPage_location);
 
 		Image errorImage = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR)
 				.getImage();
@@ -150,7 +151,7 @@ public class DotnetNewWizardPage extends WizardPage {
 
 		Button browseButton = new Button(container, SWT.NONE);
 		browseButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		browseButton.setText("Browse...");
+		browseButton.setText(Messages.DotnetNewWizardPage_browse);
 		browseButton.addSelectionListener(widgetSelectedAdapter(e -> {
 			DirectoryDialog dialog = new DirectoryDialog(browseButton.getShell());
 			String path = dialog.open();
@@ -174,9 +175,9 @@ public class DotnetNewWizardPage extends WizardPage {
 		new Label(container, SWT.NONE);
 
 		linkButton = new Button(container, SWT.TOGGLE);
-		linkButton.setToolTipText("Link project name and folder name");
+		linkButton.setToolTipText(Messages.DotnetNewWizardPage_linkNames);
 		linkButton.setSelection(true);
-		try (InputStream iconStream = getClass().getResourceAsStream("/icons/link_obj.png")) {
+		try (InputStream iconStream = getClass().getResourceAsStream("/icons/link_obj.png")) { //$NON-NLS-1$
 			linkImage = new Image(linkButton.getDisplay(), iconStream);
 			linkButton.setImage(linkImage);
 		} catch (IOException e1) {
@@ -190,7 +191,7 @@ public class DotnetNewWizardPage extends WizardPage {
 
 		Label projectNameLabel = new Label(container, SWT.NONE);
 		projectNameLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		projectNameLabel.setText("Project name");
+		projectNameLabel.setText(Messages.DotnetNewWizardPage_projectName);
 
 		projectNameText = new Text(container, SWT.BORDER);
 		projectNameText.setEnabled(false);
@@ -214,7 +215,7 @@ public class DotnetNewWizardPage extends WizardPage {
 		new Label(container, SWT.NONE).setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false, 4, 1));
 
 		Label projectTemplateLabel = new Label(container, SWT.NONE);
-		projectTemplateLabel.setText("Project Template");
+		projectTemplateLabel.setText(Messages.DotnetNewWizardPage_projectTemplate);
 
 		List list = new List(container, SWT.V_SCROLL | SWT.BORDER);
 		GridData listBoxData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
@@ -245,7 +246,7 @@ public class DotnetNewWizardPage extends WizardPage {
 
 		new Label(container, SWT.NONE);
 		Link preferencesLink = new Link(container, SWT.NONE);
-		preferencesLink.setText("<a>.NET Preferences</a>");
+		preferencesLink.setText(Messages.DotnetNewWizardPage_dotnetPreferencesLink);
 		preferencesLink.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,2,1));
 		preferencesLink.addSelectionListener(widgetSelectedAdapter(s -> Display.getDefault().asyncExec(() -> {
 			PreferenceDialog preferenceDialog = PreferencesUtil.createPreferenceDialogOn(getShell(),
@@ -260,7 +261,7 @@ public class DotnetNewWizardPage extends WizardPage {
 		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1);
 		workingSetComposite.setLayoutData(layoutData);
 		workingSetComposite.setLayout(new GridLayout(1, false));
-		String[] workingSetIds = new String[] { "org.eclipse.ui.resourceWorkingSetPage" };
+		String[] workingSetIds = new String[] { "org.eclipse.ui.resourceWorkingSetPage" }; //$NON-NLS-1$
 		IStructuredSelection wsSel = null;
 		if (this.workingSets != null) {
 			wsSel = new StructuredSelection(this.workingSets.toArray());
@@ -276,14 +277,14 @@ public class DotnetNewWizardPage extends WizardPage {
 		if(templateViewer.getList().isDisposed()) {
 			return;
 		}
-		setTemplateViewToText("Loading templates...");
+		setTemplateViewToText(Messages.DotnetNewWizardPage_loadingTemplates);
 		try {
 			AcutePlugin.getDotnetCommand();
 		} catch (IllegalStateException e) {
-			setTemplateViewToText("Error with `dotnet` command, see preferences");
+			setTemplateViewToText(Messages.DotnetNewWizardPage_dotnetError);
 			return;
 		}
-		Job.create("Retrieve Templates", (ICoreRunnable) monitor -> {
+		Job.create(Messages.DotnetNewWizardPage_retriveTemplates, (ICoreRunnable) monitor -> {
 			final java.util.List<Template> templates = DotnetNewAccessor.getTemplates();
 			Display.getDefault().asyncExec(() -> {
 				templateViewer.getList().removeAll();
@@ -298,7 +299,7 @@ public class DotnetNewWizardPage extends WizardPage {
 					templateViewer.getList().setEnabled(true);
 					setPageComplete(isPageComplete());
 				} else {
-					templateViewer.add("No available templates, see preferences");
+					templateViewer.add(Messages.DotnetNewWizardPage_noTemplatesError);
 				}
 				templateViewer.getControl().getParent().layout();
 			});
@@ -339,22 +340,22 @@ public class DotnetNewWizardPage extends WizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		String locationError = "";
-		String projectNameError = "";
-		String templateError = "";
+		String locationError = ""; //$NON-NLS-1$
+		String projectNameError = ""; //$NON-NLS-1$
+		String templateError = ""; //$NON-NLS-1$
 		if (directory == null || directory.getPath().isEmpty()) {
-			locationError = "Please specify a directory";
+			locationError = Messages.DotnetNewWizardPage_directroyError_empty;
 		} else if (projectName == null || projectName.isEmpty()) {
-			projectNameError = "Please specify project name";
+			projectNameError = Messages.DotnetNewWizardPage_projectError_empty;
 		} else if (directory.isFile()) {
-			locationError = "Invalid location: it is an existing file.";
+			locationError = Messages.DotnetNewWizardPage_locationError_existingFile;
 		} else if (directory.getParentFile() == null
 				|| (!directory.exists() && !directory.getParentFile().canWrite())) {
-			locationError = "Unable to create such directory";
+			locationError = Messages.DotnetNewWizardPage_locationError_unableToCreate;
 		} else if (directory.exists() && !directory.canWrite()) {
-			locationError = "Cannot write in this directory";
+			locationError = Messages.DotnetNewWizardPage_locationError_unableToWrite;
 		} else if (getTemplate() == null) {
-			templateError = "No template selected";
+			templateError = Messages.DotnetNewWizardPage_templateError_empty;
 		} else {
 			File dotProject = new File(directory, IProjectDescription.DESCRIPTION_FILE_NAME);
 			if (dotProject.exists()) {
@@ -363,10 +364,10 @@ public class DotnetNewWizardPage extends WizardPage {
 					desc = ResourcesPlugin.getWorkspace()
 							.loadProjectDescription(Path.fromOSString(dotProject.getAbsolutePath()));
 				} catch (CoreException e) {
-					projectNameError = "Invalid .project file in directory";
+					projectNameError = Messages.DotnetNewWizardPage_projectError_invalidDotProjectFile;
 				}
 				if (!desc.getName().equals(projectName)) {
-					projectNameError = "Project name must match one in .project file: " + desc.getName();
+					projectNameError = Messages.DotnetNewWizardPage_projectError_invalidNameMatch + desc.getName();
 				}
 			} else {
 				IProject project = null;
@@ -374,10 +375,10 @@ public class DotnetNewWizardPage extends WizardPage {
 					project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 					if (project.exists() && (project.getLocation() == null
 							|| !directory.getAbsoluteFile().equals(project.getLocation().toFile().getAbsoluteFile()))) {
-						projectNameError = "Another project with same name already exists in workspace.";
+						projectNameError = Messages.DotnetNewWizardPage_projectError_existingName;
 					}
 				} catch (IllegalArgumentException ex) {
-					projectNameError = "Invalid project name";
+					projectNameError = Messages.DotnetNewWizardPage_projectError_invalidName;
 				}
 			}
 		}

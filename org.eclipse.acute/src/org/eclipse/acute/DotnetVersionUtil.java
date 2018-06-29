@@ -21,7 +21,7 @@ public class DotnetVersionUtil {
 	public static final int MINIMUM_MAJOR_VERSION = 2;
 
 	public static boolean isValidVersionFormat(String version) {
-		return !version.isEmpty() && version.matches("\\d+\\.\\d+\\.\\d+.*");
+		return !version.isEmpty() && version.matches("\\d+\\.\\d+\\.\\d+.*"); //$NON-NLS-1$
 	}
 
 	public static boolean isValidVersionNumber(String version) {
@@ -29,14 +29,14 @@ public class DotnetVersionUtil {
 	}
 
 	public static int getMajorVersionNumber(String version) {
-		return Integer.parseInt(version.split("\\.")[0]);
+		return Integer.parseInt(version.split("\\.")[0]); //$NON-NLS-1$
 	}
 
 	public static String getVersion(String dotnetPath) {
 		try {
-			String[] command = new String[] { "/bin/bash", "-c", dotnetPath + " --version" };
+			String[] command = new String[] { "/bin/bash", "-c", dotnetPath + " --version" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if (Platform.getOS().equals(Platform.OS_WIN32)) {
-				command = new String[] { "cmd", "/c", "\"" + dotnetPath + "\" --version" };
+				command = new String[] { "cmd", "/c", "\"" + dotnetPath + "\" --version" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			}
 			ProcessBuilder builder = new ProcessBuilder(command);
 			Process process = builder.start();
@@ -49,6 +49,6 @@ public class DotnetVersionUtil {
 		} catch (IOException | InterruptedException e) {
 			// Error will be caught with empty response
 		}
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 }

@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.Platform;
 
 public class TestDotnetBuilderEnabled extends PropertyTester {
 
-	private static final String IS_ENABLED = "isDotnetBuilderEnabled";
+	private static final String IS_ENABLED = "isDotnetBuilderEnabled"; //$NON-NLS-1$
 
 	@Override
 	public boolean test(final Object receiver, final String property, final Object[] args, final Object expectedValue) {

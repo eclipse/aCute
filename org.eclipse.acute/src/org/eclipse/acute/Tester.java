@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 
 public class Tester extends PropertyTester {
-	private static final String PROPERTY_NAME = "isDotnetProject";
+	private static final String PROPERTY_NAME = "isDotnetProject"; //$NON-NLS-1$
 	@Override
 	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
 		if (property.equals(PROPERTY_NAME)) {
@@ -29,7 +29,7 @@ public class Tester extends PropertyTester {
 			IProject project = resource.getProject();
 			try {
 				for (IResource projItem : project.members()) {
-					if (projItem.getName().equals("project.json") || projItem.getName().matches("^.*\\.csproj$")) {
+					if (projItem.getName().equals("project.json") || projItem.getName().matches("^.*\\.csproj$")) { //$NON-NLS-1$ //$NON-NLS-2$
 						return true;
 					}
 				}
