@@ -166,6 +166,10 @@ public class Messages extends NLS {
 	public static String AcuteDebugMainTab_project;
 	public static String AcuteDebugMainTab_promgramArgs;
 	public static String AcuteDebugMainTab_title;
+
+	public static String AttachMainTab_processId;
+
+	public static String AttachMainTab_title;
 	public static String DebuggerTab_title;
 	public static String DebuggerTab_debuggerPath;
 	public static String DebuggerTab_debuggerArgs;

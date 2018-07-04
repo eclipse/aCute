@@ -325,20 +325,40 @@
             sourceLocatorId="org.eclipse.lsp4e.debug.sourceLocator"
             sourcePathComputerId="org.eclipse.lsp4e.debug.sourcePathComputer">
       </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.eclipse.acute.debug.DotnetDebugAttachDelegate"
+            id="org.eclipse.acute.debug.attachType"
+            modes="debug"
+            name=".NET Core Debug Adapter Attach"
+            public="true"
+            sourceLocatorId="org.eclipse.lsp4e.debug.sourceLocator"
+            sourcePathComputerId="org.eclipse.lsp4e.debug.sourcePathComputer">
+      </launchConfigurationType>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             class="org.eclipse.acute.debug.DebugLaunchTabGroup"
-            description="Debug .NET apps"
+            description="Run and Debug .NET application"
             id="org.eclipse.acute.debug.tabGroup"
             type="org.eclipse.acute.debug.launchType">
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            class="org.eclipse.acute.debug.DebugAttachTabGroup"
+            description="Debug running .NET application"
+            id="org.eclipse.acute.debug.attch.tabGroup"
+            type="org.eclipse.acute.debug.attachType">
       </launchConfigurationTabGroup>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
             configTypeID="org.eclipse.acute.debug.launchType"
+            icon="icons/dotnet.png"
+            id="org.eclipse.acute.debug.typeImage">
+      </launchConfigurationTypeImage>
+      <launchConfigurationTypeImage
+            configTypeID="org.eclipse.acute.debug.attachType"
             icon="icons/dotnet.png"
             id="org.eclipse.acute.debug.typeImage">
       </launchConfigurationTypeImage>
