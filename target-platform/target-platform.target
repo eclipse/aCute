@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="aCute" sequenceNumber="7">
+<?pde version="3.8"?><target name="aCute" sequenceNumber="8">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jdt.annotation" version="0.0.0"/>
@@ -11,7 +11,12 @@
 <unit id="javax.xml" version="1.3.4.v201005080400"/>
 <unit id="org.eclipse.swtbot.eclipse.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.swtbot.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/staging/photon/"/>
+<repository location="http://download.eclipse.org/releases/photon/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.lsp4e" version="0.0.0"/>
+<unit id="org.eclipse.lsp4e.debug" version="0.0.0"/>
+<repository location="http://download.eclipse.org/lsp4e/releases/latest/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.ui.tests.harness" version="0.0.0"/>
