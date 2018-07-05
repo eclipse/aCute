@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.acute.debug;
 
+import org.eclipse.acute.AcutePlugin;
 import org.eclipse.acute.Messages;
 import org.eclipse.acute.Tester;
 import org.eclipse.acute.dotnetrun.DotnetRunDelegate;
@@ -22,6 +23,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -45,8 +48,25 @@ public class DebugLaunchMainTab extends AbstractLaunchConfigurationTab {
 				projectCombo.add(p.getName());
 			}
 		}
+		ControlDecoration projectComboDecoration = new ControlDecoration(projectCombo, SWT.TOP | SWT.LEFT);
+		projectComboDecoration.setImage(FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage());
 		projectCombo.addModifyListener(e -> {
 			setDirty(true);
+			String projectName = projectCombo.getText();
+			IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+			if (p == null || !p.exists()) {
+				setErrorMessage(Messages.AcuteDebugMainTab_notAProject);
+				projectComboDecoration.setDescriptionText(Messages.AcuteDebugMainTab_notAProject);
+				projectComboDecoration.show();
+			} else if (!Tester.isDotnetProject(p)) {
+				setErrorMessage(Messages.AcuteDebugMainTab_notADotnetProject);
+				projectComboDecoration.setDescriptionText(Messages.AcuteDebugMainTab_notADotnetProject);
+				projectComboDecoration.show();
+			} else {
+				setErrorMessage(null);
+				projectComboDecoration.hide();
+			}
+			updateLaunchConfigurationDialog();
 		});
 
 		// TODO validation
@@ -64,7 +84,11 @@ public class DebugLaunchMainTab extends AbstractLaunchConfigurationTab {
 
 	@Override public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
+			projectCombo.setText("this is just to ensure next line triggers a modify event and updates buttons"); //$NON-NLS-1$
 			projectCombo.setText(configuration.getAttribute(DotnetRunDelegate.PROJECT_FOLDER, "")); //$NON-NLS-1$
+			if (projectCombo.getText().isEmpty() && projectCombo.getItems().length > 0) {
+				projectCombo.setText(projectCombo.getItems()[0]);
+			}
 			programArgsText.setText(configuration.getAttribute(DotnetRunDelegate.PROJECT_ARGUMENTS, "")); //$NON-NLS-1$
 		} catch (CoreException e) {
 			setErrorMessage(e.getMessage());
@@ -89,6 +113,24 @@ public class DebugLaunchMainTab extends AbstractLaunchConfigurationTab {
 
 	@Override public String getName() {
 		return Messages.AcuteDebugMainTab_title;
+	}
+
+	@Override public boolean isValid(ILaunchConfiguration launchConfig) {
+		if (!super.isValid(launchConfig)) {
+			return false;
+		}
+		String projectName;
+		try {
+			projectName = launchConfig.getAttribute(DotnetRunDelegate.PROJECT_FOLDER, ""); //$NON-NLS-1$
+			if (projectName.isEmpty()) {
+				return false;
+			}
+			return Tester.isDotnetProject(ResourcesPlugin.getWorkspace().getRoot().getProject(projectName));
+		} catch (CoreException e) {
+			AcutePlugin.logError(e);
+			setErrorMessage(e.getMessage());
+			return false;
+		}
 	}
 
 }

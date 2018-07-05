@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>org.eclipse.acute.netcoredbg.linux.x86_64</artifactId>
+	<artifactId>org.eclipse.acute.netcoredbg.macosx.x86_64</artifactId>
 	<parent>
 		<groupId>org.eclipse.acute</groupId>
 		<artifactId>netcoredbgFragments</artifactId>
@@ -17,8 +17,8 @@
 				<configuration>
 					<environments>
 						<environment>
- 							<os>linux</os>
-							<ws>gtk</ws>
+ 							<os>macosx</os>
+							<ws>cocoaz</ws>
 							<arch>x86_64</arch>
 						</environment>
 					</environments>
@@ -35,7 +35,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://github.com/Samsung/netcoredbg/releases/download/latest/netcoredbg-linux-master.tar.gz</uri>
+							<uri>https://github.com/Samsung/netcoredbg/releases/download/latest/netcoredbg-osx-master.tar.gz</uri>
 							<unpack>true</unpack>
 							<outputDirectory>${basedir}</outputDirectory>
 						</configuration>

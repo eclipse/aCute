@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.acute.AcutePlugin;
 import org.eclipse.acute.Messages;
 import org.eclipse.acute.debug.DebuggersRegistry.DebuggerInfo;
 import org.eclipse.core.runtime.CoreException;
@@ -26,6 +27,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.lsp4e.debug.DSPPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -42,6 +45,7 @@ public class DebuggerTab extends AbstractLaunchConfigurationTab {
 
 	static final String ATTR_DEFAULT_DEBUGGER = DebuggerTab.class.getName() + ".ATTR_DEFAULT_DEBUGGER"; //$NON-NLS-1$
 	private Text debugCommandText;
+
 	private Text debugArgsText;
 	private Button defaultDebuggerCheckbox;
 	private Button browseDebuggerButton;
@@ -57,8 +61,26 @@ public class DebuggerTab extends AbstractLaunchConfigurationTab {
 		toDisableWhenDefault.add(debuggerPathLabel);
 		debugCommandText = new Text(res, SWT.BORDER);
 		debugCommandText.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT,true, false));
+		ControlDecoration debugCommandDecoration = new ControlDecoration(debugCommandText, SWT.TOP | SWT.LEFT);
+		debugCommandDecoration.setImage(FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage());
 		debugCommandText.addModifyListener(e -> {
 			setDirty(true);
+			File file = new File(debugCommandText.getText());
+			if (!file.isFile()) {
+				setErrorMessage(Messages.DebuggerTab_invalidFile_message);
+				debugCommandDecoration.setDescriptionText(Messages.DebuggerTab_invalidFile_title);
+				debugCommandDecoration.show();
+				getLaunchConfigurationDialog().updateButtons();
+			} else if (!file.canExecute()) {
+				setErrorMessage(Messages.DebuggerTab_nonExecutableFileMessage);
+				debugCommandDecoration.setDescriptionText(Messages.DebuggerTab_nonExecutableFile_title);
+				debugCommandDecoration.show();
+				getLaunchConfigurationDialog().updateButtons();
+			} else {
+				setErrorMessage(null);
+				debugCommandDecoration.hide();
+			}
+			updateLaunchConfigurationDialog();
 		});
 		toDisableWhenDefault.add(debugCommandText);
 		browseDebuggerButton = new Button(res, SWT.PUSH);
@@ -116,6 +138,7 @@ public class DebuggerTab extends AbstractLaunchConfigurationTab {
 		defaultDebuggerCheckbox.addSelectionListener(SelectionListener.widgetSelectedAdapter(event -> {
 			setDirty(true);
 			toDisableWhenDefault.forEach(widget -> widget.setEnabled(!defaultDebuggerCheckbox.getSelection()));
+			updateLaunchConfigurationDialog();
 		}));
 		setControl(res);
 	}
@@ -148,17 +171,12 @@ public class DebuggerTab extends AbstractLaunchConfigurationTab {
 
 	@Override public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		configuration.setAttribute(ATTR_DEFAULT_DEBUGGER, defaultDebuggerCheckbox.getSelection());
-		if (defaultDebuggerCheckbox.getSelection()) {
-			configuration.removeAttribute(DSPPlugin.ATTR_DSP_CMD);
-			configuration.removeAttribute(DSPPlugin.ATTR_DSP_ARGS);
+		configuration.setAttribute(DSPPlugin.ATTR_DSP_CMD, getAttributeValueFrom(debugCommandText));
+		String arg = getAttributeValueFrom(debugArgsText);
+		if (arg == null) {
+			configuration.setAttribute(DSPPlugin.ATTR_DSP_ARGS, (String) null);
 		} else {
-			configuration.setAttribute(DSPPlugin.ATTR_DSP_CMD, getAttributeValueFrom(debugCommandText));
-			String arg = getAttributeValueFrom(debugArgsText);
-			if (arg == null) {
-				configuration.setAttribute(DSPPlugin.ATTR_DSP_ARGS, (String) null);
-			} else {
-				configuration.setAttribute(DSPPlugin.ATTR_DSP_ARGS, Arrays.asList(arg.split("\\s+"))); //$NON-NLS-1$
-			}
+			configuration.setAttribute(DSPPlugin.ATTR_DSP_ARGS, Arrays.asList(arg.split("\\s+"))); //$NON-NLS-1$
 		}
 	}
 
@@ -172,6 +190,16 @@ public class DebuggerTab extends AbstractLaunchConfigurationTab {
 
 	@Override public String getName() {
 		return Messages.DebuggerTab_title;
+	}
+
+	@Override public boolean isValid(ILaunchConfiguration launchConfig) {
+		try {
+			return super.isValid(launchConfig) && new File(launchConfig.getAttribute(DSPPlugin.ATTR_DSP_CMD, "/letshopenofileevergetthisname")).canExecute(); //$NON-NLS-1$
+		} catch (CoreException e) {
+			AcutePlugin.logError(e);
+			setErrorMessage(e.getMessage());
+			return false;
+		}
 	}
 
 }

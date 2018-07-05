@@ -44,6 +44,9 @@ public class Tester extends PropertyTester {
 	}
 
 	public static boolean isDotnetProject(IProject p) {
+		if (p == null || !p.isAccessible()) {
+			return false;
+		}
 		try {
 			for (IResource projItem : p.members()) {
 				if (projItem.getName().equals("project.json") || projItem.getName().matches("^.*\\.csproj$")) { //$NON-NLS-1$ //$NON-NLS-2$

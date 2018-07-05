@@ -13,6 +13,7 @@
 		<tycho-extras-version>${tycho-version}</tycho-extras-version>
 		<tycho.scmUrl>scm:git:https://github.com/eclipse/acute.git</tycho.scmUrl>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
+		<download-maven-plugin.version>1.4.1-SNAPSHOT</download-maven-plugin.version>
 	</properties>
 
 	<modules>
@@ -24,6 +25,7 @@
 		<module>roslynFragments/org.eclipse.acute.omnisharpServer.win32.x86</module>
 		<!-- module>roslynFragments/org.eclipse.acute.omnisharpServer.macosx.x86_64</module -->
 		<module>org.eclipse.acute.msBuildServer</module>
+		<module>netcoredbgFragments</module>
 		<module>org.eclipse.acute.tests</module>
 		<module>org.eclipse.acute.SWTBotTests</module>
 		<module>org.eclipse.acute.feature</module>

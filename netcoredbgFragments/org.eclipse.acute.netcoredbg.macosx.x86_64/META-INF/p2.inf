@@ -1,0 +1,2 @@
+instructions.install = \
+org.eclipse.equinox.p2.touchpoint.natives.chmod(targetDir:${artifact.location}/netcoredbg,targetFile:netcoredbg,permissions:755);

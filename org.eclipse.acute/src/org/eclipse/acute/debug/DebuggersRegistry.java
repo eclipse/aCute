@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +43,9 @@ public class DebuggersRegistry {
 			try {
 				netcoredbgUrl = FileLocator.toFileURL(netcoredbgUrl);
 				File dbgDir = new File(netcoredbgUrl.toURI().normalize()).getAbsoluteFile();
+				if (!dbgDir.canExecute() && dbgDir.canExecute()) {
+					Files.setPosixFilePermissions(dbgDir.toPath(), Collections.singleton(PosixFilePermission.OWNER_EXECUTE));
+				}
 				return new DebuggerInfo(new File(dbgDir,"netcoredbg"), Collections.singletonList("--interpreter=vscode")); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (IOException | URISyntaxException ex) {
 				AcutePlugin.logError(ex);
