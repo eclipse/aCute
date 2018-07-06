@@ -15,6 +15,7 @@ package org.eclipse.acute;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.SWT;
@@ -115,6 +116,19 @@ public class AcutePlugin extends AbstractUIPlugin {
 			}
 		}
 		throw new IllegalStateException();
+	}
+
+	public static void showError(String title, String message, Exception exception) {
+		showError(title, message + '\n' + exception.getLocalizedMessage());
+	}
+
+	public static void showError(String title, String message) {
+		Display.getDefault().asyncExec(() -> {
+			MessageDialog dialog = new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					title, null, message, MessageDialog.ERROR, 0, IDialogConstants.OK_LABEL);
+			dialog.setBlockOnOpen(false);
+			dialog.open();
+		});
 	}
 
 	private static void openCommandErrorDialog(String title, String content) {
