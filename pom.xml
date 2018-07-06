@@ -274,22 +274,9 @@
 			<snapshots><enabled>true</enabled></snapshots>
 		</pluginRepository>
 		<pluginRepository>
-			<id>jboss</id>
-			<url>https://repository.jboss.org/</url>
-			<snapshots><enabled>true</enabled></snapshots>
-		</pluginRepository>
-		<pluginRepository>
 			<id>tycho-staged</id>
 			<url>https://oss.sonatype.org/content/repositories/orgeclipsetycho-1046/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>jboss-snapshots-repository</id>
-			<name>JBoss Snapshots Repository</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-	</distributionManagement>
 </project>

@@ -10,28 +10,6 @@
   
 	<build>
 		<plugins>
-			<!-- workaround https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
-			<plugin>
-				<groupId>org.jboss.tools.tycho-plugins</groupId>
-				<artifactId>repository-utils</artifactId>
-				<version>1.0.0</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>generate-repository-facade</goal>
-						</goals>
-						<configuration>
-							<skipWebContentGeneration>true</skipWebContentGeneration>
-							<associateSites>
-								<associateSite>http://download.eclipse.org/lsp4e/releases/latest/</associateSite>
-								<associateSite>http://download.eclipse.org/tm4e/releases/latest/</associateSite>
-							</associateSites>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			
   		<plugin>
   			<groupId>org.eclipse.tycho.extras</groupId>
   			<artifactId>tycho-eclipserun-plugin</artifactId>
