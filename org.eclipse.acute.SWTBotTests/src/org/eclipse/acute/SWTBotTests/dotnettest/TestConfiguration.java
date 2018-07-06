@@ -57,13 +57,13 @@ public class TestConfiguration extends AbstractDotnetTest {
 	@Test
 	public void testSelectTestMethod() {
 		bot.radio("Run a single test").click();
-		bot.button("🔎Search", 0).click();
+		bot.button("\uD83D\uDD0ESearch", 0).click();
 		bot.waitUntil(Conditions.shellIsActive("Class Selection"), 30000);
 		bot.button("OK").click();
 
 		String className = bot.textWithLabel("Test class:").getText();
 
-		bot.button("🔎Search", 1).click();
+		bot.button("\uD83D\uDD0ESearch", 1).click();
 		bot.waitUntil(Conditions.shellIsActive("Method Selection from \"" + className + "\""));
 		assertTrue("No methods found for selected class", bot.button("OK").isEnabled());
 		bot.button("OK").click();

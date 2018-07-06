@@ -76,7 +76,7 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 						ILaunchConfiguration launchConfig = getLaunchConfiguration(mode, resource);
 						launchConfig.launch(mode, new NullProgressMonitor());
 					} catch (CoreException e) {
-						e.printStackTrace();
+						AcutePlugin.logError(e);
 					}
 					return;
 				}
@@ -97,7 +97,7 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 			ILaunchConfiguration launchConfig = getLaunchConfiguration(mode, file);
 			launchConfig.launch(mode, new NullProgressMonitor());
 		} catch (CoreException e) {
-			e.printStackTrace();
+			AcutePlugin.logError(e);
 		}
 	}
 
@@ -120,7 +120,7 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 			projectFile = projectFile.getParentFile();
 		}
 
-		if (!projectFile.exists() || projectFile == null) {
+		if (projectFile == null || !projectFile.exists()) {
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 					Messages.DotnetTestDelegate_runTestError_title, Messages.DotnetTestDelegate_runTestError_message_badLocation);
 			return;
@@ -130,7 +130,8 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 		List<String> commandList = new ArrayList<>();
 		try {
 			commandList.add(AcutePlugin.getDotnetCommand());
-		} catch (Exception e) {
+		} catch (IllegalStateException e) {
+			e.printStackTrace(); // Added to see if sonarqube will log as added major issue
 			return;
 		}
 		commandList.add("test"); //$NON-NLS-1$
@@ -193,17 +194,19 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 			configName = launchManager.generateLaunchConfigurationName(configName);
 			ILaunchConfigurationWorkingCopy wc = configType.newInstance(null, configName);
 			if (resource.getLocation().toFile().isFile()) {
-				if (resource.getFileExtension().equals("cs")) { //$NON-NLS-1$
+				String extension = resource.getFileExtension();
+				if (extension!= null && extension.equals("cs")) { //$NON-NLS-1$
 					wc.setAttribute(TEST_SELECTION_TYPE, SELECTED_TEST);
 					wc.setAttribute(TEST_CLASS, resource.getName().replaceFirst("\\.cs$", "")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
-				resource = resource.getParent();
+				wc.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, resource.getParent().getLocation().toString());
+			} else {
+				wc.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, resource.getLocation().toString());
 			}
-			wc.setAttribute(DebugPlugin.ATTR_WORKING_DIRECTORY, resource.getLocation().toString());
 
 			return wc;
 		} catch (CoreException e) {
-			e.printStackTrace();
+			AcutePlugin.logError(e);
 		}
 		return null;
 	}

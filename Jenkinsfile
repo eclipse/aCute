@@ -27,6 +27,31 @@ pipeline {
 				}
 			}
 		}
+		stage('SonarQube analysis') {
+			when {
+				not {
+					branch 'master'
+				}
+			}
+			steps {
+				withSonarQubeEnv('Eclipse Sonar') {
+					withMaven(maven: 'apache-maven-latest', jdk: 'jdk1.8.0-latest', mavenLocalRepo: '.repository') {
+						withCredentials([usernamePassword(credentialsId: '4837e65b-59d9-43d8-8aa4-c5e6f62acc3b', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
+							sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=' + env.CHANGE_ID + ' -Dsonar.github.repository=eclipse/aCute -Dsonar.github.oauth=' + env.TOKEN + ' -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.jdbc.url=$SONAR_JDBC_URL -Dsonar.jdbc.username=$SONAR_JDBC_USERNAME -Dsonar.jdbc.password=$SONAR_JDBC_PASSWORD'
+						}
+					}
+				}
+			}
+		}
+		stage('SonarQube') {
+			steps {
+				withSonarQubeEnv('Eclipse Sonar') {
+					withMaven(maven: 'apache-maven-latest', jdk: 'jdk1.8.0-latest', mavenLocalRepo: '.repository') {
+						sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.jdbc.url=$SONAR_JDBC_URL -Dsonar.jdbc.username=$SONAR_JDBC_USERNAME -Dsonar.jdbc.password=$SONAR_JDBC_PASSWORD'
+					}
+				}
+			}
+		}
 		stage('Deploy') {
 			when {
 				branch 'master'
