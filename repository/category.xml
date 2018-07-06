@@ -24,10 +24,19 @@
    <bundle id="org.eclipse.lsp4e" version="0.0.0">
       <category name="Dependencies"/>
    </bundle>
+   <bundle id="org.eclipse.lsp4e.debug" version="0.0.0">
+      <category name="Dependencies"/>
+   </bundle>
    <bundle id="org.eclipse.lsp4j" version="0.0.0">
       <category name="Dependencies"/>
    </bundle>
    <bundle id="org.eclipse.lsp4j.jsonrpc" version="0.0.0">
+      <category name="Dependencies"/>
+   </bundle>
+   <bundle id="org.eclipse.lsp4j.debug" version="0.0.0">
+      <category name="Dependencies"/>
+   </bundle>
+   <bundle id="org.eclipse.lsp4j.jsonrpc.debug" version="0.0.0">
       <category name="Dependencies"/>
    </bundle>
    <bundle id="org.eclipse.mylyn.commons.core" version="0.0.0">
