@@ -23,19 +23,20 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 
-public class AbstractExportWizardTest extends AbstractDotnetTest{
-	
+public class AbstractExportWizardTest extends AbstractDotnetTest {
+
 	protected void openExportWizard() {
 		SWTBotView view = bot.viewByTitle("Project Explorer");
-		List<Tree> controls = new ChildrenControlFinder(view.getWidget()).findControls(WidgetOfType.widgetOfType(Tree.class));
-		SWTBotTree tree = new SWTBotTree((Tree) controls.get(0));
+		List<Tree> controls = new ChildrenControlFinder(view.getWidget())
+				.findControls(WidgetOfType.widgetOfType(Tree.class));
+		SWTBotTree tree = new SWTBotTree(controls.get(0));
 		SWTBotTreeItem item = tree.getTreeItem(project.getName());
 		item.select();
 		item.contextMenu("Export...").click();
-		
+
 		SWTBotShell shell = bot.shell("Export");
 		shell.activate();
-		bot.tree().expandNode("Other").select(".NET Core Project Exporter");
+		bot.tree().expandNode("Other").select(".NET Core Project");
 		bot.button("Next >").click();
 
 		return;
