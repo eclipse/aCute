@@ -84,7 +84,6 @@ public class DebugLaunchMainTab extends AbstractLaunchConfigurationTab {
 
 	@Override public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			projectCombo.setText("this is just to ensure next line triggers a modify event and updates buttons"); //$NON-NLS-1$
 			projectCombo.setText(configuration.getAttribute(DotnetRunDelegate.PROJECT_FOLDER, "")); //$NON-NLS-1$
 			if (projectCombo.getText().isEmpty() && projectCombo.getItems().length > 0) {
 				projectCombo.setText(projectCombo.getItems()[0]);

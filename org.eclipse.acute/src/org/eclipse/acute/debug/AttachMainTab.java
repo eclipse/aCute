@@ -47,7 +47,10 @@ public class AttachMainTab extends AbstractLaunchConfigurationTab {
 		pidText.setMinimum(0);
 		pidText.setMaximum(Integer.MAX_VALUE);
 		pidText.setLayoutData(new GridData(120, SWT.DEFAULT));
-		pidText.addModifyListener(e -> setDirty(true));
+		pidText.addModifyListener(e -> {
+			setDirty(true);
+			updateLaunchConfigurationDialog();
+		});
 		// with Java 9, add a Search button showing a "ProcessSelectionDialog"
 		// filtering process using dotnet as command.
 		setControl(res);
