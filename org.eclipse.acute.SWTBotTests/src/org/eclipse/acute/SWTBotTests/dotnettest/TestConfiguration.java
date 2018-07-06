@@ -24,45 +24,47 @@ import org.junit.Test;
 
 public class TestConfiguration extends AbstractDotnetTest {
 	private String name = "Test_config1";
-	
+
 	@Override
 	public void setup() throws CoreException {
 		super.buildEmptyProject();
-		
+
 		String projectFileName;
-		if(dotnetVersion.matches("2\\.0.*")) {
+		if (dotnetVersion.matches("2\\..*")) {
 			projectFileName = "Project2.Tests.csproj";
-		}else if(dotnetVersion.matches("1\\.0\\.1.*")){
+		} else if (dotnetVersion.matches("1\\.0\\.1.*")) {
 			projectFileName = "Project1.Tests.csproj";
-		}else {
+		} else {
 			projectFileName = "Project.Tests.json";
 		}
 		csprojFile = this.project.getFile(projectFileName);
 		csprojFile.create(getClass().getResourceAsStream(csprojFile.getName()), true, new NullProgressMonitor());
-		
+
 		csharpSourceFile = this.project.getFile("ProjectTestsPass.cs");
-		csharpSourceFile.create(getClass().getResourceAsStream(csharpSourceFile.getName()), true, new NullProgressMonitor());
+		csharpSourceFile.create(getClass().getResourceAsStream(csharpSourceFile.getName()), true,
+				new NullProgressMonitor());
 
 		bot.menu("Run").menu("Run Configurations...").click();
-		
+
 		bot.shell("Run Configurations").activate();
 		bot.tree().select(".NET Core Test");
 		bot.toolbarButtonWithTooltip("New launch configuration").click();
-		bot.textWithLabel("Project:").setText(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()+csprojFile.getFullPath().toPortableString());
+		bot.textWithLabel("Project:").setText(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+				+ csprojFile.getFullPath().toPortableString());
 		bot.textWithLabel("Name:").setText(name);
 	}
-	
+
 	@Test
 	public void testSelectTestMethod() {
 		bot.radio("Run a single test").click();
-		bot.button("Search", 0).click();
+		bot.button("🔎Search", 0).click();
 		bot.waitUntil(Conditions.shellIsActive("Class Selection"), 30000);
 		bot.button("OK").click();
 
 		String className = bot.textWithLabel("Test class:").getText();
 
-		bot.button("Search", 1).click();
-		bot.waitUntil(Conditions.shellIsActive("Method Selection from \""+className+"\""));
+		bot.button("🔎Search", 1).click();
+		bot.waitUntil(Conditions.shellIsActive("Method Selection from \"" + className + "\""));
 		assertTrue("No methods found for selected class", bot.button("OK").isEnabled());
 		bot.button("OK").click();
 
@@ -73,17 +75,17 @@ public class TestConfiguration extends AbstractDotnetTest {
 	@Override
 	public void tearDown() throws CoreException {
 		bot.menu("Run").menu("Run Configurations...").click();
-		
+
 		bot.shell("Run Configurations").activate();
 		bot.tree().expandNode(".NET Core Test").select(name);
-		
+
 		bot.toolbarButtonWithTooltip("Delete selected launch configuration(s)").click();
 		bot.shell("Confirm Launch Configuration Deletion").activate();
-		bot.button("Yes").click();
-		
+		bot.button("Delete").click();
+
 		bot.shell("Run Configurations").activate();
 		bot.button("Close").click();
-		
+
 		super.tearDown();
 	}
 }

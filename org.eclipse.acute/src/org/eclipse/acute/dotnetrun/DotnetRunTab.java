@@ -158,7 +158,7 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 		}
 
 		frameworkViewer.getList().deselectAll();
-		frameworkViewer.add(Messages.dotnetRunTab_loadingFrameworks);
+		frameworkViewer.add(Messages.DotnetRunTab_loadingFrameworks);
 		frameworkViewer.getList().setEnabled(false);
 		targetFrameworks = ProjectFileAccessor.getTargetFrameworks(
 				new Path(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().getAbsolutePath().toString()

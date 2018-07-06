@@ -119,7 +119,7 @@ public class Messages extends NLS {
 	public static String DotnetRunDelegate_launchError_message_retrieveTargetFile;
 	public static String DotnetRunDelegate_launchError_title;
 
-	public static String dotnetRunTab_loadingFrameworks;
+	public static String DotnetRunTab_loadingFrameworks;
 	public static String DotnetRunTab_arguments;
 	public static String DotnetRunTab_browse;
 	public static String DotnetRunTab_buildProject;
