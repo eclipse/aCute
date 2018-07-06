@@ -31,7 +31,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -163,22 +162,8 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 			commandList.add("--no-build"); //$NON-NLS-1$
 		}
 
-		if (restoreProject) {
-			ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-			ILaunch newLaunch = new Launch(null, ILaunchManager.RUN_MODE, null);
-
-			Process restoreProcess = DebugPlugin.exec(new String[] { AcutePlugin.getDotnetCommand(), "restore" }, //$NON-NLS-1$
-					projectFile);
-			DebugPlugin.newProcess(launch, restoreProcess, "dotnet restore"); //$NON-NLS-1$
-			launchManager.addLaunch(newLaunch);
-
-			try {
-				restoreProcess.waitFor();
-			} catch (InterruptedException e) {
-			}
-			if (restoreProcess.exitValue() != 0) { // errors will be shown in console
-				return;
-			}
+		if (!restoreProject) {
+			commandList.add("--no-restore"); //$NON-NLS-1$
 		}
 
 		Process p = DebugPlugin.exec(commandList.toArray(new String[commandList.size()]), projectFile);
