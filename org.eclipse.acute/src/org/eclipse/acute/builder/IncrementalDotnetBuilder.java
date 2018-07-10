@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.acute.builder;
 
+import java.io.File;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.acute.AcutePlugin;
 import org.eclipse.core.resources.IMarker;
@@ -35,41 +37,41 @@ public class IncrementalDotnetBuilder extends IncrementalProjectBuilder {
 
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-
 		IProject project = getProject();
 		IMarker[] errorMarkers = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-
-		if (buildProcess != null && buildProcess.isAlive()) {
-			buildProcess.destroyForcibly();
-		}
 		if (errorMarkers.length == 0) {
-			try {
-				String[] commandList = { AcutePlugin.getDotnetCommand(), "build" }; //$NON-NLS-1$
-				buildProcess = DebugPlugin.exec(commandList,
-						project.getLocation().toFile());
-				buildProcess.waitFor();
-				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			} catch (InterruptedException e) {
-				throw new CoreException(new Status(IStatus.ERROR, AcutePlugin.PLUGIN_ID, e.getMessage(), e));
-			}
+			runDotnetSubCommand("build", project, monitor); //$NON-NLS-1$
 		}
 		return null;
 	}
 
 	@Override protected void clean(IProgressMonitor monitor) throws CoreException {
+		runDotnetSubCommand("clean", getProject(), monitor); //$NON-NLS-1$
+	}
+
+	private void runDotnetSubCommand(String dotnetSubCommand, IProject project, IProgressMonitor monitor) throws CoreException {
 		if (buildProcess != null && buildProcess.isAlive()) {
 			buildProcess.destroyForcibly();
 		}
 
-		String[] commandList = { "dotnet", "clean" }; //$NON-NLS-1$ //$NON-NLS-2$
-		buildProcess = DebugPlugin.exec(commandList,
-				getProject().getLocation().toFile());
+		File projectFolder = project.getLocation().toFile();
+		if (!projectFolder.exists() || !projectFolder.isDirectory()) {
+			return;
+		}
 		try {
-			buildProcess.waitFor();
+			String[] commandList = { AcutePlugin.getDotnetCommand(), dotnetSubCommand };
+			buildProcess = DebugPlugin.exec(commandList, projectFolder);
+			boolean isProcessDone = false;
+			while (!isProcessDone) {
+				if (monitor.isCanceled()) {
+					buildProcess.destroyForcibly();
+				}
+				isProcessDone = buildProcess.waitFor(100, TimeUnit.MILLISECONDS);
+			}
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (InterruptedException e) {
 			throw new CoreException(new Status(IStatus.ERROR, AcutePlugin.PLUGIN_ID, e.getMessage(), e));
 		}
-		getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 
 	@Override public ISchedulingRule getRule(int kind, Map<String, String> args) {
