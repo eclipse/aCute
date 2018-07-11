@@ -13,7 +13,6 @@
 
 package org.eclipse.acute.SWTBotTests.dotnetrun;
 
-import java.security.Timestamp;
 import java.util.List;
 
 import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
@@ -29,44 +28,40 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Test;
 
-public class TestRun extends AbstractDotnetTest{
-	
-	@Override
-	public void setup() throws CoreException {
-		super.setup();
+public class TestRun extends AbstractDotnetTest {
+
+	@Test
+	public void testDotnetRun() throws CoreException, InterruptedException {
 		SWTBotView view = bot.viewByTitle("Project Explorer");
-		List<Tree> controls = new ChildrenControlFinder(
-				view.getWidget()).findControls(WidgetOfType.widgetOfType(Tree.class));
-		SWTBotTree tree = new SWTBotTree((Tree) controls.get(0));
+		List<Tree> controls = new ChildrenControlFinder(view.getWidget())
+				.findControls(WidgetOfType.widgetOfType(Tree.class));
+		SWTBotTree tree = new SWTBotTree(controls.get(0));
 		SWTBotTreeItem projectItem = tree.getTreeItem(project.getName());
 		SWTBotTreeItem fileItem = projectItem.expand().getNode(csharpSourceFile.getName());
 		fileItem.select().contextMenu("Open").click();
 		SWTBotEditor editor = bot.editorByTitle("Project.cs");
 		editor.setFocus();
-	}
-
-	@Test
-	public void testDotnetRun() throws CoreException, InterruptedException {
-		bot.styledText(1).contextMenu("Run As").menu("1 .NET Core Project").click();
+		editor.toTextEditor().contextMenu("Run As").menu("1 .NET Core").click();
 		SWTBotView debugView = bot.viewByTitle("Debug");
-		List<Tree> controls = new ChildrenControlFinder(
-				debugView.getWidget()).findControls(WidgetOfType.widgetOfType(Tree.class));
-		SWTBotTree tree = new SWTBotTree((Tree) controls.get(0));
 		bot.waitUntil(new ICondition() {
 			@Override
 			public boolean test() throws Exception {
 				SWTBotView consoleView = bot.viewByPartName("Console");
-				return consoleView.bot().label().getText().matches("<terminated> .* \\[\\.NET Core Project\\] dotnet exec");
+				return consoleView.bot().label().getText().matches("<terminated> .* \\[\\.NET Core\\] dotnet exec");
 			}
-			@Override public void init(SWTBot bot) {
+
+			@Override
+			public void init(SWTBot bot) {
 				debugView.setFocus();
 			}
+
 			@Override
 			public String getFailureMessage() {
 				SWTBotView consoleView = bot.viewByPartName("Console");
-				return "No termination found. the "+consoleView.bot().label().getText()+" console outputted: "+ consoleView.bot().styledText().getText();
+				return "No termination found. the " + consoleView.bot().label().getText() + " console outputted: "
+						+ consoleView.bot().styledText().getText();
 			}
-		},30000);
-		
+		}, 30000);
+
 	}
 }
