@@ -15,28 +15,22 @@ package org.eclipse.acute.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.lsp4e.LSPEclipseUtils;
-import org.eclipse.lsp4e.LanguageServiceAccessor;
-import org.eclipse.lsp4j.Hover;
-import org.eclipse.lsp4j.MarkedString;
-import org.eclipse.lsp4j.MarkupContent;
-import org.eclipse.lsp4j.Position;
-import org.eclipse.lsp4j.TextDocumentIdentifier;
-import org.eclipse.lsp4j.TextDocumentPositionParams;
-import org.eclipse.lsp4j.jsonrpc.messages.Either;
-import org.eclipse.lsp4j.services.LanguageServer;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.tests.harness.util.DisplayHelper;
-import org.junit.Assert;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.junit.Test;
 
 public class TestLSPIntegration extends AbstractAcuteTest {
@@ -47,50 +41,35 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 	}
 
 	@Test
-	public void testLSFoundWithCSProj() throws Exception {
-		IProject project = getProject("csproj");
-		IFile csharpSourceFile = project.getFile("Program.cs");
-		LanguageServer languageServer = LanguageServiceAccessor.getLanguageServers(csharpSourceFile, capabilities -> capabilities.getCompletionProvider() != null).iterator().next();
-		Assert.assertNotNull(languageServer);
-		Thread.sleep(1000);
-		{ // workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1088
-			IDocument doc = LSPEclipseUtils.getDocument(csharpSourceFile);
-			doc.set(doc.get() + " ");
-			Thread.sleep(1000);
-		}
-		CompletableFuture<Hover> hoverRequest = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(LSPEclipseUtils.toUri(csharpSourceFile).toString()), new Position(10, 23)));
-		Hover res = hoverRequest.get(3, TimeUnit.SECONDS);
-		Assert.assertNotNull(res);
-		Either<List<Either<String, MarkedString>>, MarkupContent> contents = res.getContents();
-		if (contents.isLeft()) {
-			Either<String, MarkedString> either = contents.getLeft().get(0);
-			if (either.isLeft()) {
-				Assert.assertTrue(either.getLeft().contains("WriteLine"));
-			} else if (either.isRight()) {
-				Assert.assertTrue(either.getRight().getValue().contains("WriteLine"));
-			} else {
-				Assert.fail("Illegal value");
-			}
-		} else if (contents.isRight()) {
-			MarkupContent markupContent = contents.getRight();
-			Assert.assertTrue(markupContent.getValue().contains("WriteLine"));
-		} else {
-			Assert.fail("Illegal value");
-		}
-	}
-
-	@Test
 	public void testLSFindsDiagnosticsCSProj() throws Exception {
 		IProject project = getProject("csprojWithError");
-		final IFile csharpSourceFile = project.getFile("Program.cs");
-		LanguageServer languageServer = LanguageServiceAccessor.getLanguageServers(csharpSourceFile, capabilities -> capabilities.getCompletionProvider() != null).iterator().next();
-		Assert.assertNotNull(languageServer);
-		{ // workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1088
-			Thread.sleep(3000);
-			IDocument doc = LSPEclipseUtils.getDocument(csharpSourceFile);
-			doc.set(doc.get().replace("syntaxerror", "someSyntaxError"));
+		IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		for (IViewReference viewReference : activePage.getViewReferences()) {
+			if (IPageLayout.ID_OUTLINE.equals(viewReference.getId())) {
+				viewReference.getView(false).dispose();
+			}
 		}
-		new DisplayHelper() {
+		IFile csharpSourceFile = project.getFile("Program.cs");
+		boolean[] lsInitialized = new boolean[1];
+		Job.getJobManager().addJobChangeListener(new JobChangeAdapter() {
+			@Override public void done(IJobChangeEvent event) {
+				if (event.getJob().getName().toLowerCase().contains("language server")) {
+					lsInitialized[0] = true;
+				}
+			}
+		});
+		IEditorPart editor = IDE.openEditor(activePage, csharpSourceFile);
+		assertTrue(new DisplayHelper() {
+			@Override protected boolean condition() {
+				return lsInitialized[0];
+			}
+		}.waitForCondition(editor.getSite().getShell().getDisplay(), 20000));
+		// extra-wait workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1245
+		DisplayHelper.sleep(editor.getSite().getShell().getDisplay(), 3000);
+		// Make an edit to workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1088
+		IDocument document = ((ITextEditor)editor).getDocumentProvider().getDocument(editor.getEditorInput());
+		document.set(document.get().replace("syntaxerror", "someSyntaxError"));
+		assertTrue(new DisplayHelper() {
 			@Override
 			protected boolean condition() {
 				try {
@@ -99,8 +78,8 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 					return false;
 				}
 			}
-		}.waitForCondition(Display.getDefault(), 3000);
-		Thread.sleep(500); // time to fill marker details
+		}.waitForCondition(editor.getEditorSite().getShell().getDisplay(), 10000));
+		DisplayHelper.sleep(500); // give time for marker to be updated
 		IMarker marker = csharpSourceFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ZERO)[0];
 		assertTrue(marker.getType().contains("lsp4e"));
 		assertEquals(12, marker.getAttribute(IMarker.LINE_NUMBER, -1));
