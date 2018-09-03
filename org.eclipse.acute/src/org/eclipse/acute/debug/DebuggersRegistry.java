@@ -24,6 +24,7 @@ import java.util.List;
 import org.eclipse.acute.AcutePlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 
 public class DebuggersRegistry {
 
@@ -46,7 +47,7 @@ public class DebuggersRegistry {
 				if (!dbgDir.canExecute() && dbgDir.canExecute()) {
 					Files.setPosixFilePermissions(dbgDir.toPath(), Collections.singleton(PosixFilePermission.OWNER_EXECUTE));
 				}
-				return new DebuggerInfo(new File(dbgDir,"netcoredbg"), Collections.singletonList("--interpreter=vscode")); //$NON-NLS-1$ //$NON-NLS-2$
+				return new DebuggerInfo(new File(dbgDir,Platform.OS_WIN32.equals(Platform.getOS()) ? "netcoredbg.exe" : "netcoredbg"), Collections.singletonList("--interpreter=vscode")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			} catch (IOException | URISyntaxException ex) {
 				AcutePlugin.logError(ex);
 			}

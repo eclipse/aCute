@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: netcoredbg
+Bundle-SymbolicName: org.eclipse.acute.netcoredbg.win32.x86_64
+Bundle-Version: 0.1.0.qualifier
+Fragment-Host: org.eclipse.acute;bundle-version="0.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Eclipse-BundleShape: dir
+Eclipse-PlatformFilter: (& (osgi.os=win32) (osgi.arch=x86_64))
+Bundle-Vendor: Eclipse aCute

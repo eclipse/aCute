@@ -23,6 +23,7 @@
 	<modules>
 		<module>org.eclipse.acute.netcoredbg.linux.x86_64</module>
 		<module>org.eclipse.acute.netcoredbg.macosx.x86_64</module>
+		<module>org.eclipse.acute.netcoredbg.win32.x86_64</module>
 	</modules>
 
 </project>
