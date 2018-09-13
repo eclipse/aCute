@@ -44,7 +44,7 @@
          version="0.0.0"
          fragment="true"
          unpack="true"/>
-   <!--plugin
+   <plugin
          id="org.eclipse.acute.omnisharpServer.macosx.x86_64"
          os="macosx"
          arch="x86_64"
@@ -52,7 +52,7 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="true"/-->
+         unpack="true"/>
    <plugin
          id="org.eclipse.acute.omnisharpServer.win32.x86_64"
          os="win32"
