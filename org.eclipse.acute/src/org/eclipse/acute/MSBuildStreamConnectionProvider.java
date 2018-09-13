@@ -39,7 +39,7 @@ public class MSBuildStreamConnectionProvider implements StreamConnectionProvider
 		if (serverFileUrl != null) {
 			File serverFile = new File(FileLocator.toFileURL(serverFileUrl).getPath());
 			if (serverFile.exists()) {
-				String[] command = new String[] { "dotnet", "exec", serverFile.getAbsolutePath() }; //$NON-NLS-1$ //$NON-NLS-2$
+				String[] command = new String[] { AcutePlugin.getDotnetCommand(true), "exec", serverFile.getAbsolutePath() }; //$NON-NLS-1$
 				this.process = Runtime.getRuntime().exec(command);
 				return;
 			}
