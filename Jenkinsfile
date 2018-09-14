@@ -9,6 +9,7 @@ pipeline {
 				git url: 'https://github.com/eclipse/aCute.git'
 				cleanWs()
 				checkout scm
+				sh 'dotnet --version'
 			}
 		}
 		stage('Build') {
