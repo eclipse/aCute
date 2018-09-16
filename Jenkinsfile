@@ -1,5 +1,10 @@
 pipeline {
-	agent any
+	agent {
+		dockerfile {
+			filename 'build-test.Dockerfile'
+			dir 'docker/'
+		}
+	}
 	options {
 		buildDiscarder(logRotator(numToKeepStr:'10'))
 	}
@@ -15,8 +20,8 @@ pipeline {
 		stage('Build') {
 			steps {
 				wrap([$class: 'Xvnc', useXauthority: true]) {
-					withEnv(["PATH+DOTNET=/shared/common/dotnet-sdk-2.0.0-linux-x64", "DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true"]) {
-						withMaven(maven: 'apache-maven-latest', jdk: 'jdk1.8.0-latest', mavenLocalRepo: '.repository') {
+					withEnv(["DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true"]) {
+						withMaven(maven: 'apache-maven-latest', mavenLocalRepo: '.repository') {
 							sh 'mvn clean verify -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true -PpackAndSign'
 						}
 					}
