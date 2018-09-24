@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.acute</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.2.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<prerequisites>
@@ -123,10 +123,8 @@
 							<goal>compare-version-with-baselines</goal>
 						</goals>
 						<configuration>
-							<!-- disable until a first release took place -->
-							<skip>true</skip>
 							<baselines>
-								<url>http://repository.jboss.org/nexus/content/unzip/unzip/org/eclipse/acute/repository/0.1.0/repository-0.1.0.zip-unzip/t</url>
+								<url>http://download.eclipse.org/acute/releases/latest</url>
 							</baselines>
 						</configuration>
 					</execution>
