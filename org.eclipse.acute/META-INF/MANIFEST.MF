@@ -30,3 +30,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.variables
 Export-Package: org.eclipse.acute; x-internal:=true
+Automatic-Module-Name: org.eclipse.acute
