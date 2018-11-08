@@ -25,7 +25,7 @@ public class LaunchableAdapterFactory implements IAdapterFactory {
 	@Override public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		IResource resource = Adapters.adapt(adaptableObject, IResource.class);
 		if (adapterType.equals(ILaunchable.class) && Tester.isDotnetProject(resource.getProject())) {
-			return (T) DUMMY;
+			return adapterType.cast(DUMMY);
 		}
 		return null;
 	}

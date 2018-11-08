@@ -50,7 +50,8 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 	public void testLSFoundWithCSProj() throws Exception {
 		IProject project = getProject("csproj");
 		IFile csharpSourceFile = project.getFile("Program.cs");
-		LanguageServer languageServer = LanguageServiceAccessor.getLanguageServers(csharpSourceFile, capabilities -> capabilities.getCompletionProvider() != null).iterator().next();
+		LanguageServer languageServer = LanguageServiceAccessor.getInitializedLanguageServers(csharpSourceFile,
+				capabilities -> capabilities.getCompletionProvider() != null).iterator().next().get();
 		Assert.assertNotNull(languageServer);
 		Thread.sleep(1000);
 		{ // workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1088
@@ -83,7 +84,7 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 	public void testLSFindsDiagnosticsCSProj() throws Exception {
 		IProject project = getProject("csprojWithError");
 		final IFile csharpSourceFile = project.getFile("Program.cs");
-		LanguageServer languageServer = LanguageServiceAccessor.getLanguageServers(csharpSourceFile, capabilities -> capabilities.getCompletionProvider() != null).iterator().next();
+		LanguageServer languageServer = LanguageServiceAccessor.getInitializedLanguageServers(csharpSourceFile, capabilities -> capabilities.getCompletionProvider() != null).iterator().next().get();
 		Assert.assertNotNull(languageServer);
 		{ // workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1088
 			Thread.sleep(3000);
