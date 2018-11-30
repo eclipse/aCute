@@ -55,8 +55,8 @@
   								<layout>p2</layout>
   							</repository>
   							<repository>
-  								<id>eclipse-4.8</id>
-  								<url>http://download.eclipse.org/eclipse/updates/4.8/</url>
+  								<id>eclipse-4.9</id>
+  								<url>http://download.eclipse.org/eclipse/updates/4.9/</url>
   								<layout>p2</layout>
   							</repository>
   						</repositories>
