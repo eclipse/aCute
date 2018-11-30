@@ -20,9 +20,7 @@
 		<module>target-platform</module>
 		<module>org.eclipse.acute</module>
 		<module>roslynFragments/org.eclipse.acute.omnisharpServer.linux.x86_64</module>
-		<module>roslynFragments/org.eclipse.acute.omnisharpServer.linux.x86</module>
 		<module>roslynFragments/org.eclipse.acute.omnisharpServer.win32.x86_64</module>
-		<module>roslynFragments/org.eclipse.acute.omnisharpServer.win32.x86</module>
 		<module>roslynFragments/org.eclipse.acute.omnisharpServer.macosx.x86_64</module>
 		<module>org.eclipse.acute.msBuildServer</module>
 		<module>netcoredbgFragments</module>
@@ -163,7 +161,7 @@
 					</dependencies>
 					<configuration>
 						<timestampProvider>jgit</timestampProvider>
-						<jgit.ignore>pom.xml</jgit.ignore>
+						<jgit.ignore>.polyglot.build.properties</jgit.ignore>
 						<jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
 					</configuration>
 				</plugin>

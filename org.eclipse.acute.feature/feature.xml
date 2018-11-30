@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.acute.feature"
       label="%name"
-      version="0.2.1.qualifier"
+      version="0.2.2.qualifier"
       provider-name="Eclipse aCute"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">
@@ -36,15 +36,6 @@
          fragment="true"
          unpack="true"/>
    <plugin
-         id="org.eclipse.acute.omnisharpServer.linux.x86"
-         os="linux"
-         arch="x86"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="true"/>
-   <plugin
          id="org.eclipse.acute.omnisharpServer.macosx.x86_64"
          os="macosx"
          arch="x86_64"
@@ -57,15 +48,6 @@
          id="org.eclipse.acute.omnisharpServer.win32.x86_64"
          os="win32"
          arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="true"/>
-   <plugin
-         id="org.eclipse.acute.omnisharpServer.win32.x86"
-         os="win32"
-         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
