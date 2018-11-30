@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: netcoredbg
 Bundle-SymbolicName: org.eclipse.acute.netcoredbg.linux.x86_64
 Automatic-Module-Name: org.eclipse.acute.netcoredbg.linux.x86_64
-Bundle-Version: 0.1.1.qualifier
+Bundle-Version: 0.1.2.qualifier
 Fragment-Host: org.eclipse.acute;bundle-version="0.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-BundleShape: dir
