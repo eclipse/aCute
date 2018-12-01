@@ -6,14 +6,14 @@
 	<packaging>pom</packaging>
 	
 	<prerequisites>
-		<maven>3.1.1</maven>
+		<maven>3.3.1</maven>
 	</prerequisites>
 	<properties>
 		<tycho-version>1.2.0</tycho-version>
 		<tycho-extras-version>${tycho-version}</tycho-extras-version>
 		<tycho.scmUrl>scm:git:https://github.com/eclipse/acute.git</tycho.scmUrl>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
-		<download-maven-plugin.version>1.4.0</download-maven-plugin.version>
+		<download-maven-plugin.version>1.4.1</download-maven-plugin.version>
 	</properties>
 
 	<modules>
@@ -131,7 +131,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.1</version>
+				<version>0.8.2</version>
 				<executions>
 					<execution>
 						<goals><goal>prepare-agent</goal></goals>
@@ -177,6 +177,11 @@
 						</baselineRepositories>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -204,7 +209,7 @@
 					<plugin>
 						<groupId>org.eclipse.cbi.maven.plugins</groupId>
 						<artifactId>eclipse-jarsigner-plugin</artifactId>
-						<version>1.1.4</version>
+						<version>1.1.5</version>
 						<executions>
 							<execution>
 								<id>sign</id>
