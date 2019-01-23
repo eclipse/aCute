@@ -16,7 +16,7 @@ pipeline {
 				wrap([$class: 'Xvnc', useXauthority: true]) {
 					withEnv(["PATH+DOTNET=/shared/common/dotnet-sdk-2.0.0-linux-x64", "DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true"]) {
 						withMaven(maven: 'apache-maven-latest', jdk: 'jdk1.8.0-latest', mavenLocalRepo: '.repository') {
-							sh 'mvn clean verify -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true -PpackAndSign'
+							sh 'mvn clean verify -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true -Dcbi.jarsigner.skip=false'
 						}
 					}
 				}
