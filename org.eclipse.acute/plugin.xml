@@ -402,4 +402,33 @@
          </adapter>
       </factory>
    </extension>
+
+   <extension
+         point="org.eclipse.compare.contentViewers">
+      <contentTypeBinding
+            contentTypeId="org.eclipse.acute.csharp"
+            contentViewerId="org.eclipse.ui.genericeditor.compareViewer">
+      </contentTypeBinding>
+   </extension>
+   <extension
+         point="org.eclipse.compare.contentMergeViewers">
+      <contentTypeBinding
+            contentMergeViewerId="org.eclipse.ui.genericeditor.compareViewer"
+            contentTypeId="org.eclipse.acute.csharp">
+      </contentTypeBinding>
+   </extension>
+      <extension
+         point="org.eclipse.compare.contentViewers">
+      <contentTypeBinding
+            contentTypeId="org.eclipse.acute.csproj"
+            contentViewerId="org.eclipse.ui.genericeditor.compareViewer">
+      </contentTypeBinding>
+   </extension>
+   <extension
+         point="org.eclipse.compare.contentMergeViewers">
+      <contentTypeBinding
+            contentMergeViewerId="org.eclipse.ui.genericeditor.compareViewer"
+            contentTypeId="org.eclipse.acute.csproj">
+      </contentTypeBinding>
+   </extension>
 </plugin>
