@@ -3,7 +3,7 @@ pipeline {
   	label 'migration'
   }
 	options {
-		timeout(time: 30, unit: 'MINUTES')
+		timeout(time: 60, unit: 'MINUTES')
 		buildDiscarder(logRotator(numToKeepStr:'10'))
 	}
 	environment {
