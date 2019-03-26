@@ -20,7 +20,6 @@ pipeline {
 		stage('Build') {
 			steps {
 				wrap([$class: 'Xvnc', useXauthority: true]) {
-					sh 'metacity &'
 					withEnv(["PATH+DOTNET=$DOTNET_ROOT", "DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true"]) {
 						withMaven(maven: 'apache-maven-latest', jdk: 'oracle-jdk8-latest', mavenLocalRepo: '.repository') {
 							sh 'mvn clean verify -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true -Dcbi.jarsigner.skip=false'
