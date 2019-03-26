@@ -16,12 +16,16 @@ package org.eclipse.acute.SWTBotTests.dotnetrun;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
 import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.tests.harness.util.DisplayHelper;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestConfiguration extends AbstractDotnetTest {
@@ -52,7 +56,12 @@ public class TestConfiguration extends AbstractDotnetTest {
 
 	@Test
 	public void testConfigInputs() throws FileNotFoundException, IOException {
-
+		File f = new File(project.getLocation().toFile(), name + ".launch");
+		Assert.assertTrue("launch file not created", new DisplayHelper() {
+			@Override protected boolean condition() {
+				return f.isFile();
+			}
+		}.waitForCondition(Display.getDefault(), 2000));
 		try (BufferedReader br = new BufferedReader(
 				new FileReader(project.getLocation().toString() + "/" + name + ".launch"))) {
 			String line = br.readLine();
