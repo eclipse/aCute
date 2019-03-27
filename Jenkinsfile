@@ -40,9 +40,9 @@ pipeline {
 			}
 			steps {
 				sshagent (['projects-storage.eclipse.org-bot-ssh']) {
-					sh 'ssh genie.acute@projects-storage.eclipse.org-bot-ssh rm -rf /home/data/httpd/download.eclipse.org/acute/snapshots'
-					sh 'ssh genie.acute@projects-storage.eclipse.org-bot-ssh mkdir -p /home/data/httpd/download.eclipse.org/acute/snapshots'
-					sh 'scp -r repository/target/repository/* genie.acute@projects-storage.eclipse.org-bot-ssh:/home/data/httpd/download.eclipse.org/acute/snapshots'
+					sh 'ssh genie.acute@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/acute/snapshots'
+					sh 'ssh genie.acute@projects-storage.eclipse.org mkdir -p /home/data/httpd/download.eclipse.org/acute/snapshots'
+					sh 'scp -r repository/target/repository/* genie.acute@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/acute/snapshots'
 				}
 			}
 		}
