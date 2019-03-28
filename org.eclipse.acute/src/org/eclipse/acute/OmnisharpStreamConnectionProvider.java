@@ -135,7 +135,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 			AcutePlugin.logError(NLS.bind(Messages.omnisharpStreamConnection_serverNotExecutableError, serverFileUrl));
 			// return value anyway
 		}
-		return serverFileUrl.getAbsolutePath() + " -stdio -lsp"; //$NON-NLS-1$
+		return serverFileUrl.getAbsolutePath() + " -lsp"; //$NON-NLS-1$
 	}
 
 	@Override

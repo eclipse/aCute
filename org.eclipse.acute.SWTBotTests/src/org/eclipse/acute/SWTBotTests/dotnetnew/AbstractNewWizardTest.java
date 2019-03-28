@@ -37,13 +37,6 @@ public class AbstractNewWizardTest extends AbstractDotnetTest {
 		buildEmptyProject();
 	}
 
-	@Override
-	public void tearDown() throws CoreException {
-		// ensure that the pre-set values will be used
-		bot.viewByTitle("Outline").setFocus();
-		super.tearDown();
-	}
-
 	protected SWTBotShell openWizard() {
 		bot = new SWTWorkbenchBot();
 		bot.menu("File").menu("New").menu("Other...").click();

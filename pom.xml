@@ -261,10 +261,6 @@
 			<url>https://repo.eclipse.org/content/groups/cbi</url>
 			<snapshots><enabled>true</enabled></snapshots>
 		</pluginRepository>
-		<pluginRepository>
-			<id>tycho-staged</id>
-			<url>https://oss.sonatype.org/content/repositories/orgeclipsetycho-1046/</url>
-		</pluginRepository>
 	</pluginRepositories>
 
 </project>

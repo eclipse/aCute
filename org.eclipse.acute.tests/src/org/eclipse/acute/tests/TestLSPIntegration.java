@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.lsp4e.LSPEclipseUtils;
+import org.eclipse.lsp4e.LanguageServerPlugin;
 import org.eclipse.lsp4e.LanguageServiceAccessor;
 import org.eclipse.lsp4j.Hover;
 import org.eclipse.lsp4j.MarkedString;
@@ -44,6 +45,7 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+		LanguageServerPlugin.getDefault().getPreferenceStore().putValue("org.eclipse.acute.Omnisharp.file.logging.enabled", Boolean.toString(true));
 	}
 
 	@Test
@@ -53,14 +55,14 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 		LanguageServer languageServer = LanguageServiceAccessor.getInitializedLanguageServers(csharpSourceFile,
 				capabilities -> capabilities.getCompletionProvider() != null).iterator().next().get();
 		Assert.assertNotNull(languageServer);
-		Thread.sleep(1000);
+		DisplayHelper.sleep(1000);
 		{ // workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1088
 			IDocument doc = LSPEclipseUtils.getDocument(csharpSourceFile);
 			doc.set(doc.get() + " ");
-			Thread.sleep(1000);
+			DisplayHelper.sleep(1000);
 		}
 		CompletableFuture<Hover> hoverRequest = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(LSPEclipseUtils.toUri(csharpSourceFile).toString()), new Position(10, 23)));
-		Hover res = hoverRequest.get(3, TimeUnit.SECONDS);
+		Hover res = hoverRequest.get(5, TimeUnit.SECONDS);
 		Assert.assertNotNull(res);
 		Either<List<Either<String, MarkedString>>, MarkupContent> contents = res.getContents();
 		if (contents.isLeft()) {
@@ -87,7 +89,7 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 		LanguageServer languageServer = LanguageServiceAccessor.getInitializedLanguageServers(csharpSourceFile, capabilities -> capabilities.getCompletionProvider() != null).iterator().next().get();
 		Assert.assertNotNull(languageServer);
 		{ // workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1088
-			Thread.sleep(3000);
+			DisplayHelper.sleep(3000);
 			IDocument doc = LSPEclipseUtils.getDocument(csharpSourceFile);
 			doc.set(doc.get().replace("syntaxerror", "someSyntaxError"));
 		}
@@ -100,8 +102,8 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 					return false;
 				}
 			}
-		}.waitForCondition(Display.getDefault(), 3000);
-		Thread.sleep(500); // time to fill marker details
+		}.waitForCondition(Display.getDefault(), 5000);
+		DisplayHelper.sleep(500); // time to fill marker details
 		IMarker marker = csharpSourceFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ZERO)[0];
 		assertTrue(marker.getType().contains("lsp4e"));
 		assertEquals(12, marker.getAttribute(IMarker.LINE_NUMBER, -1));

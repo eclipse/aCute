@@ -75,8 +75,6 @@ public class TestWizardUI extends AbstractNewWizardTest {
 		String firstPresetName = bot.textWithLabel("Project name").getText();
 		IProject newProject = checkProjectCreate(shell, null);
 
-		bot.viewByTitle("Outline").setFocus();
-
 		shell = openWizard();
 		String secondPresetName = bot.textWithLabel("Project name").getText();
 		
