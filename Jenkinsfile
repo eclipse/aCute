@@ -36,10 +36,6 @@ pipeline {
 				success {
 					junit '*/target/surefire-reports/TEST-*.xml' 
 				}
-				always {
-					archiveArtifacts '*/target/work'
-				}
-
 			}
 		}
 		stage('Deploy') {
