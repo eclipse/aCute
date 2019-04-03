@@ -52,6 +52,7 @@ public class AbstractAcuteTest {
 
 	@Before
 	public void setUp() throws Exception {
+		PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());
 		this.provisionedProjects = new HashMap<>();
 	}
 
