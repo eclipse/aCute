@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.acute</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.2.1-SNAPSHOT</version>
+	<version>0.3.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<prerequisites>
@@ -48,7 +48,7 @@
 						<artifact>
 							<groupId>org.eclipse.acute</groupId>
 							<artifactId>target-platform</artifactId>
-							<version>0.2.1-SNAPSHOT</version>
+							<version>0.3.2-SNAPSHOT</version>
 						</artifact>
 					</target>
 					<environments>
