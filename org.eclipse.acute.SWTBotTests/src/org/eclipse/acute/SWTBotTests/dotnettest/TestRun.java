@@ -15,17 +15,12 @@ package org.eclipse.acute.SWTBotTests.dotnettest;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.finders.ChildrenControlFinder;
-import org.eclipse.swtbot.swt.finder.matchers.WidgetOfType;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -57,10 +52,8 @@ public class TestRun extends AbstractDotnetTest {
 		csharpSourceFile.create(getClass().getResourceAsStream(csharpSourceFile.getName()), true,
 				new NullProgressMonitor());
 
-		SWTBotView view = bot.viewByTitle("Project Explorer");
-		List<Tree> explorerControls = new ChildrenControlFinder(view.getWidget())
-				.findControls(WidgetOfType.widgetOfType(Tree.class));
-		SWTBotTree explorerTree = new SWTBotTree(explorerControls.get(0));
+		SWTBotView packageExplorer = bot.viewByTitle("Project Explorer");
+		SWTBotTree explorerTree = new SWTBot(packageExplorer.getWidget()).tree(0);
 		SWTBotTreeItem projectItem = explorerTree.getTreeItem(project.getName());
 		SWTBotTreeItem fileItem = projectItem.expand().getNode(csharpSourceFile.getName());
 		fileItem.select().contextMenu("Open").click();
@@ -68,9 +61,7 @@ public class TestRun extends AbstractDotnetTest {
 		editor.setFocus();
 		editor.toTextEditor().contextMenu("Run As").menu("2 .NET Core Test").click();
 		SWTBotView debugView = bot.viewByTitle("Debug");
-		List<Tree> debugControls = new ChildrenControlFinder(debugView.getWidget())
-				.findControls(WidgetOfType.widgetOfType(Tree.class));
-		SWTBotTree debugTree = new SWTBotTree(debugControls.get(0));
+		SWTBotTree debugTree = new SWTBot(debugView.getWidget()).tree(0);
 
 		bot.waitUntil(new ICondition() {
 			@Override

@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.acute.SWTBotTests;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.eclipse.acute.SWTBotTests.dotnetexport.AllExportTests;
 import org.eclipse.acute.SWTBotTests.dotnetnew.AllNewTests;
 import org.eclipse.acute.SWTBotTests.dotnetrun.AllRunTests;
 import org.eclipse.acute.SWTBotTests.dotnettest.AllTestTests;
-import org.eclipse.acute.SWTBotTests.dotnetexport.AllExportTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({

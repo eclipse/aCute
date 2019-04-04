@@ -12,13 +12,9 @@
  *******************************************************************************/
 package org.eclipse.acute.SWTBotTests.dotnetexport;
 
-import java.util.List;
-
 import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
-import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.finders.ChildrenControlFinder;
-import org.eclipse.swtbot.swt.finder.matchers.WidgetOfType;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -27,9 +23,7 @@ public class AbstractExportWizardTest extends AbstractDotnetTest {
 
 	protected void openExportWizard() {
 		SWTBotView view = bot.viewByTitle("Project Explorer");
-		List<Tree> controls = new ChildrenControlFinder(view.getWidget())
-				.findControls(WidgetOfType.widgetOfType(Tree.class));
-		SWTBotTree tree = new SWTBotTree(controls.get(0));
+		SWTBotTree tree = new SWTBot(view.getWidget()).tree(0);
 		SWTBotTreeItem item = tree.getTreeItem(project.getName());
 		item.select();
 		item.contextMenu("Export...").click();

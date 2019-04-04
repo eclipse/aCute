@@ -23,9 +23,7 @@ import java.io.IOException;
 
 import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.tests.harness.util.DisplayHelper;
-import org.junit.Assert;
+import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.junit.Test;
 
 public class TestConfiguration extends AbstractDotnetTest {
@@ -57,24 +55,28 @@ public class TestConfiguration extends AbstractDotnetTest {
 	@Test
 	public void testConfigInputs() throws FileNotFoundException, IOException {
 		File f = new File(project.getLocation().toFile(), name + ".launch");
-		Assert.assertTrue("launch file not created", new DisplayHelper() {
-			@Override protected boolean condition() {
+		bot.waitUntil(new DefaultCondition() {
+			@Override public boolean test() throws Exception {
 				return f.isFile();
 			}
-		}.waitForCondition(Display.getDefault(), 2000));
+
+			@Override public String getFailureMessage() {
+				return "Launch file not created";
+			}
+		});
 		try (BufferedReader br = new BufferedReader(
 				new FileReader(project.getLocation().toString() + "/" + name + ".launch"))) {
-			String line = br.readLine();
+			String line = br.readLine().trim();
 			boolean isArgsPresent = false;
 			boolean isLocPresent = false;
 			boolean isBuildBoolPresent = false;
 
 			while (line != null) {
-				if (line.equals("<stringAttribute key=\"PROJECT_ARGUMENTS\" value=\"" + arguments + "\"/>")) {
+				if (line.contains("<stringAttribute key=\"PROJECT_ARGUMENTS\" value=\"" + arguments + "\"/>")) {
 					isArgsPresent = true;
-				} else if (line.equals("<booleanAttribute key=\"PROJECT_BUILD\" value=\"true\"/>")) {
+				} else if (line.contains("<booleanAttribute key=\"PROJECT_BUILD\" value=\"true\"/>")) {
 					isBuildBoolPresent = true;
-				} else if (line.equals("<stringAttribute key=\"PROJECT_FOLDER\" value=\"" + location + "\"/>")) {
+				} else if (line.contains("<stringAttribute key=\"PROJECT_FOLDER\" value=\"" + location + "\"/>")) {
 					isLocPresent = true;
 				}
 				line = br.readLine();
