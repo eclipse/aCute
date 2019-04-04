@@ -58,7 +58,8 @@ spec:
 				}
 			}
 			post {
-				success {
+				always {
+					archiveArtifacts artifacts: '*/target/work/configuration/*.log,*/target/work/data/.metadata/.log', fingerprint: false
 					junit '*/target/surefire-reports/TEST-*.xml' 
 				}
 			}
