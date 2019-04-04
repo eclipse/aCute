@@ -13,9 +13,12 @@
 package org.eclipse.acute.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,7 +34,11 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.junit.After;
 import org.junit.Before;
 
@@ -101,5 +108,23 @@ public class AbstractAcuteTest {
 			provisionProject(projectPrefix);
 		}
 		return this.provisionedProjects.get(projectPrefix);
+	}
+
+	protected static ITextViewer getTextViewer(IEditorPart part) throws InvocationTargetException {
+		try {
+			if (part instanceof ITextEditor) {
+				ITextEditor textEditor = (ITextEditor) part;
+
+				Method getSourceViewerMethod = AbstractTextEditor.class.getDeclaredMethod("getSourceViewer"); //$NON-NLS-1$
+				getSourceViewerMethod.setAccessible(true);
+				return (ITextViewer) getSourceViewerMethod.invoke(textEditor);
+			} else {
+				fail("Unable to open editor");
+				return null;
+			}
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			throw new InvocationTargetException(e);
+		}
 	}
 }

@@ -13,31 +13,31 @@
 package org.eclipse.acute.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.text.AbstractDocument;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.lsp4e.LSPEclipseUtils;
+import org.eclipse.jface.text.contentassist.ContentAssistEvent;
+import org.eclipse.jface.text.contentassist.ICompletionListener;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.lsp4e.LanguageServerPlugin;
-import org.eclipse.lsp4e.LanguageServiceAccessor;
-import org.eclipse.lsp4j.Hover;
-import org.eclipse.lsp4j.MarkedString;
-import org.eclipse.lsp4j.MarkupContent;
-import org.eclipse.lsp4j.Position;
-import org.eclipse.lsp4j.TextDocumentIdentifier;
-import org.eclipse.lsp4j.TextDocumentPositionParams;
-import org.eclipse.lsp4j.jsonrpc.messages.Either;
-import org.eclipse.lsp4j.services.LanguageServer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.tests.harness.util.DisplayHelper;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class TestLSPIntegration extends AbstractAcuteTest {
@@ -52,47 +52,63 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 	public void testLSFoundWithCSProj() throws Exception {
 		IProject project = getProject("csproj");
 		IFile csharpSourceFile = project.getFile("Program.cs");
-		LanguageServer languageServer = LanguageServiceAccessor.getInitializedLanguageServers(csharpSourceFile,
-				capabilities -> capabilities.getCompletionProvider() != null).iterator().next().get();
-		Assert.assertNotNull(languageServer);
-		DisplayHelper.sleep(1000);
-		{ // workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1088
-			IDocument doc = LSPEclipseUtils.getDocument(csharpSourceFile);
-			doc.set(doc.get() + " ");
-			DisplayHelper.sleep(1000);
-		}
-		CompletableFuture<Hover> hoverRequest = languageServer.getTextDocumentService().hover(new TextDocumentPositionParams(new TextDocumentIdentifier(LSPEclipseUtils.toUri(csharpSourceFile).toString()), new Position(10, 23)));
-		Hover res = hoverRequest.get(5, TimeUnit.SECONDS);
-		Assert.assertNotNull(res);
-		Either<List<Either<String, MarkedString>>, MarkupContent> contents = res.getContents();
-		if (contents.isLeft()) {
-			Either<String, MarkedString> either = contents.getLeft().get(0);
-			if (either.isLeft()) {
-				Assert.assertTrue(either.getLeft().contains("WriteLine"));
-			} else if (either.isRight()) {
-				Assert.assertTrue(either.getRight().getValue().contains("WriteLine"));
-			} else {
-				Assert.fail("Illegal value");
+		IEditorPart editor = IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), csharpSourceFile);
+		SourceViewer viewer = (SourceViewer)getTextViewer(editor);
+		workaroundOmniSharpIssue1088(viewer.getDocument());
+		int offset = viewer.getDocument().get().indexOf("WriteLine") + 6;
+		viewer.setSelectedRange(offset, 0);
+		AtomicReference<ICompletionProposal> topProposal = new AtomicReference<>();
+		viewer.getContentAssistantFacade().addCompletionListener(new ICompletionListener() {
+			@Override public void selectionChanged(ICompletionProposal proposal, boolean smartToggle) {
+				topProposal.set(proposal);
 			}
-		} else if (contents.isRight()) {
-			MarkupContent markupContent = contents.getRight();
-			Assert.assertTrue(markupContent.getValue().contains("WriteLine"));
-		} else {
-			Assert.fail("Illegal value");
-		}
+
+			@Override public void assistSessionStarted(ContentAssistEvent event) {
+				// nothing
+			}
+
+			@Override public void assistSessionEnded(ContentAssistEvent event) {
+				// nothing
+			}
+		});
+		viewer.doOperation(SourceViewer.CONTENTASSIST_PROPOSALS);
+		assertTrue(new DisplayHelper() {
+			@Override protected boolean condition() {
+				ICompletionProposal proposal = topProposal.get();
+				return proposal != null && proposal.getDisplayString().contains("WriteLine");
+			}
+		}.waitForCondition(viewer.getTextWidget().getDisplay(), 5000));
+	}
+
+	private void workaroundOmniSharpIssue1088(IDocument document) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		// Wait for document to be connected
+		Method getDocumentListenersMethod = AbstractDocument.class.getDeclaredMethod("getDocumentListeners");
+		getDocumentListenersMethod.setAccessible(true);
+		new DisplayHelper() {
+			@Override protected boolean condition() {
+				try {
+					return ((Collection<?>)getDocumentListenersMethod.invoke(document)).stream().anyMatch(o -> o.getClass().getName().contains("lsp4e"));
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+		}.waitForCondition(Display.getDefault(), 5000);
+		assertNotEquals("LS Document listener was not setup after 5s", Collections.emptyList(), getDocumentListenersMethod.invoke(document));
+		// workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1445
+		DisplayHelper.sleep(5000);
+		// force fake modification for OmniSharp to wake up
+		document.set(document.get().replace("Hello", "Kikoo"));
+		DisplayHelper.sleep(500);
 	}
 
 	@Test
-	public void testLSFindsDiagnosticsCSProj() throws Exception {
+	public void testLSFindsDiagnosticsCSProj() throws Exception  {
 		IProject project = getProject("csprojWithError");
-		final IFile csharpSourceFile = project.getFile("Program.cs");
-		LanguageServer languageServer = LanguageServiceAccessor.getInitializedLanguageServers(csharpSourceFile, capabilities -> capabilities.getCompletionProvider() != null).iterator().next().get();
-		Assert.assertNotNull(languageServer);
-		{ // workaround https://github.com/OmniSharp/omnisharp-roslyn/issues/1088
-			DisplayHelper.sleep(3000);
-			IDocument doc = LSPEclipseUtils.getDocument(csharpSourceFile);
-			doc.set(doc.get().replace("syntaxerror", "someSyntaxError"));
-		}
+		IFile csharpSourceFile = project.getFile("Program.cs");
+		IEditorPart editor = IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), csharpSourceFile);
+		SourceViewer viewer = (SourceViewer)getTextViewer(editor);
+		workaroundOmniSharpIssue1088(viewer.getDocument());
 		new DisplayHelper() {
 			@Override
 			protected boolean condition() {
