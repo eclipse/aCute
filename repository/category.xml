@@ -3,6 +3,12 @@
    <feature id="org.eclipse.acute.feature" version="0.0.0">
       <category name="aCute"/>
    </feature>
+   <bundle id="org.eclipse.acute.tests" version="0.0.0">
+      <category name="Dev"/>
+   </bundle>
+   <bundle id="org.eclipse.acute.SWTBotTests" version="0.0.0">
+      <category name="Dev"/>
+   </bundle>
    <feature id="tm-feature" version="0.0.0">
       <category name="Dependencies"/>
    </feature>
@@ -77,6 +83,7 @@
    </bundle>
    <category-def name="aCute" label="aCute - C# in Eclipse IDE"/>
    <category-def name="Dependencies" label="Dependencies"/>
-   <repository-reference location="http://download.eclipse.org/lsp4e/snapshots" enabled="true" />
-   <repository-reference location="http://download.eclipse.org/tm4e/snapshots" enabled="true" />
+   <category-def name="Dev" label="Sources and Tests"/>
+   <repository-reference location="http://download.eclipse.org/lsp4e/releases/latest/" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/tm4e/releases/latest/" enabled="true" />
 </site>
