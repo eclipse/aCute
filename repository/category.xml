@@ -9,7 +9,7 @@
    <bundle id="org.eclipse.acute.SWTBotTests" version="0.0.0">
       <category name="Dev"/>
    </bundle>
-   <feature id="tm-feature" version="0.0.0">
+   <feature id="org.eclipse.tm4e.feature" version="0.0.0">
       <category name="Dependencies"/>
    </feature>
    <bundle id="org.eclipse.ui.genericeditor" version="0.0.0">
