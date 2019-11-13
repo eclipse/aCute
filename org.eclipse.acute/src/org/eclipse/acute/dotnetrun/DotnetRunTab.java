@@ -49,7 +49,7 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 	private Button releaseRadio;
 	private Button buildCheckBoxButton;
 
-	private String[] targetFrameworks;
+	private Object[] targetFrameworks;
 	private IContainer projectContainer;
 	private String configuration = "Debug"; //$NON-NLS-1$
 
