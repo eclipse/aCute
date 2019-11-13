@@ -36,7 +36,7 @@ public class DotnetVersionUtil {
 
 	public static String getVersion(String dotnetPath) {
 		try {
-			String[] command = new String[] { "/bin/bash", "-c", dotnetPath + " --version" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			String[] command = new String[] { dotnetPath + " --version" }; //$NON-NLS-1$
 			if (Platform.getOS().equals(Platform.OS_WIN32)) {
 				command = new String[] { "cmd", "/c", "\"" + dotnetPath + "\" --version" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			}
