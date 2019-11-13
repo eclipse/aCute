@@ -1,1 +1,4 @@
 */target
+.META-INF*
+.polyglot*
+feature.xml.takari*
