@@ -54,7 +54,7 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 
 	// Map<ClassName, List<MethodName>>
 	private Map<String, List<String>> testMethods;
-	private String[] targetFrameworks;
+	private Object[] targetFrameworks;
 	private String loadedSelectedTargetFramework;
 	private String loadedTestsParentProject;
 

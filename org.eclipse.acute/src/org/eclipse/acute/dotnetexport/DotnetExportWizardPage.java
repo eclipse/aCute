@@ -55,7 +55,7 @@ public class DotnetExportWizardPage extends WizardPage {
 	private String configuration = "Debug"; //$NON-NLS-1$
 	private String version = ""; //$NON-NLS-1$
 
-	private String[] targetFrameworks;
+	private Object[] targetFrameworks;
 	private String defaultRuntime;
 
 	private Button projectBrowseButton;
