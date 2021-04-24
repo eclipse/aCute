@@ -8,6 +8,13 @@
 	</parent>
 	<packaging>pom</packaging>
 	<version>0.2.1-SNAPSHOT</version>
+	
+	<properties>
+		<netcoredbg.version>1.2.0-786</netcoredbg.version>
+		<netcoredbg.windows.name>netcoredbg-win64</netcoredbg.windows.name>
+		<netcoredbg.linux.name>netcoredbg-linux-focal-amd64</netcoredbg.linux.name>
+		<netcoredbg.osx.name>netcoredbg-osx</netcoredbg.osx.name>
+	</properties>
 
 	<build>
 		<plugins>
