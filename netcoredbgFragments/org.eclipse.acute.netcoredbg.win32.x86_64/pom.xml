@@ -35,7 +35,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<uri>https://github.com/Samsung/netcoredbg/releases/download/latest/netcoredbg-win64-master.zip</uri>
+							<uri>https://github.com/Samsung/netcoredbg/releases/download/${netcoredbg.version}/${netcoredbg.windows.name}.zip</uri>
 							<unpack>true</unpack>
 							<outputDirectory>${basedir}</outputDirectory>
 						</configuration>

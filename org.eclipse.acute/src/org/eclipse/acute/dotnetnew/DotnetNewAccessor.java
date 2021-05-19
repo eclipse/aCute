@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.acute.AcutePlugin;
+import org.eclipse.acute.DotnetVersionUtil;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -83,6 +84,13 @@ public class DotnetNewAccessor {
 					if (inputLine.matches("^-{30,}$")) { //$NON-NLS-1$
 						templateListExists = true;
 						break;
+					}
+					if(DotnetVersionUtil.getMajorVersionNumber(DotnetVersionUtil.getVersion(AcutePlugin.getDotnetCommand())) >= 5)
+					{
+						if(inputLine.matches("^--------------------------------------------  -------------------  ----------  ----------------------$")) { //$NON-NLS-1$
+							templateListExists = true;
+							break;
+						}
 					}
 				}
 
