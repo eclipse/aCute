@@ -12,7 +12,7 @@
 		<tycho-version>3.0.0</tycho-version>
 		<tycho.scmUrl>scm:git:https://github.com/eclipse/acute.git</tycho.scmUrl>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
-		<download-maven-plugin.version>1.4.1</download-maven-plugin.version>
+		<download-maven-plugin.version>1.6.8</download-maven-plugin.version>
 		<cbi.jarsigner.skip>true</cbi.jarsigner.skip>
 	</properties>
 
@@ -194,7 +194,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.2.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
