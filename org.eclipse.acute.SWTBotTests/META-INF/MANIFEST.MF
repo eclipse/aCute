@@ -20,6 +20,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.lsp4j,
  org.eclipse.swtbot.go;bundle-version="2.5.0",
  org.eclipse.debug.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.acute.SWTBotTests
