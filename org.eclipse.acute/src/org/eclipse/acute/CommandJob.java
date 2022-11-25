@@ -58,9 +58,9 @@ public class CommandJob extends Job {
 			subMonitor.beginTask(progressMessage, 0);
 			process = new ProcessBuilder(command).start();
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-				CompletableFuture.runAsync(() -> {
-					reader.lines().forEachOrdered(line -> logToConsole(line));
-				});
+				CompletableFuture.runAsync(() ->
+					reader.lines().forEachOrdered(this::logToConsole)
+				);
 				if (process.waitFor() != 0) {
 					if (!subMonitor.isCanceled()) {
 						AcutePlugin.showError(errorTitle, errorMessage);

@@ -52,9 +52,9 @@ public class DotnetDebugLaunchDelegate extends DSPLaunchDelegate {
 	@Override public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		IContainer container = getContainer(configuration);
 		if (container == null) {
-			Display.getDefault().asyncExec(() -> {
-				MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.DotnetDebugLaunchDelegate_noFolderSelected_title, Messages.DotnetDebugLaunchDelegate_noFolderSelected_message);
-			});
+			Display.getDefault().asyncExec(() ->
+				MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.DotnetDebugLaunchDelegate_noFolderSelected_title, Messages.DotnetDebugLaunchDelegate_noFolderSelected_message)
+			);
 			return;
 		}
 		ILaunchConfigurationWorkingCopy wc = configuration.getWorkingCopy();
@@ -70,9 +70,9 @@ public class DotnetDebugLaunchDelegate extends DSPLaunchDelegate {
 		final ILaunchConfiguration config = wc.doSave();
 		for (IMarker marker : container.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE)) {
 			if (marker.getAttribute(IMarker.SEVERITY, -1) == IMarker.SEVERITY_ERROR) {
-				Display.getDefault().asyncExec(() -> {
-					MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.DotnetDebugLaunchDelegate_errorsOnProject_title, Messages.DotnetDebugLaunchDelegate_errorsOnProject_message);
-				});
+				Display.getDefault().asyncExec(() ->
+					MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.DotnetDebugLaunchDelegate_errorsOnProject_title, Messages.DotnetDebugLaunchDelegate_errorsOnProject_message)
+				);
 				return;
 			}
 		}
@@ -116,7 +116,7 @@ public class DotnetDebugLaunchDelegate extends DSPLaunchDelegate {
 			buildJob.schedule();
 		} else {
 			super.launch(config, mode, launch, monitor);
-		};
+		}
 	}
 
 	private boolean projectNeedsRebuild() {
@@ -164,8 +164,7 @@ public class DotnetDebugLaunchDelegate extends DSPLaunchDelegate {
 			}
 			conf.add("args", args); //$NON-NLS-1$
 		}
-		String dbgParam = new Gson().toJson(conf);
-		return dbgParam;
+		return new Gson().toJson(conf);
 	}
 
 }

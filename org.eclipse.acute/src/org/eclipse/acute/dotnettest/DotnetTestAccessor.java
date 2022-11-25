@@ -73,7 +73,7 @@ public class DotnetTestAccessor {
 
 			try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 				String inputLine;
-				Boolean testsListExists = false;
+				boolean testsListExists = false;
 
 				while ((inputLine = in.readLine()) != null) {
 					if (inputLine.equals(Messages.DotnetTestAccessor_listTests)) {
