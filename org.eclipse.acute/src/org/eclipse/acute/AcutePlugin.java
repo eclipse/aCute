@@ -96,7 +96,7 @@ public class AcutePlugin extends AbstractUIPlugin {
 	 *             If no path has been set
 	 */
 	public static String getDotnetCommand(boolean showErrors) {
-		String path = plugin.getPreferenceStore().getString(AcutePreferenceInitializer.explicitDotnetPathPreference);
+		String path = plugin.getPreferenceStore().getString(AcutePreferenceInitializer.EXPLICIT_DOTNET_PATH);
 		if (path.isEmpty()) {
 			if(showErrors) {
 				openCommandErrorDialog(Messages.dotnetNoPathError_title, Messages.dotnetNoPathError_message);
