@@ -232,7 +232,7 @@ public class DotnetNewWizardPage extends WizardPage {
 		//Update Template List with preferences change
 		IPreferenceStore store = AcutePlugin.getDefault().getPreferenceStore();
 		updateTemplatesListener = event -> {
-			if (event.getProperty().equals(AcutePreferenceInitializer.explicitDotnetPathPreference)) {
+			if (event.getProperty().equals(AcutePreferenceInitializer.EXPLICIT_DOTNET_PATH)) {
 				updateTemplateList();
 			}
 		};

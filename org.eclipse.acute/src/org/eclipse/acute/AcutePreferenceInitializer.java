@@ -22,18 +22,18 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 public class AcutePreferenceInitializer extends AbstractPreferenceInitializer {
 
-	public static String explicitDotnetPathPreference = "dotnet.explicitPath"; //$NON-NLS-1$
+	public static final String EXPLICIT_DOTNET_PATH = "dotnet.explicitPath"; //$NON-NLS-1$
 
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = AcutePlugin.getDefault().getPreferenceStore();
 
-		store.setDefault(explicitDotnetPathPreference, getBestDotnetPathGuess());
+		store.setDefault(EXPLICIT_DOTNET_PATH, getBestDotnetPathGuess());
 	}
 
 	private String getBestDotnetPathGuess() {
 		try {
-			String[] command = new String[] { "/bin/bash", "-c", "which dotnet" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			String[] command = { "/bin/bash", "-c", "which dotnet" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if (Platform.getOS().equals(Platform.OS_WIN32)) {
 				command = new String[] { "cmd", "/c", "which dotnet" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}

@@ -32,7 +32,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class AcutePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-	public static String PAGE_ID = "org.eclipse.acute.preferencePage"; //$NON-NLS-1$
+	public static final String PAGE_ID = "org.eclipse.acute.preferencePage"; //$NON-NLS-1$
 	private IPreferenceStore store;
 
 	private Text explicitDotnetPathText;
@@ -55,7 +55,7 @@ public class AcutePreferencePage extends PreferencePage implements IWorkbenchPre
 	}
 
 	private void initializeContent() {
-		explicitDotnetPathText.setText(store.getString(AcutePreferenceInitializer.explicitDotnetPathPreference));
+		explicitDotnetPathText.setText(store.getString(AcutePreferenceInitializer.EXPLICIT_DOTNET_PATH));
 	}
 
 	@Override
@@ -90,13 +90,13 @@ public class AcutePreferencePage extends PreferencePage implements IWorkbenchPre
 
 	@Override
 	protected void performDefaults() {
-		explicitDotnetPathText.setText(store.getDefaultString(AcutePreferenceInitializer.explicitDotnetPathPreference));
+		explicitDotnetPathText.setText(store.getDefaultString(AcutePreferenceInitializer.EXPLICIT_DOTNET_PATH));
 		super.performDefaults();
 	}
 
 	@Override
 	public boolean performOk() {
-		store.setValue(AcutePreferenceInitializer.explicitDotnetPathPreference, explicitDotnetPathText.getText());
+		store.setValue(AcutePreferenceInitializer.EXPLICIT_DOTNET_PATH, explicitDotnetPathText.getText());
 		return super.performOk();
 	}
 
