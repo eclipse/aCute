@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
@@ -140,9 +139,7 @@ public class DotnetExportWizardPage extends WizardPage {
 		projectLocationLabel.setText(Messages.DotnetExportWizardPage_location);
 		projectLocationText = new Text(container, SWT.BORDER);
 		projectLocationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		projectLocationText.addModifyListener(e -> {
-			updateProjectPath(projectLocationText.getText());
-		});
+		projectLocationText.addModifyListener(e -> updateProjectPath(projectLocationText.getText()));
 		projectLocationControlDecoration = new ControlDecoration(projectLocationText, SWT.TOP | SWT.LEFT);
 		projectLocationControlDecoration.setImage(errorImage);
 
@@ -205,9 +202,9 @@ public class DotnetExportWizardPage extends WizardPage {
 		defaultLocationCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
 		defaultLocationCheckbox.setText(Messages.DotnetExportWizardPage_useDefaultExportLocation);
 		defaultLocationCheckbox.setSelection(true);
-		defaultLocationCheckbox.addSelectionListener(widgetSelectedAdapter(e -> {
-			updateDefaultLocationState(((Button) e.widget).getSelection());
-		}));
+		defaultLocationCheckbox.addSelectionListener(widgetSelectedAdapter(e ->
+			updateDefaultLocationState(((Button) e.widget).getSelection())
+		));
 
 		exportLocationLabel = new Label(container, SWT.NONE);
 		exportLocationLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -246,12 +243,9 @@ public class DotnetExportWizardPage extends WizardPage {
 		configComp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
 		configComp.setLayout(new RowLayout());
 
-		Listener configRadioListener = new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				configuration = ((Button) e.widget).getText();
-				setLocationIfDefault();
-			}
+		Listener configRadioListener = e -> {
+			configuration = ((Button) e.widget).getText();
+			setLocationIfDefault();
 		};
 
 		Button debugRadio = new Button(configComp, SWT.RADIO);
@@ -343,7 +337,7 @@ public class DotnetExportWizardPage extends WizardPage {
 
 		String locationString = ""; //$NON-NLS-1$
 		if (isProjectFile(projectPath)) {
-			locationString = projectPath.toFile().getParent().toString() + "/bin/" + configuration + "/" //$NON-NLS-1$ //$NON-NLS-2$
+			locationString = projectPath.toFile().getParent() + "/bin/" + configuration + "/" //$NON-NLS-1$ //$NON-NLS-2$
 					+ getTargetFramework() + "/"; //$NON-NLS-1$
 			if (isSCD) {
 				locationString += runtime + "/"; //$NON-NLS-1$

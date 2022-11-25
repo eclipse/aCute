@@ -73,9 +73,7 @@ public class DebugLaunchMainTab extends AbstractLaunchConfigurationTab {
 		Label programArgsLabel = new Label(control, SWT.NONE);
 		programArgsLabel.setText(Messages.AcuteDebugMainTab_promgramArgs);
 		programArgsText = new Text(control, SWT.BORDER);
-		programArgsText.addModifyListener(e -> {
-			setDirty(true);
-		});
+		programArgsText.addModifyListener(e -> setDirty(true));
 		setControl(control);
 	}
 

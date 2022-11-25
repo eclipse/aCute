@@ -32,13 +32,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.ContainerSelectionDialog;;
+import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 
@@ -81,7 +80,7 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 			Object[] results = dialog.getResult();
 			if (path == 0 && results.length > 0) {
 				pathText.setText(
-						ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().getAbsolutePath().toString()
+						ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().getAbsolutePath()
 						+ ((Path) results[0]).toOSString());
 				setDirty(true);
 				updateLaunchConfigurationDialog();
@@ -118,13 +117,10 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 			updateLaunchConfigurationDialog();
 		});
 
-		Listener configRadioListener = new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				configuration = ((Button) e.widget).getText();
-				setDirty(true);
-				updateLaunchConfigurationDialog();
-			}
+		Listener configRadioListener = e -> {
+			configuration = ((Button) e.widget).getText();
+			setDirty(true);
+			updateLaunchConfigurationDialog();
 		};
 
 		debugRadio = new Button(container, SWT.RADIO);
@@ -161,7 +157,7 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 		frameworkViewer.add(Messages.DotnetRunTab_loadingFrameworks);
 		frameworkViewer.getList().setEnabled(false);
 		targetFrameworks = ProjectFileAccessor.getTargetFrameworks(
-				new Path(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().getAbsolutePath().toString()
+				new Path(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().getAbsolutePath()
 						+ projectFilePath.toString()));
 		frameworkViewer.getList().removeAll();
 		if (targetFrameworks.length > 0) {

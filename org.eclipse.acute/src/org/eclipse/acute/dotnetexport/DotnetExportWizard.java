@@ -141,7 +141,7 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 				} catch (InterruptedException e) { // errors will be shown in console
 				}
 				if (publishProcess.exitValue() == 0) {
-					IPath pathToExport = Path.fromOSString(exportLocation.getAbsolutePath().toString());
+					IPath pathToExport = Path.fromOSString(exportLocation.getAbsolutePath());
 					IFile exportiFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(pathToExport);
 					if (exportiFile == null) {
 						return;
@@ -150,10 +150,9 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 				}
 
 			} catch (CoreException e) {
-				Display.getDefault().asyncExec(() -> {
-					MessageDialog.openError(getShell(), Messages.DotnetExportWizard_exportError_title,
-							NLS.bind(Messages.DotnetExportWizard_exportError_message, e));
-				});
+				Display.getDefault().asyncExec(
+						() -> MessageDialog.openError(getShell(), Messages.DotnetExportWizard_exportError_title,
+								NLS.bind(Messages.DotnetExportWizard_exportError_message, e)));
 			}
 		}).schedule();
 		return true;

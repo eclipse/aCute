@@ -40,7 +40,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
@@ -72,7 +71,7 @@ public class DotnetNewWizardPage extends WizardPage {
 	private Set<IWorkingSet> workingSets;
 	private File directory;
 	private String projectName;
-	private Boolean isDirectoryAndProjectLinked = true;
+	private boolean isDirectoryAndProjectLinked = true;
 
 	private Text locationText;
 	private Text projectNameText;
@@ -225,21 +224,16 @@ public class DotnetNewWizardPage extends WizardPage {
 		templateViewer = new ListViewer(list);
 		templateViewer.setContentProvider(new ArrayContentProvider());
 		templateViewer.setComparator(new ViewerComparator()); // default uses getLabel()/toString()
-		templateViewer.addSelectionChangedListener(e -> {
-			setPageComplete(isPageComplete());
-		});
+		templateViewer.addSelectionChangedListener(e -> setPageComplete(isPageComplete()));
 		templateControlDecoration = new ControlDecoration(templateViewer.getControl(), SWT.TOP | SWT.LEFT);
 		templateControlDecoration.setImage(errorImage);
 		updateTemplateList();
 
 		//Update Template List with preferences change
 		IPreferenceStore store = AcutePlugin.getDefault().getPreferenceStore();
-		updateTemplatesListener = new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(AcutePreferenceInitializer.explicitDotnetPathPreference)) {
-					updateTemplateList();
-				}
+		updateTemplatesListener = event -> {
+			if (event.getProperty().equals(AcutePreferenceInitializer.explicitDotnetPathPreference)) {
+				updateTemplateList();
 			}
 		};
 		store.addPropertyChangeListener(updateTemplatesListener);

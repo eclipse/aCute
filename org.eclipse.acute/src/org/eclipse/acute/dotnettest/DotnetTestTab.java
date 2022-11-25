@@ -39,7 +39,6 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -101,7 +100,7 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 			String path = dialog.open();
 			if (path != null) {
 				pathText.setText(path);
-				updateProjectPath(path.toString());
+				updateProjectPath(path);
 				setDirty(true);
 				updateLaunchConfigurationDialog();
 			}
@@ -110,16 +109,14 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 		runAllRadio = new Button(container, SWT.RADIO);
 		runAllRadio.setText(Messages.DotnetTestTab_runAll);
 		runAllRadio.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
-		runAllRadio.addSelectionListener(widgetSelectedAdapter(e -> {
-			switchSelector(DotnetTestDelegate.ALL_TESTS);
-		}));
+		runAllRadio.addSelectionListener(widgetSelectedAdapter(e ->
+			switchSelector(DotnetTestDelegate.ALL_TESTS)));
 
 		runMatchingRadio = new Button(container, SWT.RADIO);
 		runMatchingRadio.setText(Messages.DotnetTestTab_runMatching);
 		runMatchingRadio.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
-		runMatchingRadio.addSelectionListener(widgetSelectedAdapter(e -> {
-			switchSelector(DotnetTestDelegate.MATCHING_TESTS);
-		}));
+		runMatchingRadio.addSelectionListener(widgetSelectedAdapter(e ->
+			switchSelector(DotnetTestDelegate.MATCHING_TESTS)));
 
 		filterLabel = new Label(container, SWT.NONE);
 		filterLabel.setText(Messages.DotnetTestTab_testFilter);
@@ -136,9 +133,8 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 		runSelectedRadio = new Button(container, SWT.RADIO);
 		runSelectedRadio.setText(Messages.DotnetTestTab_runSingle);
 		runSelectedRadio.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 4, 1));
-		runSelectedRadio.addSelectionListener(widgetSelectedAdapter(e -> {
-			switchSelector(DotnetTestDelegate.SELECTED_TEST);
-		}));
+		runSelectedRadio.addSelectionListener(widgetSelectedAdapter(e ->
+			switchSelector(DotnetTestDelegate.SELECTED_TEST)));
 
 		classLabel = new Label(container, SWT.NONE);
 		classLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -159,9 +155,8 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 		classBrowseButton = new Button(container, SWT.NONE);
 		classBrowseButton.setText(Messages.DotnetTestTab_search);
 		classBrowseButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		classBrowseButton.addSelectionListener(widgetSelectedAdapter(e -> {
-			searchForTestClass();
-		}));
+		classBrowseButton.addSelectionListener(widgetSelectedAdapter(e ->
+			searchForTestClass()));
 
 		methodLabel = new Label(container, SWT.NONE);
 		methodLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -178,9 +173,8 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 		methodBrowseButton = new Button(container, SWT.NONE);
 		methodBrowseButton.setText(Messages.DotnetTestTab_search);
 		methodBrowseButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		methodBrowseButton.addSelectionListener(widgetSelectedAdapter(e -> {
-			searchForTestMethods();
-		}));
+		methodBrowseButton.addSelectionListener(widgetSelectedAdapter(e ->
+			searchForTestMethods()));
 
 		Label configLabel = new Label(container, SWT.NONE);
 		configLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -190,13 +184,10 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 		configComp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 3, 1));
 		configComp.setLayout(new RowLayout());
 
-		Listener configRadioListener = new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				projectConfig = ((Button) e.widget).getText();
-				setDirty(true);
-				updateLaunchConfigurationDialog();
-			}
+		Listener configRadioListener = e -> {
+			projectConfig = ((Button) e.widget).getText();
+			setDirty(true);
+			updateLaunchConfigurationDialog();
 		};
 
 		debugRadio = new Button(configComp, SWT.RADIO);
@@ -390,9 +381,7 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 			testMethods = null;
 			Job.create(Messages.DotnetTestTab_retrieveClasses, (ICoreRunnable) monitor -> {
 				testMethods = DotnetTestAccessor.getTestMethods(projectPath.toFile());
-				Display.getDefault().asyncExec(() -> {
-					displayClassSelectorDialog();
-				});
+				Display.getDefault().asyncExec(this::displayClassSelectorDialog);
 			}).schedule();
 		} else {
 			displayClassSelectorDialog();
@@ -424,9 +413,7 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 			testMethods = null;
 			Job.create(Messages.DotnetTestTab_retrieveClasses, (ICoreRunnable) monitor -> {
 				testMethods = DotnetTestAccessor.getTestMethods(projectPath.toFile());
-				Display.getDefault().asyncExec(() -> {
-					displayMethodSelectorDialog();
-				});
+				Display.getDefault().asyncExec(this::displayMethodSelectorDialog);
 			}).schedule();
 		} else {
 			displayMethodSelectorDialog();

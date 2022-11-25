@@ -15,13 +15,12 @@ package org.eclipse.acute.dotnetrun;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
-import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 public class DotnetRunTabGroup extends AbstractLaunchConfigurationTabGroup {
 
 	@Override
 	public void createTabs(ILaunchConfigurationDialog arg0, String arg1) {
-		setTabs(new ILaunchConfigurationTab[] { new DotnetRunTab(), new CommonTab() });
+		setTabs(new DotnetRunTab(), new CommonTab());
 	}
 
 }

@@ -130,9 +130,7 @@ public class DebuggerTab extends AbstractLaunchConfigurationTab {
 		debuggerArgsLabel.setText(Messages.DebuggerTab_debuggerArgs);
 		toDisableWhenDefault.add(debuggerArgsLabel);
 		debugArgsText = new Text(res, SWT.BORDER);
-		debugArgsText.addModifyListener(e -> {
-			setDirty(true);
-		});
+		debugArgsText.addModifyListener(e -> setDirty(true));
 		debugArgsText.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false, 2, 1));
 		toDisableWhenDefault.add(debugArgsText);
 		defaultDebuggerCheckbox.addSelectionListener(SelectionListener.widgetSelectedAdapter(event -> {
