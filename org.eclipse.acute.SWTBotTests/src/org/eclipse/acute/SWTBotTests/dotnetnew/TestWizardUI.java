@@ -73,7 +73,7 @@ public class TestWizardUI extends AbstractNewWizardTest {
 		IProject newProject = checkProjectCreate(shell, null);
 		bot.closeAllEditors();
 
-		shell = openWizard();
+		openWizard();
 		String secondPresetName = bot.textWithLabel("Project name").getText();
 
 		assertNotEquals("Pre-set project name is not unique from currently created project", firstPresetName, secondPresetName);

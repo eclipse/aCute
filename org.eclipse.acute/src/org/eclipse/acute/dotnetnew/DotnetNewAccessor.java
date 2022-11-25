@@ -78,7 +78,7 @@ public class DotnetNewAccessor {
 
 			try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 				String inputLine;
-				Boolean templateListExists = false;
+				boolean templateListExists = false;
 
 				while ((inputLine = in.readLine()) != null) {
 					if (inputLine.matches("^-{30,}$")) { //$NON-NLS-1$

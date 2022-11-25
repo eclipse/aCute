@@ -92,10 +92,10 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 				}
 			}
 		}
-		Display.getDefault().asyncExec(() -> {
+		Display.getDefault().asyncExec(() ->
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages.DotnetRunDelegate_launchError_title,
-					Messages.DotnetRunDelegate_launchError_message);
-		});
+					Messages.DotnetRunDelegate_launchError_message)
+		);
 	}
 
 	@Override
@@ -189,10 +189,8 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 				Process p = DebugPlugin.exec(cmdLine, projectFileLocation);
 				IProcess process = DebugPlugin.newProcess(launch, p, "dotnet exec"); //$NON-NLS-1$
 				process.setAttribute(IProcess.ATTR_CMDLINE, String.join(" ", cmdLine)); //$NON-NLS-1$
-				return;
 			} else {
 				AcutePlugin.showError(Messages.DotnetRunDelegate_launchError_title, NLS.bind(Messages.DotnetRunDelegate_launchError_message_findBinaryFile, binaryFile.getAbsolutePath()));
-				return;
 			}
 		} catch (CoreException e) {
 			AcutePlugin.showError(Messages.DotnetRunDelegate_exceptionInLaunch, e.getLocalizedMessage());
