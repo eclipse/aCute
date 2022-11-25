@@ -59,8 +59,8 @@ public class AddDotnetBuilder extends AbstractHandler {
 
 	public static IProject getProject(final ExecutionEvent event) {
 		final ISelection selection = HandlerUtil.getCurrentSelection(event);
-		if (selection instanceof IStructuredSelection) {
-			final Object element = ((IStructuredSelection) selection).getFirstElement();
+		if (selection instanceof IStructuredSelection sse) {
+			final Object element = sse.getFirstElement();
 
 			return Platform.getAdapterManager().getAdapter(element, IProject.class);
 		}

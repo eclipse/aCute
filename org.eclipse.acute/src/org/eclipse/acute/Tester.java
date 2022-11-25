@@ -34,10 +34,10 @@ public class Tester extends PropertyTester {
 	}
 
 	private IResource toResource(Object o) {
-		if (o instanceof IResource) {
-			return (IResource) o;
-		} else if (o instanceof IAdaptable) {
-			return ((IAdaptable) o).getAdapter(IResource.class);
+		if (o instanceof IResource r) {
+			return r;
+		} else if (o instanceof IAdaptable a) {
+			return a.getAdapter(IResource.class);
 		} else {
 			return null;
 		}

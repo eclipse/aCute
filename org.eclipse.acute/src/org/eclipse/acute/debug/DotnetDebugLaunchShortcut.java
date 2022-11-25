@@ -34,7 +34,6 @@ import org.eclipse.lsp4e.debug.DSPPlugin;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
 
 public class DotnetDebugLaunchShortcut implements ILaunchShortcut2 {
 
@@ -66,8 +65,8 @@ public class DotnetDebugLaunchShortcut implements ILaunchShortcut2 {
 
 	@Override public IResource getLaunchableResource(ISelection selection) {
 		Set<IResource> resources = new HashSet<>();
-		if (selection instanceof IStructuredSelection) {
-			for (Object o : ((IStructuredSelection) selection).toArray()) {
+		if (selection instanceof IStructuredSelection sse) {
+			for (Object o : sse.toArray()) {
 				IResource resource = Adapters.adapt(o, IResource.class);
 				if (resource != null) {
 					resources.add(resource);
@@ -85,8 +84,8 @@ public class DotnetDebugLaunchShortcut implements ILaunchShortcut2 {
 	}
 
 	@Override public IResource getLaunchableResource(IEditorPart editorpart) {
-		if (editorpart.getEditorInput() instanceof IFileEditorInput) {
-			return ((FileEditorInput)editorpart.getEditorInput()).getFile();
+		if (editorpart.getEditorInput() instanceof IFileEditorInput fei) {
+			return fei.getFile();
 		}
 		return null;
 	}
