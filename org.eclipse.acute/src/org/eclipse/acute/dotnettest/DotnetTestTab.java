@@ -53,7 +53,6 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 
 	// Map<ClassName, List<MethodName>>
 	private Map<String, List<String>> testMethods;
-	private Object[] targetFrameworks;
 	private String loadedSelectedTargetFramework;
 	private String loadedTestsParentProject;
 
@@ -444,7 +443,7 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 			frameworkViewer.getList().deselectAll();
 			frameworkViewer.add(Messages.DotnetTestTab_loadingFrameworks);
 			frameworkViewer.getList().setEnabled(false);
-			targetFrameworks = ProjectFileAccessor.getTargetFrameworks(projectPath);
+			Object[] targetFrameworks = ProjectFileAccessor.getTargetFrameworks(projectPath);
 			frameworkViewer.getList().removeAll();
 
 			if (targetFrameworks.length > 0) {

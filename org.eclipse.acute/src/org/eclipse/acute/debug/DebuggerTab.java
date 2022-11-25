@@ -48,7 +48,6 @@ public class DebuggerTab extends AbstractLaunchConfigurationTab {
 
 	private Text debugArgsText;
 	private Button defaultDebuggerCheckbox;
-	private Button browseDebuggerButton;
 	private Set<Control> toDisableWhenDefault = new HashSet<>();
 
 	@Override public void createControl(Composite parent) {
@@ -83,7 +82,7 @@ public class DebuggerTab extends AbstractLaunchConfigurationTab {
 			updateLaunchConfigurationDialog();
 		});
 		toDisableWhenDefault.add(debugCommandText);
-		browseDebuggerButton = new Button(res, SWT.PUSH);
+		Button browseDebuggerButton = new Button(res, SWT.PUSH);
 		browseDebuggerButton.setText(Messages.DotnetRunTab_browse);
 		browseDebuggerButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(event -> {
 			FileDialog dialog = new FileDialog(getShell());
