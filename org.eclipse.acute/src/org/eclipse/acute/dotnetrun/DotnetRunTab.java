@@ -48,7 +48,6 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 	private Button releaseRadio;
 	private Button buildCheckBoxButton;
 
-	private Object[] targetFrameworks;
 	private IContainer projectContainer;
 	private String configuration = "Debug"; //$NON-NLS-1$
 
@@ -156,7 +155,7 @@ public class DotnetRunTab extends AbstractLaunchConfigurationTab {
 		frameworkViewer.getList().deselectAll();
 		frameworkViewer.add(Messages.DotnetRunTab_loadingFrameworks);
 		frameworkViewer.getList().setEnabled(false);
-		targetFrameworks = ProjectFileAccessor.getTargetFrameworks(
+		Object[] targetFrameworks = ProjectFileAccessor.getTargetFrameworks(
 				new Path(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().getAbsolutePath()
 						+ projectFilePath.toString()));
 		frameworkViewer.getList().removeAll();

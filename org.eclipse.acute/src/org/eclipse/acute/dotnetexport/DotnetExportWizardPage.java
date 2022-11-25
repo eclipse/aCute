@@ -57,9 +57,6 @@ public class DotnetExportWizardPage extends WizardPage {
 	private Object[] targetFrameworks;
 	private String defaultRuntime;
 
-	private Button projectBrowseButton;
-	private Label projectLocationLabel;
-	private Text projectLocationText;
 	private ControlDecoration projectLocationControlDecoration;
 	private ListViewer frameworkViewer;
 	private ControlDecoration frameworkControlDecoration;
@@ -134,16 +131,16 @@ public class DotnetExportWizardPage extends WizardPage {
 		projectLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
 		projectLabel.setText(Messages.DotnetExportWizardPage_projectFile);
 
-		projectLocationLabel = new Label(container, SWT.NONE);
+		Label projectLocationLabel = new Label(container, SWT.NONE);
 		projectLocationLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		projectLocationLabel.setText(Messages.DotnetExportWizardPage_location);
-		projectLocationText = new Text(container, SWT.BORDER);
+		Text projectLocationText = new Text(container, SWT.BORDER);
 		projectLocationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		projectLocationText.addModifyListener(e -> updateProjectPath(projectLocationText.getText()));
 		projectLocationControlDecoration = new ControlDecoration(projectLocationText, SWT.TOP | SWT.LEFT);
 		projectLocationControlDecoration.setImage(errorImage);
 
-		projectBrowseButton = new Button(container, SWT.NONE);
+		Button projectBrowseButton = new Button(container, SWT.NONE);
 		projectBrowseButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		projectBrowseButton.setText(Messages.DotnetExportWizardPage_browse);
 		projectBrowseButton.addSelectionListener(widgetSelectedAdapter(e -> {

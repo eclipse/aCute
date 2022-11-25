@@ -78,7 +78,6 @@ public class DotnetNewWizardPage extends WizardPage {
 	private ListViewer templateViewer;
 	private WorkingSetGroup workingSetsGroup;
 	private Image linkImage;
-	private Button linkButton;
 	private ControlDecoration locationControlDecoration;
 	private ControlDecoration projectNameControlDecoration;
 	private ControlDecoration templateControlDecoration;
@@ -175,7 +174,7 @@ public class DotnetNewWizardPage extends WizardPage {
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 
-		linkButton = new Button(container, SWT.TOGGLE);
+		Button linkButton = new Button(container, SWT.TOGGLE);
 		linkButton.setToolTipText(Messages.DotnetNewWizardPage_linkNames);
 		linkButton.setSelection(true);
 		try (InputStream iconStream = getClass().getResourceAsStream("/icons/link_obj.png")) { //$NON-NLS-1$
