@@ -80,8 +80,7 @@ public class ProjectFileAccessor {
 					String tagName = "TargetFramework"; //$NON-NLS-1$
 					NodeList frameworkNodeList = ((Element) propertyGroup).getElementsByTagName(tagName);
 					if (frameworkNodeList.getLength() > 0) {
-						String[] framework = { frameworkNodeList.item(0).getTextContent() };
-						return framework;
+						return new String[]{ frameworkNodeList.item(0).getTextContent() };
 					} else {
 						Node framework = ((Element) propertyGroup).getElementsByTagName(tagName + "s").item(0); //$NON-NLS-1$
 						if (framework != null) {

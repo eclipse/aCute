@@ -146,10 +146,10 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 					monitor.done();
 				} catch (IOException e) {
 					monitor.done();
-					Display.getDefault().asyncExec(() -> {
+					Display.getDefault().asyncExec(() ->
 						MessageDialog.openError(getShell(), Messages.DotnetNewWizard_createTemplateError_title,
-								NLS.bind(Messages.DotnetNewWizard_createTemplateError_message, e));
-					});
+								NLS.bind(Messages.DotnetNewWizard_createTemplateError_message, e))
+					);
 				}
 			});
 		} catch (InvocationTargetException | InterruptedException e) {

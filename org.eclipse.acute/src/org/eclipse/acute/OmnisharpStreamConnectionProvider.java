@@ -128,7 +128,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 			serverFileUrl = new File(serverPath, "run"); //$NON-NLS-1$
 		}
 
-		if (serverFileUrl == null || !serverFileUrl.exists()) {
+		if (!serverFileUrl.exists()) {
 			AcutePlugin.logError(NLS.bind(Messages.omnisharpStreamConnection_serverNotFoundError,serverPath));
 			return null;
 		} else if (!serverFileUrl.canExecute()) {

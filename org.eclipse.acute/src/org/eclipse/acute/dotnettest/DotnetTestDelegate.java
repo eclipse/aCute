@@ -82,10 +82,10 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 				}
 			}
 		}
-		Display.getDefault().asyncExec(() -> {
+		Display.getDefault().asyncExec(() ->
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-					Messages.DotnetTestDelegate_runTestError_title, Messages.DotnetTestDelegate_runTestError_message_badSelection);
-		});
+					Messages.DotnetTestDelegate_runTestError_title, Messages.DotnetTestDelegate_runTestError_message_badSelection)
+		);
 	}
 
 	@Override
@@ -116,11 +116,11 @@ public class DotnetTestDelegate extends LaunchConfigurationDelegate implements I
 
 		File projectFile = new File(projectLocation);
 
-		if (projectFile != null && projectFile.isFile()) {
+		if (projectFile.isFile()) {
 			projectFile = projectFile.getParentFile();
 		}
 
-		if (!projectFile.exists() || projectFile == null) {
+		if (projectFile == null || !projectFile.exists()) {
 			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 					Messages.DotnetTestDelegate_runTestError_title, Messages.DotnetTestDelegate_runTestError_message_badLocation);
 			return;
