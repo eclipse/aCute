@@ -138,10 +138,10 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 					if (process.exitValue() == 0) {
 						createProject(projectName, location, monitor);
 					} else {
-						Display.getDefault().asyncExec(() -> {
+						Display.getDefault().asyncExec(() ->
 							MessageDialog.openError(getShell(), Messages.DotnetNewWizard_createTemplateError_title,
-									NLS.bind(Messages.DotnetNewWizard_createTemplateErrorExitValue_message, process.exitValue()));
-						});
+									NLS.bind(Messages.DotnetNewWizard_createTemplateErrorExitValue_message, process.exitValue()))
+						);
 					}
 					monitor.done();
 				} catch (IOException e) {
@@ -238,10 +238,10 @@ public class DotnetNewWizard extends Wizard implements INewWizard {
 	}
 
 	private IResource toResource(Object o) {
-		if (o instanceof IResource) {
-			return (IResource) o;
-		} else if(o instanceof IAdaptable) {
-			return ((IAdaptable) o).getAdapter(IResource.class);
+		if (o instanceof IResource r) {
+			return r;
+		} else if(o instanceof IAdaptable a) {
+			return a.getAdapter(IResource.class);
 		}else {
 			return null;
 		}

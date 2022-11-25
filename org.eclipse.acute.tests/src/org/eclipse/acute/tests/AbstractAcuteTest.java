@@ -113,9 +113,7 @@ public class AbstractAcuteTest {
 
 	protected static ITextViewer getTextViewer(IEditorPart part) throws InvocationTargetException {
 		try {
-			if (part instanceof ITextEditor) {
-				ITextEditor textEditor = (ITextEditor) part;
-
+			if (part instanceof ITextEditor textEditor) {
 				Method getSourceViewerMethod = AbstractTextEditor.class.getDeclaredMethod("getSourceViewer"); //$NON-NLS-1$
 				getSourceViewerMethod.setAccessible(true);
 				return (ITextViewer) getSourceViewerMethod.invoke(textEditor);

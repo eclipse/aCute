@@ -70,15 +70,15 @@ public class DotnetRunDelegate extends LaunchConfigurationDelegate implements IL
 	@Override
 	public void launch(ISelection selection, String mode) {
 
-		if (selection instanceof IStructuredSelection) {
-			Iterator<Object> selectionIterator = ((IStructuredSelection) selection).iterator();
+		if (selection instanceof IStructuredSelection sse) {
+			Iterator<Object> selectionIterator = sse.iterator();
 			while (selectionIterator.hasNext()) {
 				Object element = selectionIterator.next();
 				IResource resource = null;
-				if (element instanceof IResource) {
-					resource = (IResource) element;
-				} else if (element instanceof IAdaptable) {
-					resource = ((IAdaptable) element).getAdapter(IResource.class);
+				if (element instanceof IResource r) {
+					resource = r;
+				} else if (element instanceof IAdaptable a) {
+					resource = a.getAdapter(IResource.class);
 				}
 
 				if (resource != null) {
