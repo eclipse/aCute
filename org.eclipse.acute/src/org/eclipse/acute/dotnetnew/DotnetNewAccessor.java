@@ -76,11 +76,14 @@ public class DotnetNewAccessor {
 			Runtime runtime = Runtime.getRuntime();
 			Process process = runtime.exec(listCommand);
 
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+			try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8"))) { //$NON-NLS-1$
 				String inputLine;
 				boolean templateListExists = false;
 
 				while ((inputLine = in.readLine()) != null) {
+					if (inputLine.trim().length() == 0) {
+	                     continue;
+	                }
 					if (inputLine.matches("-{30,}$")) { //$NON-NLS-1$
 						templateListExists = true;
 						break;
@@ -91,6 +94,11 @@ public class DotnetNewAccessor {
 							templateListExists = true;
 							break;
 						}
+						if(inputLine.replace('-', ' ').trim().length() == 0) {
+							templateListExists = true;
+							break;
+						}
+
 					}
 				}
 
