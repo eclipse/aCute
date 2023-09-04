@@ -34,6 +34,7 @@ spec:
 	options {
 		timeout(time: 60, unit: 'MINUTES')
 		buildDiscarder(logRotator(numToKeepStr:'10'))
+		disableConcurrentBuilds(abortPrevious: true)
 	}
 	environment {
 	    DOTNET_SKIP_FIRST_TIME_EXPERIENCE="true"
