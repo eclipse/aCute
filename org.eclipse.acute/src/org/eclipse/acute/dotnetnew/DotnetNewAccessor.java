@@ -70,6 +70,7 @@ public class DotnetNewAccessor {
 	 */
 	public static List<Template> getTemplates() {
 		try {
+			int majorVersionNumber = DotnetVersionUtil.getMajorVersionNumber(DotnetVersionUtil.getVersion(AcutePlugin.getDotnetCommand()));
 			List<Template> templates = new ArrayList<>();
 			String listCommand = AcutePlugin.getDotnetCommand() + " new --list"; //$NON-NLS-1$
 
@@ -84,21 +85,16 @@ public class DotnetNewAccessor {
 					if (inputLine.trim().length() == 0) {
 	                     continue;
 	                }
-					if (inputLine.matches("-{30,}$")) { //$NON-NLS-1$
-						templateListExists = true;
-						break;
-					}
-					if(DotnetVersionUtil.getMajorVersionNumber(DotnetVersionUtil.getVersion(AcutePlugin.getDotnetCommand())) >= 5)
-					{
-						if(inputLine.matches("---------------------------------  --------------------  ----------  ------------------------------------------------------------------------------------------$")) { //$NON-NLS-1$
-							templateListExists = true;
-							break;
-						}
+					if(majorVersionNumber >= 5) {
 						if(inputLine.replace('-', ' ').trim().length() == 0) {
 							templateListExists = true;
 							break;
 						}
-
+					} else {
+						if (inputLine.matches("-{30,}$")) { //$NON-NLS-1$
+							templateListExists = true;
+							break;
+						}
 					}
 				}
 
