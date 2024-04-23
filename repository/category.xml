@@ -15,7 +15,7 @@
    <bundle id="org.eclipse.ui.genericeditor" version="0.0.0">
       <category name="Dependencies"/>
    </bundle>
-   <bundle id="org.apache.commons.io" version="0.0.0">
+   <bundle id="org.apache.commons.commons-io" version="0.0.0">
       <category name="Dependencies"/>
    </bundle>
    <bundle id="org.joni" version="0.0.0">
@@ -52,9 +52,6 @@
       <category name="Dependencies"/>
    </bundle>
    <bundle id="com.google.guava" version="0.0.0">
-      <category name="Dependencies"/>
-   </bundle>
-   <bundle id="org.eclipse.xtext.xbase.lib" version="0.0.0">
       <category name="Dependencies"/>
    </bundle>
    <bundle id="com.google.gson" version="0.0.0">

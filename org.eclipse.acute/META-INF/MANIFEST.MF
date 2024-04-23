@@ -8,7 +8,6 @@ Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.lsp4e;bundle-version="0.1.0",
- org.apache.commons.io;bundle-version="2.2.0",
  org.eclipse.tm4e.core,
  org.eclipse.ui.genericeditor;bundle-version="1.0.0",
  org.eclipse.tm4e.ui,
@@ -22,12 +21,14 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.externaltools,
  org.eclipse.jdt.annotation;resolution:=optional,
  com.google.gson;bundle-version="2.7.0",
- org.apache.commons.compress;bundle-version="1.6.0",
  org.eclipse.lsp4e.debug;bundle-version="0.2.0",
  org.eclipse.ui.externaltools
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.core.variables
+Import-Package: org.eclipse.core.variables,
+ org.apache.commons.compress.archivers.tar,
+ org.apache.commons.io,
+ org.apache.commons.io.input
 Export-Package: org.eclipse.acute;x-internal:=true,
  org.eclipse.acute.debug;x-internal:=true
 Automatic-Module-Name: org.eclipse.acute
