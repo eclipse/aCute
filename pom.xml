@@ -9,7 +9,7 @@
 		<maven>3.9.0</maven>
 	</prerequisites>
 	<properties>
-		<tycho-version>4.0.7</tycho-version>
+		<tycho-version>4.0.8</tycho-version>
 		<tycho.scmUrl>scm:git:https://github.com/eclipse/acute.git</tycho.scmUrl>
 		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
 		<download-maven-plugin.version>1.9.0</download-maven-plugin.version>
@@ -42,7 +42,7 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<target>
-						<file>../target-platform/target-platform.target</file>
+						<uri>file://${env.PWD}/target-platform/target-platform.target</uri>
 					</target>
 					<environments>
 						<environment>
