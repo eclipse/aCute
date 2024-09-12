@@ -11,7 +11,7 @@ spec:
   - name: environment
     image: akurtakov/eclipse-acute-build-test-env:test
     tty: true
-    command: [ "uid_entrypoint", "cat" ]
+    command: [ "cat" ]
     resources:
       requests:
         memory: "2.6Gi"
