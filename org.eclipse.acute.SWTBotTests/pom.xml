@@ -9,11 +9,6 @@
 	<packaging>eclipse-test-plugin</packaging>
 	<version>0.2.1-SNAPSHOT</version>
 
-	<properties>
-		<testSuite>${project.artifactId}</testSuite>
-		<testClass>org.eclipse.acute.SWTBotTests.AllTests</testClass>
-	</properties>
-
 	<build>
 		<plugins>
 			<plugin>
