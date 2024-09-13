@@ -476,7 +476,7 @@ public class DotnetTestTab extends AbstractLaunchConfigurationTab {
 	private boolean isProjectFile(Path path) {
 		if (path == null || path.isEmpty()) {
 			return false;
-		} else if (!path.lastSegment().matches("(.*\\.csproj|project.json)")) { //$NON-NLS-1$
+		} else if (!path.lastSegment().matches("(.*\\.csproj)")) { //$NON-NLS-1$
 			return false;
 		} else if (!path.toFile().isFile()) {
 			return false;

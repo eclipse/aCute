@@ -348,7 +348,7 @@ public class DotnetExportWizardPage extends WizardPage {
 	private boolean isProjectFile(Path path) {
 		if (path == null || path.isEmpty()) {
 			return false;
-		} else if (!path.lastSegment().matches("(.*\\.csproj|project.json)")) { //$NON-NLS-1$
+		} else if (!path.lastSegment().matches("(.*\\.csproj)")) { //$NON-NLS-1$
 			return false;
 		} else if (!path.toFile().isFile()) {
 			return false;
@@ -368,7 +368,7 @@ public class DotnetExportWizardPage extends WizardPage {
 			projectLocationError = Messages.DotnetExportWizardPage_pathError_empty;
 		} else if (projectPath.toFile().isDirectory()) {
 			projectLocationError = Messages.DotnetExportWizardPage_pathError_isDirectory;
-		} else if (!projectPath.lastSegment().matches("(.*\\.csproj|project.json)")) { //$NON-NLS-1$
+		} else if (!projectPath.lastSegment().matches("(.*\\.csproj)")) { //$NON-NLS-1$
 			projectLocationError = Messages.DotnetExportWizardPage_pathError_notProjectFile;
 		} else if (!projectPath.toFile().isFile()) {
 			projectLocationError = Messages.DotnetExportWizardPage_pathError_doesNotExist;

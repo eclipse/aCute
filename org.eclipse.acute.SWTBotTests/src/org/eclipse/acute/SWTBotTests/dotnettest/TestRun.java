@@ -32,7 +32,7 @@ public class TestRun extends AbstractDotnetTest {
 	public void setup() throws CoreException {
 		super.buildEmptyProject();
 		csprojFile = this.project.getFile("Project2.Tests.csproj");
-		csprojFile.create(getClass().getResourceAsStream(csprojFile.getName()), true, new NullProgressMonitor());
+		csprojFile.create(getClass().getResourceAsStream("project.csproj"), true, new NullProgressMonitor());
 	}
 
 	@Test

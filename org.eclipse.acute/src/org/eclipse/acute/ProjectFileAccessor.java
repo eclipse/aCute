@@ -41,7 +41,7 @@ public class ProjectFileAccessor {
 	public static IPath getProjectFile(IContainer project) {
 		try {
 			for (IResource projItem : project.members()) {
-				if (projItem.getName().equals("project.json") || projItem.getName().matches("^.*\\.csproj$")) { //$NON-NLS-1$ //$NON-NLS-2$
+				if (projItem.getName().matches("^.*\\.csproj$")) { //$NON-NLS-1$
 					return projItem.getFullPath();
 				}
 			}
