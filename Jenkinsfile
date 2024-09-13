@@ -10,6 +10,7 @@ spec:
   containers:
   - name: environment
     image: akurtakov/eclipse-acute-build-test-env:test
+    imagePullPolicy: "Always"
     tty: true
     command: [ "cat" ]
     resources:
