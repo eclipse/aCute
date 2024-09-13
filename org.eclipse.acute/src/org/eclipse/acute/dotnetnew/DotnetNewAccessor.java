@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc. and others.
+ * Copyright (c) 2017, 2024 Red Hat Inc. and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -15,14 +15,12 @@ package org.eclipse.acute.dotnetnew;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.acute.AcutePlugin;
-import org.eclipse.acute.DotnetVersionUtil;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -71,26 +69,16 @@ public class DotnetNewAccessor {
 	public static List<Template> getTemplates() {
 		try {
 			List<Template> templates = new ArrayList<>();
-			String listCommand = AcutePlugin.getDotnetCommand() + " new --list"; //$NON-NLS-1$
 
-			Runtime runtime = Runtime.getRuntime();
-			Process process = runtime.exec(listCommand);
-
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+			Process process = new ProcessBuilder(AcutePlugin.getDotnetCommand(), "new", "list").start(); //$NON-NLS-1$ //$NON-NLS-2$
+			try (BufferedReader in = process.inputReader()) {
 				String inputLine;
 				boolean templateListExists = false;
 
 				while ((inputLine = in.readLine()) != null) {
-					if (inputLine.matches("-{30,}$")) { //$NON-NLS-1$
+					if (inputLine.matches("[' ',-]{10,}$")) { //$NON-NLS-1$
 						templateListExists = true;
 						break;
-					}
-					if(DotnetVersionUtil.getMajorVersionNumber(DotnetVersionUtil.getVersion(AcutePlugin.getDotnetCommand())) >= 5)
-					{
-						if(inputLine.matches("---------------------------------  --------------------  ----------  ------------------------------------------------------------------------------------------$")) { //$NON-NLS-1$
-							templateListExists = true;
-							break;
-						}
 					}
 				}
 
