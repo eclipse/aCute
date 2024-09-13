@@ -77,18 +77,10 @@ public class AbstractDotnetTest {
 			csharpSourceFile.create(getClass().getResourceAsStream("../" + csharpSourceFile.getName()), true,
 					new NullProgressMonitor());
 
-			String projectFileName;
-
-			if (dotnetVersion.matches("2\\..*")) {
-				projectFileName = "project2.0.csproj";
-			} else if (dotnetVersion.matches("1\\.0\\.1.*")) {
-				projectFileName = "project1.0.csproj";
-			} else {
-				projectFileName = "project.json";
-			}
+			String projectFileName = project.getName()+".csproj";
 
 			csprojFile = this.project.getFile(projectFileName);
-			csprojFile.create(getClass().getResourceAsStream("../" + csprojFile.getName()), true,
+			csprojFile.create(getClass().getResourceAsStream("../project.csproj" ), true,
 					new NullProgressMonitor());
 		} catch (CoreException e) {
 			fail("Unable to build dotnet project file: " + e);

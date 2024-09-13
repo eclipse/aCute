@@ -39,7 +39,7 @@ public class TestRun extends AbstractDotnetTest {
 			@Override
 			public boolean test() throws Exception {
 				SWTBotView consoleView = bot.viewByPartName("Console");
-				return consoleView.bot().label().getText().matches("<terminated> .* \\[\\.NET Core\\] dotnet exec");
+				return consoleView.bot().label().getText().matches("<terminated> .* \\[\\.NET Core\\] dotnet exec.*");
 			}
 
 			@Override

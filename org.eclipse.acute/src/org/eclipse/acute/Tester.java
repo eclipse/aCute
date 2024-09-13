@@ -49,7 +49,7 @@ public class Tester extends PropertyTester {
 		}
 		try {
 			for (IResource projItem : p.members()) {
-				if (projItem.getName().equals("project.json") || projItem.getName().matches("^.*\\.csproj$")) { //$NON-NLS-1$ //$NON-NLS-2$
+				if (projItem.getName().matches("^.*\\.csproj$")) { //$NON-NLS-1$
 					return true;
 				}
 			}

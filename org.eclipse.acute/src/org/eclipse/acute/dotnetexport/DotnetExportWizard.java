@@ -162,8 +162,7 @@ public class DotnetExportWizard extends Wizard implements IExportWizard {
 		if (container != null) {
 			try {
 				for (IResource projResource : container.members()) {
-					if (projResource.getFileExtension() != null && (projResource.getFileExtension().equals("csproj") //$NON-NLS-1$
-							|| projResource.getName().equals("project.json"))) { //$NON-NLS-1$
+					if (projResource.getFileExtension() != null && (projResource.getFileExtension().equals("csproj"))) { //$NON-NLS-1$
 						return (IFile) projResource;
 					}
 				}
