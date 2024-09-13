@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc. and others.
+ * Copyright (c) 2017, 2024 Red Hat Inc. and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -46,7 +46,7 @@ public class AcutePreferenceInitializer extends AbstractPreferenceInitializer {
 				}
 			}
 		} catch (IOException | InterruptedException e) {
-			// Error will be caught with empty response
+			e.printStackTrace();
 		}
 		return ""; //$NON-NLS-1$
 	}
