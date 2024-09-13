@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.acute.debug.DotnetDebugLaunchShortcut;
@@ -77,7 +78,7 @@ public class TestDebug extends AbstractAcuteTest {
 		StyleRange initialStyle = styledText.getStyleRangeAtOffset(selection.getOffset());
 		IToggleBreakpointsTarget toggleBreakpointsTarget = DebugUITools.getToggleBreakpointsTargetManager().getToggleBreakpointsTarget(editor, selection);
 		toggleBreakpointsTarget.toggleLineBreakpoints(editor, selection);
-		Set<IDebugTarget> before = new HashSet<>(Arrays.asList(launchManager.getDebugTargets()));
+		Set<IDebugTarget> before = new HashSet<>(List.of(launchManager.getDebugTargets()));
 		new DotnetDebugLaunchShortcut().launch(editor, ILaunchManager.DEBUG_MODE);
 		assertTrue("New Debug Target not created", new DisplayHelper() {
 			@Override
@@ -85,7 +86,7 @@ public class TestDebug extends AbstractAcuteTest {
 				return launchManager.getDebugTargets().length > before.size();
 			}
 		}.waitForCondition(Display.getDefault(), 30000));
-		Set<IDebugTarget> after = new HashSet<>(Arrays.asList(launchManager.getDebugTargets()));
+		Set<IDebugTarget> after = new HashSet<>(List.of(launchManager.getDebugTargets()));
 		after.removeAll(before);
 		assertEquals("Extra DebugTarget not found", 1, after.size());
 		IDebugTarget target = after.iterator().next();
@@ -99,7 +100,8 @@ public class TestDebug extends AbstractAcuteTest {
 					return false;
 				}
 			}
-		}.waitForCondition(Display.getDefault(), 3000));target.getThreads();
+		}.waitForCondition(Display.getDefault(), 3000));
+		target.getThreads();
 		assertTrue("No thread is suspended", new DisplayHelper() {
 			@Override
 			public boolean condition() {
