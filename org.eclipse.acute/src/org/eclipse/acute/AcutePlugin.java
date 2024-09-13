@@ -100,16 +100,22 @@ public class AcutePlugin extends AbstractUIPlugin {
 		if (path.isEmpty()) {
 			if(showErrors) {
 				openCommandErrorDialog(Messages.dotnetNoPathError_title, Messages.dotnetNoPathError_message);
+			} else {
+				System.err.println(Messages.dotnetNoPathError_message);
 			}
 		} else {
 			String version = DotnetVersionUtil.getVersion(path);
 			if (!DotnetVersionUtil.isValidVersionFormat(version)) {
 				if(showErrors) {
 					openCommandErrorDialog(Messages.dotnetInvalidPathError_title, Messages.dotnetInvalidPathError_message);
+				} else {
+					System.err.println(Messages.dotnetInvalidPathError_message);
 				}
 			} else if (!DotnetVersionUtil.isValidVersionNumber(version)) {
 				if(showErrors) {
 					openCommandErrorDialog(Messages.dotnetInvalidVersionError_title, Messages.dotnetInvalidVersionError_message);
+				} else {
+					System.err.println(Messages.dotnetInvalidVersionError_message);
 				}
 			} else {
 				return path;

@@ -74,7 +74,7 @@ public class AbstractAcuteTest {
 			this.provisionedProjects.put(projectName, project);
 			FileUtils.copyDirectory(folder, project.getLocation().toFile());
 			// workaround for https://github.com/OmniSharp/omnisharp-node-client/issues/265
-			ProcessBuilder dotnetRestoreBuilder = new ProcessBuilder(AcutePlugin.getDotnetCommand(), "restore");
+			ProcessBuilder dotnetRestoreBuilder = new ProcessBuilder(AcutePlugin.getDotnetCommand(false), "restore");
 			dotnetRestoreBuilder.directory(project.getLocation().toFile());
 			assertEquals(0, dotnetRestoreBuilder.start().waitFor());
 			project.open(new NullProgressMonitor());
