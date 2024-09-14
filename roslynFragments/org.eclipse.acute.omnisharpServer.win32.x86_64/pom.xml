@@ -7,7 +7,7 @@
 		<version>0.3.2-SNAPSHOT</version>
 	</parent>
 	<packaging>eclipse-plugin</packaging>
-	<version>0.1.3-SNAPSHOT</version>
+	<version>0.1.4-SNAPSHOT</version>
 	
 	<properties>
 		<omnisharpFile>omnisharp-win-x64.zip</omnisharpFile>

@@ -25,6 +25,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BoundedInputStream;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -57,7 +58,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 			}
 		} catch (IllegalStateException e) {
 			showDotnetCommandError = false;
-			AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
+			ILog.get().log(new Status(IStatus.ERROR,
 					AcutePlugin.getDefault().getBundle().getSymbolicName(),
 					Messages.omnisharpStreamConnection_dotnetRestoreError));
 		}
@@ -70,7 +71,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 		if (commandLine != null) {
 			this.process = Runtime.getRuntime().exec(commandLine);
 		} else {
-			AcutePlugin.getDefault().getLog().log(new Status(IStatus.ERROR,
+			ILog.get().log(new Status(IStatus.ERROR,
 					AcutePlugin.getDefault().getBundle().getSymbolicName(),
 					Messages.omnisharpStreamConnection_omnisharpNotFoundError));
 		}
@@ -89,7 +90,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 				TarArchiveInputStream tarStream = new TarArchiveInputStream(stream);
 			) {
 				TarArchiveEntry entry = null;
-				while ((entry = tarStream.getNextTarEntry()) != null) {
+				while ((entry = tarStream.getNextEntry()) != null) {
 					if (!entry.isDirectory()) {
 						File targetFile = new File(serverPath, entry.getName());
 						targetFile.getParentFile().mkdirs();
@@ -125,7 +126,7 @@ public class OmnisharpStreamConnectionProvider implements StreamConnectionProvid
 		if (Platform.OS_WIN32.equals(Platform.getOS())) {
 			serverFileUrl = new File(serverPath, "server/Omnisharp.exe"); //$NON-NLS-1$
 		} else {
-			serverFileUrl = new File(serverPath, "run"); //$NON-NLS-1$
+			serverFileUrl = new File(serverPath, "OmniSharp"); //$NON-NLS-1$
 		}
 
 		if (!serverFileUrl.exists()) {

@@ -35,7 +35,7 @@ public class MSBuildStreamConnectionProvider implements StreamConnectionProvider
 	public void start() throws IOException {
 		URL serverFileUrl = getClass()
 				.getResource(
-						"/server/msbuild-project-tools-server-0.2.33/out/language-server/MSBuildProjectTools.LanguageServer.Host.dll"); //$NON-NLS-1$
+						"/server/MSBuildProjectTools.LanguageServer.Host.dll"); //$NON-NLS-1$
 		if (serverFileUrl != null) {
 			File serverFile = new File(FileLocator.toFileURL(serverFileUrl).getPath());
 			if (serverFile.exists()) {
