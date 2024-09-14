@@ -7,10 +7,10 @@
 		<version>0.3.2-SNAPSHOT</version>
 	</parent>
 	<packaging>eclipse-plugin</packaging>
-	<version>0.1.3-SNAPSHOT</version>
+	<version>0.1.4-SNAPSHOT</version>
 	
 	<properties>
-		<omnisharpFile>omnisharp-linux-x64.tar.gz</omnisharpFile>
+		<omnisharpFile>omnisharp-linux-x64-net6.0.tar.gz</omnisharpFile>
 	</properties>
 	
 	<build>
