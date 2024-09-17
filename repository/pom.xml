@@ -7,4 +7,32 @@
 	  <version>0.3.2-SNAPSHOT</version>
 	</parent>
   <packaging>eclipse-repository</packaging>
+  <profiles>
+		<profile>
+			<id>sign</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-gpg-plugin</artifactId>
+						<version>${tycho-version}</version>
+						<executions>
+							<execution>
+								<id>pgpsigner</id>
+								<goals>
+									<goal>sign-p2-artifacts</goal>
+								</goals>
+								<configuration>
+									<signer>bc</signer>
+									<keyname>E04B3414CF885498</keyname>
+									<skipIfJarsigned>false</skipIfJarsigned>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>
