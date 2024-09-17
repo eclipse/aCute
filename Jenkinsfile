@@ -55,13 +55,15 @@ spec:
 		}
 		stage('Build') {
 			steps {
-				wrap([$class: 'Xvnc', useXauthority: true]) {
-					sh 'mvn clean verify -B -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true -Dcbi.jarsigner.skip=false'
+				withCredentials([file(credentialsId: 'secret-subkeys.asc', variable: 'KEYRING'), string(credentialsId: 'gpg-passphrase', variable: 'KEYRING_PASSPHRASE')]) {
+					wrap([$class: 'Xvnc', useXauthority: true]) {
+						sh 'mvn clean verify -B -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true -Psign -Dtycho.pgp.signer.bc.secretKeys="${KEYRING}" -Dgpg.passphrase="${KEYRING_PASSPHRASE}"'
+					}
 				}
 			}
 			post {
 				always {
-					archiveArtifacts artifacts: '*/target/work/configuration/*.log,*/target/work/data/.metadata/.log', fingerprint: false
+					archiveArtifacts artifacts: '*/target/work/configuration/*.log,*/target/work/data/.metadata/.log, repository/target/repository/**', fingerprint: false
 					junit '*/target/surefire-reports/TEST-*.xml' 
 				}
 			}
