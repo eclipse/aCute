@@ -47,7 +47,7 @@ public class TestLSPIntegration extends AbstractAcuteTest {
 	@BeforeEach
 	public void setUp() throws Exception {
 		super.setUp();
-		LanguageServerPlugin.getDefault().getPreferenceStore().putValue("org.eclipse.acute.Omnisharp.file.logging.enabled", Boolean.toString(true));
+		LanguageServerPlugin.getDefault().getPreferenceStore().putValue("org.eclipse.acute.roslynLS.file.logging.enabled", Boolean.toString(true));
 	}
 
 	@Test

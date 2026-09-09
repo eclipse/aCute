@@ -46,16 +46,6 @@ This project leverages the following third party content.
 
 [MSBuild.tmLanguage](https://github.com/tillig/SublimeMSBuild/blob/1.2.5/MSBuild.tmLanguage) (1.2.5)
 
-* License: MIT
-
-[omnisharp-node-client](https://github.com/OmniSharp/omnisharp-node-client) (7.1.2)
-
-* License: Apache License, 2.0 AND MIT
-
-[omnisharp-roslyn](https://github.com/OmniSharp/omnisharp-roslyn/tree/v1.29.0-beta1) (1.29.0)
-
-* License: Apache License, 2.0 AND MIT
-
 ## Cryptography
 
 Content may contain encryption software. The country in which you are currently

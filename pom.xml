@@ -17,9 +17,6 @@
 
 	<modules>
 		<module>org.eclipse.acute</module>
-		<module>roslynFragments/org.eclipse.acute.omnisharpServer.linux.x86_64</module>
-		<module>roslynFragments/org.eclipse.acute.omnisharpServer.win32.x86_64</module>
-		<module>roslynFragments/org.eclipse.acute.omnisharpServer.macosx.x86_64</module>
 		<module>org.eclipse.acute.msBuildServer</module>
 		<module>netcoredbgFragments</module>
 		<module>org.eclipse.acute.tests</module>

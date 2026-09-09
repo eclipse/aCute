@@ -32,13 +32,13 @@
    <extension
          point="org.eclipse.lsp4e.languageServer">
       <server
-            class="org.eclipse.acute.OmnisharpStreamConnectionProvider"
-            id="org.eclipse.acute.omnisharp"
-            label="org.eclipse.acute.OmniSharp">
+            class="org.eclipse.acute.RoslynLSConnectionProvider"
+            id="org.eclipse.acute.roslynLS"
+            label="org.eclipse.acute.roslynLS">
       </server>
       <contentTypeMapping
             contentType="org.eclipse.acute.csharp"
-            id="org.eclipse.acute.omnisharp">
+            id="org.eclipse.acute.roslynLS">
       </contentTypeMapping>
       <server
             class="org.eclipse.acute.MSBuildStreamConnectionProvider"

@@ -35,10 +35,9 @@ public class Messages extends NLS {
 	public static String preferences_CommandVersion;
 	public static String preferences_BrowseButton;
 
-	public static String omnisharpStreamConnection_dotnetRestoreError;
-	public static String omnisharpStreamConnection_omnisharpNotFoundError;
-	public static String omnisharpStreamConnection_serverNotFoundError;
-	public static String omnisharpStreamConnection_serverNotExecutableError;
+	public static String roslynLSStreamConnection_dotnetRestoreError;
+	public static String roslynLSStreamConnection_roslynLSNotStarted_Title;
+	public static String roslynLSStreamConnection_roslynLSNotFoundError;
 
 	public static String DotnetDebugLaunchDelegate_errorsOnProject_message;
 	public static String DotnetDebugLaunchDelegate_errorsOnProject_title;
