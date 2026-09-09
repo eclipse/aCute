@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.lsp4e.LanguageServiceAccessor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
@@ -96,6 +97,13 @@ public class AbstractAcuteTest {
 			}
 		});
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
+		// OmniSharp only loads projects from the root it is given at startup. It
+		// claims to support workspace folders, so LSP4E keeps one server and just
+		// notifies it of added folders, which OmniSharp ignores; files of any
+		// project but the first then end up as "miscellaneous" ones with no
+		// references. Drop the server so the next test gets one rooted at its own
+		// project.
+		LanguageServiceAccessor.clearStartedServers();
 	}
 
 	/**
