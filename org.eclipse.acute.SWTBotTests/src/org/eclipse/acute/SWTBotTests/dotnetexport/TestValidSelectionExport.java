@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.acute.SWTBotTests.dotnetexport;
 
-import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.withText;
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.withRegex;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -34,7 +34,9 @@ public class TestValidSelectionExport extends AbstractExportWizardTest{
 		assertTrue("Should be able to Finish an export with a valid Project selected.", finishButton.isEnabled());
 		finishButton.click();
 
-		bot.waitUntil(Conditions.waitForWidget(withText("<terminated> .NET Core Export")),30000);
+		// The console label carries a termination timestamp and pid after the name,
+		// so match the prefix rather than the whole text.
+		bot.waitUntil(Conditions.waitForWidget(withRegex("<terminated> \\.NET Core Export")), 30000);
 
 		SWTBotView view = bot.viewByTitle("Project Explorer");
 		SWTBotTree tree = new SWTBot(view.getWidget()).tree(0);
