@@ -29,16 +29,8 @@ public class TestConfiguration extends AbstractDotnetTest {
 	public void setup() throws CoreException {
 		super.buildEmptyProject();
 
-		String projectFileName;
-		if (dotnetVersion.matches("2\\..*")) {
-			projectFileName = "Project2.Tests.csproj";
-		} else if (dotnetVersion.matches("1\\.0\\.1.*")) {
-			projectFileName = "Project1.Tests.csproj";
-		} else {
-			projectFileName = "Project.Tests.json";
-		}
-		csprojFile = this.project.getFile(projectFileName);
-		csprojFile.create(getClass().getResourceAsStream(csprojFile.getName()), true, new NullProgressMonitor());
+		csprojFile = this.project.getFile("Project.Tests.csproj");
+		csprojFile.create(getClass().getResourceAsStream("project.csproj"), true, new NullProgressMonitor());
 
 		csharpSourceFile = this.project.getFile("ProjectTestsPass.cs");
 		csharpSourceFile.create(getClass().getResourceAsStream(csharpSourceFile.getName()), true,
