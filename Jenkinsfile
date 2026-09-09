@@ -40,26 +40,27 @@ spec:
 	    DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true"
 	    MAVEN_OPTS = "-Xms256m -Xmx2048m"
 	    M2_REPO = "$WORKSPACE/m2-repo"
+	    DOTNET_TOOLS = "$WORKSPACE/dotnet-tools"
+	    ROSLYN_LANGUAGE_SERVER_COMMAND = "$WORKSPACE/dotnet-tools/roslyn-language-server --stdio --autoLoadProjects"
 	}
 	stages {
 		stage('Test and initiate .NET Core') {
 			steps {
-			  sh 'mkdir dotnet-init && \
+			  sh 'mkdir -p dotnet-init && \
 				  cd dotnet-init && \
 					dotnet --version && \
 					dotnet new console && \
 					dotnet restore && \
-					dotnet run && \
-					dotnet tool install --global roslyn-language-server --prerelease'
+					dotnet run'
+			  sh 'dotnet tool install --tool-path "$DOTNET_TOOLS" roslyn-language-server --prerelease && \
+				  test -x "$DOTNET_TOOLS/roslyn-language-server"'
 			}
 		}
 		stage('Build') {
 			steps {
 				withCredentials([file(credentialsId: 'secret-subkeys.asc', variable: 'KEYRING'), string(credentialsId: 'gpg-passphrase', variable: 'KEYRING_PASSPHRASE')]) {
 					wrap([$class: 'Xvnc', useXauthority: true]) {
-						withEnv(['PATH+DOTNET_TOOLS=/home/vnc/.dotnet/tools']) {
-							sh 'mvn clean verify -B -ntp -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true -Psign -Dtycho.pgp.signer.bc.secretKeys="${KEYRING}" -Dgpg.passphrase="${KEYRING_PASSPHRASE}"'
-						}
+						sh 'mvn clean verify -B -ntp -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true -Psign -Dtycho.pgp.signer.bc.secretKeys="${KEYRING}" -Dgpg.passphrase="${KEYRING_PASSPHRASE}"'
 					}
 				}
 			}
