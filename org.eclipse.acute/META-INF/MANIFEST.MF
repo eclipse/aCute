@@ -26,6 +26,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.commons.compress.archivers.tar,
+ org.apache.commons.lang3,
  org.apache.commons.io,
  org.apache.commons.io.build;version="[2.18.0,3.0.0)",
  org.apache.commons.io.input,
