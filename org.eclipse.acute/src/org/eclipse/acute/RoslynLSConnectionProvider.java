@@ -12,11 +12,18 @@
  *******************************************************************************/
 package org.eclipse.acute;
 
+import java.io.File;
 import java.io.FilterInputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
@@ -70,7 +77,8 @@ public class RoslynLSConnectionProvider implements StreamConnectionProvider {
 			commandLine = "roslyn-language-server --stdio --autoLoadProjects"; //$NON-NLS-1$
 		}
 		try {
-			this.process = Runtime.getRuntime().exec(commandLine);
+			// Same tokenization as Runtime.exec(String), which this used to call.
+			this.process = launch(List.of(commandLine.trim().split("\\s+"))); //$NON-NLS-1$
 			// Roslyn analyses nothing until a diagnostic is pulled, so kick off the
 			// first round rather than waiting for a refresh that will never come.
 			RoslynDiagnosticsManager.serverStarted();
@@ -79,6 +87,90 @@ public class RoslynLSConnectionProvider implements StreamConnectionProvider {
 				Display.getDefault().asyncExec(this::suggestInstallation);
 			}
 		}
+	}
+
+	/**
+	 * Launches the server, falling back to the directory
+	 * {@code dotnet tool install --global} writes to.
+	 * <p>
+	 * The IDE inherits the PATH of whatever started it, and a desktop launcher does
+	 * not run the shell profile that normally adds that directory, so a perfectly
+	 * well installed server looks missing.
+	 */
+	private static Process launch(List<String> command) throws IOException {
+		String toolsDirectory = dotnetToolsDirectory();
+		try {
+			return start(command, toolsDirectory);
+		} catch (IOException notOnPath) {
+			// The JVM resolves the program against the PATH the IDE itself was
+			// started with, never the one handed to the child, so the global tool
+			// has to be named by its full path to be reachable at all.
+			Path installed = dotnetTool(toolsDirectory, command.get(0));
+			if (installed == null) {
+				throw notOnPath;
+			}
+			List<String> resolved = new ArrayList<>(command);
+			resolved.set(0, installed.toString());
+			return start(resolved, toolsDirectory);
+		}
+	}
+
+	private static Process start(List<String> command, String toolsDirectory) throws IOException {
+		ProcessBuilder builder = new ProcessBuilder(command);
+		if (toolsDirectory != null) {
+			// The server shells out to dotnet, so it wants the directory too.
+			Map<String, String> environment = builder.environment();
+			// On Windows this map is case insensitive, so "PATH" also finds "Path".
+			String path = environment.get("PATH"); //$NON-NLS-1$
+			if (path == null || path.isBlank()) {
+				environment.put("PATH", toolsDirectory); //$NON-NLS-1$
+			} else if (!List.of(path.split(Pattern.quote(File.pathSeparator))).contains(toolsDirectory)) {
+				// Appended, not prepended, so an explicitly installed server wins.
+				environment.put("PATH", path + File.pathSeparator + toolsDirectory); //$NON-NLS-1$
+			}
+		}
+		return builder.start();
+	}
+
+	private static String dotnetToolsDirectory() {
+		// The dotnet CLI puts its per-user files under DOTNET_CLI_HOME when set.
+		String home = System.getenv("DOTNET_CLI_HOME"); //$NON-NLS-1$
+		if (home == null || home.isBlank()) {
+			home = System.getProperty("user.home"); //$NON-NLS-1$
+		}
+		return home == null || home.isBlank() ? null : Path.of(home, ".dotnet", "tools").toString(); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	/**
+	 * @return the globally installed tool of that name, or null when the name is
+	 *         already a path, or nothing is installed under it
+	 */
+	private static Path dotnetTool(String toolsDirectory, String program) {
+		if (toolsDirectory == null || program.indexOf('/') >= 0 || program.indexOf(File.separatorChar) >= 0) {
+			return null;
+		}
+		for (String suffix : executableSuffixes()) {
+			Path candidate = Path.of(toolsDirectory, program + suffix);
+			if (Files.isExecutable(candidate)) {
+				return candidate;
+			}
+		}
+		return null;
+	}
+
+	/** The empty suffix, plus what Windows considers executable. */
+	private static List<String> executableSuffixes() {
+		List<String> suffixes = new ArrayList<>();
+		suffixes.add(""); //$NON-NLS-1$
+		String pathExtensions = System.getenv("PATHEXT"); //$NON-NLS-1$
+		if (pathExtensions != null) {
+			for (String extension : pathExtensions.split(Pattern.quote(File.pathSeparator))) {
+				if (!extension.isBlank()) {
+					suffixes.add(extension);
+				}
+			}
+		}
+		return suffixes;
 	}
 
 	// Runs in UI Thread
