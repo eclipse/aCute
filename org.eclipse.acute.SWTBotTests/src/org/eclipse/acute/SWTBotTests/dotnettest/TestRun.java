@@ -15,6 +15,9 @@ package org.eclipse.acute.SWTBotTests.dotnettest;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.eclipse.acute.SWTBotTests.AbstractDotnetTest;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -27,6 +30,9 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.Test;
 
 public class TestRun extends AbstractDotnetTest {
+
+	/** Debug view label of the finished process, e.g. "<terminated, exit value: 0> dotnet test". */
+	private static final Pattern TERMINATED = Pattern.compile("<terminated, exit value: (\\d+)>\\s*dotnet test");
 
 	@Override
 	public void setup() throws CoreException {
@@ -68,7 +74,7 @@ public class TestRun extends AbstractDotnetTest {
 			public boolean test() throws Exception {
 				for (SWTBotTreeItem item : debugTree.getAllItems()) {
 					for (String node : item.expand().getNodes()) {
-						if (node.matches("<terminated, exit value: \\d>dotnet test")) {
+						if (TERMINATED.matcher(node).matches()) {
 							return true;
 						}
 					}
@@ -90,8 +96,9 @@ public class TestRun extends AbstractDotnetTest {
 
 		for (SWTBotTreeItem item : debugTree.getAllItems()) {
 			for (String node : item.expand().getNodes()) {
-				if (node.matches("<terminated, exit value: \\d>dotnet test")) {
-					return Integer.parseInt(node.replace("<terminated, exit value: ", "").replace(">dotnet test", ""));
+				Matcher matcher = TERMINATED.matcher(node);
+				if (matcher.matches()) {
+					return Integer.parseInt(matcher.group(1));
 				}
 			}
 		}
